@@ -1,0 +1,25 @@
+{
+  "name": "authenticator",
+  "version": "1.0.0",
+  "description": "Authentication API written in Express JS framework",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://shreyasksrao@bitbucket.org/shreyasksrao/authenticator.git"
+  },
+  "keywords": [
+    "Auth",
+    "ExpressJS",
+    "NodeJS"
+  ],
+  "author": "Shreyas KS",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/shreyasksrao/authenticator#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.3"
+  }
+}
