@@ -1,3 +1,33 @@
+/* eslint-disable indent */
+/**
+ * @swagger
+ * definitions:
+ *   Role:
+ *     type: object
+ *     properties:
+ *       id:
+ *         type: integer
+ *         description: Unique ID generated for every Role (Auto-increment field).
+ *       name:
+ *         type: string
+ *         description: Role name (Should be Unique)
+ *       description:
+ *         type: string
+ *         description: A brief description about the Role
+ *       createdAt:
+ *         type: Date
+ *         description: Role creation time
+ *         default: Current time
+ *       createdBy:
+ *         type: uuid
+ *         description: ID of the User who created the role
+ *       permissions:
+ *         type: JSON
+ *         description: Permission array (JSON string) Ex: {"permissions": ["<Permission ID>"]}
+ *     required:
+ *       - id
+ *       - name
+ */
 /* jshint indent: 1 */
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('Role', {
