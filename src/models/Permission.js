@@ -1,6 +1,6 @@
 /* jshint indent: 1 */
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('Role', {
+	return sequelize.define('Permission', {
 		id: {
 			type: DataTypes.UUID,
 			primaryKey: true,
@@ -23,11 +23,16 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.UUID,
 			allowNull: true
 		}, 
-		permissions: {
-			type: DataTypes.ARRAY(DataTypes.STRING),
-			allowNull: true
+		endpoint: {
+			type: DataTypes.STRING,
+			allowNull: false
+		},
+        permissionType: {
+			type: DataTypes.STRING,
+			allowNull: false,
+            defaultValue: 'Allow'
 		}
 	}, {
-		tableName: 'Role'
+		tableName: 'Permission'
 	});
 };
