@@ -67,7 +67,7 @@ const swaggerDefinition = {
       "name": "Authorization",
       "in": "header",
       "type": "apiKey",
-      "description": "JWT Authorization header"
+      "description": "JWT Authorization token"
     }
   },
   "security": [ { "bearerAuth": [] } ]

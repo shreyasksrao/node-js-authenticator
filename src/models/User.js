@@ -7,17 +7,46 @@
  *     properties:
  *       id:
  *         type: integer
+ *         description: Unique ID generated for every User (Auto-increment field).
  *       first_name:
  *         type: string
+ *         description: First name of the User
  *       last_name:
  *         type: string
+ *         description: Last name of the User
  *       email:
  *         type: string
+ *         description: Email address of the User
  *       username:
  *         type: string
+ *         description: Username of the User. This will be displayed on the UI.
  *       password:
  *         type: string
  *         format: password
+ *         description: Password of the User
+ *       phonenumber:
+ *         type: string
+ *         description: Phone number of the User. (Format: <Country code> <Phone number>. Ex for India: +91 8765432189)
+ *       organization:
+ *         type: string
+ *         default: default
+ *         description: Organization to which the User belongs to.
+ *       role:
+ *         type: string
+ *         description: Roles assigned to the User. Multiple roles can be added using "," as delimiter.
+ *         default: default
+ *       emailVerified:
+ *         type: boolean
+ *         description: Is email verified for this User
+ *         default: false
+ *       status:
+ *         type: string
+ *         default: inactive
+ *         description: Status of the User
+ *       createdAt:
+ *         type: Date
+ *         description: Time at which the User is created
+ *         default: Current DB time
  *       resetPasswordToken:
  *         type: string
  *       resetPasswordExpires:
@@ -27,6 +56,7 @@
  *       - email
  *       - username
  *       - password
+ *       - phonenumber
  */
 
  module.exports = function(sequelize, DataTypes) {
