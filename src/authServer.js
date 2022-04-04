@@ -1,3 +1,4 @@
+/*jshint esversion: 8 */
 const path = require('path');
 
 const express = require('express');
@@ -125,8 +126,8 @@ app.use('/api/v1', updateUser);
 app.use('/api/v1', user_logins);
 
 const server = app.listen(PORT, () => {
-  console.log(`Authentication Service is running on Port : ${PORT}`.green.bold.underline)
-  logger.info(`Authentication Service is running on Port : ${PORT}`)
+  console.log(`Authentication Service is running on Port : ${PORT}`.green.bold.underline);
+  logger.info(`Authentication Service is running on Port : ${PORT}`);
 });
 
 process.on('unhandledRejection', (err, promise) => {
@@ -136,7 +137,7 @@ process.on('unhandledRejection', (err, promise) => {
     logger.error(`Error: ${err.message}`);
     console.log(`Error: ${err.message}`.red.bold);
 
-    logger.error(`Stack trace: ${err.stack}`)
+    logger.error(`Stack trace: ${err.stack}`);
     console.log(`Stack trace: ${err.stack}`.blue.italic);
     server.close(() => process.exit(1));
 });

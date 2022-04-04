@@ -1,3 +1,4 @@
+/*jshint esversion: 8 */
 /* eslint-disable indent */
 /**
  * @swagger
@@ -24,13 +25,9 @@
  *         type: string
  *         format: password
  *         description: Password of the User
- *       phonenumber:
+ *       phoneNumber:
  *         type: string
  *         description: Phone number of the User. (Format: <Country code> <Phone number>. Ex for India: +91 8765432189)
- *       organization:
- *         type: string
- *         default: default
- *         description: Organization to which the User belongs to.
  *       role:
  *         type: string
  *         description: Roles assigned to the User. Multiple roles can be added using "," as delimiter.
@@ -56,7 +53,7 @@
  *       - email
  *       - username
  *       - password
- *       - phonenumber
+ *       - phoneNumber
  */
 
  module.exports = function(sequelize, DataTypes) {
@@ -90,15 +87,10 @@
             type: DataTypes.STRING, 
             allowNull: false,
         },
-        organization: {
-            type: DataTypes.STRING,
-            allowNull: false,
-            defaultValue: 'default'
-        },
         role: {
             type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: 'default',
+            defaultValue: 'user',
             get() {
                 const roleString = this.getDataValue('role');
                 let roleArray = roleString.split(",");
@@ -107,7 +99,7 @@
             set(roleArray) {
                 let roleString = "";
                 roleArray.forEach(role => {
-                    roleString = roleString + ',' + String(role)
+                    roleString = roleString + ',' + String(role);
                 });
                 this.setDataValue('role', roleString);
             }
@@ -125,9 +117,7 @@
         createdAt: {
             type: DataTypes.DATE, 
             defaultValue: sequelize.fn('now')
-        },
-        resetPasswordToken: DataTypes.STRING,
-        resetPasswordExpires: DataTypes.DATE,
+        }
       }, {
           tableName: 'User'
     });

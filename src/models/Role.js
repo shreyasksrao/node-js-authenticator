@@ -1,3 +1,4 @@
+/*jshint esversion: 8 */
 /* eslint-disable indent */
 /**
  * @swagger

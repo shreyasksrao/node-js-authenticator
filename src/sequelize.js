@@ -1,3 +1,4 @@
+/*jshint esversion: 8 */
 const Sequelize = require('sequelize');
 const UserModel = require('./models/User');
 const UserLoginModel = require('./models/UserLogin');
@@ -9,11 +10,11 @@ let path = require('path');
 let dotenv = require('dotenv');
 dotenv.config({ path: path.join(__dirname, '../config/config.env') });
 
-const sequelize = new Sequelize(process.env['DB_NAME'], process.env['DB_USER'], process.env['DB_PASSWORD'], {
-  host: process.env['DB_HOST'],
+const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+  host: process.env.DB_HOST,
   dialect:  'postgres',
   protocol: 'postgres',
-  port:     process.env['DB_PORT'],
+  port:     process.env.DB_PORT,
   ssl: false,
   // dialectOptions: {
   //   "ssl": {

@@ -1,3 +1,4 @@
+/*jshint esversion: 8 */
 const { createLogger, format, transports } = require('winston');
 const dotenv = require('dotenv');
 const path = require('path');

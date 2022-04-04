@@ -11,17 +11,7 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.UUID,
 			allowNull: false
 		},
-		logged_out: {
-			type: DataTypes.BOOLEAN,
-			allowNull: false,
-			defaultValue: false
-		},
 		logged_in_at: {
-			type: DataTypes.DATE,
-			allowNull: false,
-			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
-		},
-		logged_out_at: {
 			type: DataTypes.DATE,
 			allowNull: false,
 			defaultValue: sequelize.literal('CURRENT_TIMESTAMP')
@@ -33,15 +23,6 @@ module.exports = function(sequelize, DataTypes) {
 		token_id: {
 			type: DataTypes.TEXT,
 			allowNull: true
-		},
-		token_secret: {
-			type: DataTypes.TEXT,
-			allowNull: true
-		},
-		token_deleted: {
-			type: DataTypes.BOOLEAN,
-			allowNull: true,
-			defaultValue: false
 		},
 		device: {
 			type: DataTypes.TEXT,
