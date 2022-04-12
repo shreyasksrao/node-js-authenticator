@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+/*jshint esversion: 8 */
 const {User} = require('../sequelize');
 const router = require('express').Router();
 const authenticateToken = require('../middlewares/authenticateToken');

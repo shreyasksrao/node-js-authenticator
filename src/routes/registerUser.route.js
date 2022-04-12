@@ -7,7 +7,7 @@ const router = require("express").Router();
 
 // Load the Winston logger
 const logger = require('../winston.conf.js');
-const validateBodyParamsExistence = require('../utils/validateBodyParameters');
+const { validateBodyParamsExistence } = require('../utils/validateBodyParameters');
 /**
  * @swagger
  * /registerUser:
@@ -45,7 +45,7 @@ const validateBodyParamsExistence = require('../utils/validateBodyParameters');
  *               format: password
  *             phoneNumber:
  *               type: string
- *               description: Phone number of the registered user (Format: <Country code> <Phone number>)
+ *               description: Phone number of the registered user (Format - <Country code> <Phone number>)
  *           required:
  *             - username
  *             - first_name
@@ -60,22 +60,26 @@ const validateBodyParamsExistence = require('../utils/validateBodyParameters');
  *         description: Username or email already taken
  */
 
-router.post('/registerUser', async (req, res , next) => {
+router.post('/registerUser', async (req, res) => {
   // Validate weather the request body contains all the parameters or not
-  const bodyParameterValidationResult = validateBodyParamsExistence(req, ['username', 'email', 'password', 'first_name', 'last_name', 'phoneNumber']);
+  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['username', 'email', 'password', 'first_name', 'last_name', 'phoneNumber']);
   if (bodyParameterValidationResult.status == false){
+    logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
     return res.status(401).send({
       statusCode: 401,
       message: bodyParameterValidationResult.message
     });
   }
+  logger.debug(`Validated body parameters successfully...`);
 
   // If User exists, then throw the Error
   const userExists = await User.findOne({ where: {username: req.body.username ,email: req.body.email } });
   if (userExists){
-    console.log(`Username or Email is already taken`);
+    logger.info(`Username or Email is already taken`);
+    logger.debug(`User details -- User name: ${req.body.username}, Email: ${req.body.email}`)
     return res.status(400).send({
-      message: 'Username or Email already taken',
+      statusCode: 400,
+      message: 'Bad request !! - Username or Email already taken',
     });
   }
 
@@ -84,7 +88,7 @@ router.post('/registerUser', async (req, res , next) => {
   const hashedPassword = await bcrypt.hash(req.body.password, salt);
   // Create a User in the DB and send it to the User
   try {
-    logger.debug(`Creating a User`);
+    logger.debug(`Creating a User -- Username: ${req.body.username} Email: ${req.body.email}`);
     const savedUser = await User.create({
       email:req.body.email,
       username: req.body.username,
@@ -98,14 +102,18 @@ router.post('/registerUser', async (req, res , next) => {
       id:req.user.id,
       register:true
     };
-    logger.info(`User object created and saved in the DB : User ID is - ${req.user.id}`);
-    next();
+    logger.info(`User created and saved in the DB -- User ID: ${req.user.id} Username: ${req.body.username} Email: ${req.body.email}`);
+    return res.status(201).send({
+      statusCode: 201,
+      message: `User has been created. User ID: ${req.user.id} Username: ${req.body.username} Email: ${req.body.email}`,
+    });
   } 
   catch (err) {
-      console.log(err);
-      return res.status(400).send({
-        statusCode: 400,
-        message: err.message,
+      logger.error(err);
+      return res.status(500).send({
+        statusCode: 500,
+        message: 'Internal Server Error !!!',
+        devMessage: err.message,
         stackTrace: err.stack
       });
   }

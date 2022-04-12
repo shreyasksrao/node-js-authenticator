@@ -18,7 +18,7 @@ async function isBlacklisted(token_id) {
   }
 }
 
-function blacklistToken(req, res, next) {
+async function blacklistToken(req, res, next) {
   const authHeader = req.headers.authorization;
   const token = authHeader && authHeader.split(' ')[1];
   if (token == null)
@@ -34,14 +34,14 @@ function blacklistToken(req, res, next) {
         statusCode: 403,
         message: 'Forbidden, Token expired !!'
       });
-    else if (isBlacklisted(payload.tid))
+    else if (isBlacklisted(token))
       return res.status(401).json({
         statusCode: 403,
         message: 'Token already Blacklisted !!'
       });
     else{
       try {
-        await redisClient.set(String(payload.tid), String(token));
+        await redisClient.set(String(token), String(payload.id), 'EX', 60*60);
         return res.status(200).json({
           statusCode: 201,
           message: `Token Blacklisted successfully`
@@ -57,5 +57,5 @@ function blacklistToken(req, res, next) {
 }
 
 module.exports = {
-  blacklistToken: blacklistToken,
+  blacklistToken
 };

@@ -5,7 +5,8 @@ const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 
 var { generateAndSendToken } = require('../middlewares/generateAndSendToken');
-const validateBodyParamsExistence = require('../utils/validateBodyParameters');
+const { validateBodyParamsExistence } = require('../utils/validateBodyParameters');
+const logger = require('../winston.conf.js');
 
 /**
  * @swagger
@@ -58,32 +59,48 @@ router.post('/loginUser', async (req, res, next) => {
       // Validate weather the request body contains all the parameters or not
       const bodyParameterValidationResult = validateBodyParamsExistence(req, ['email', 'password']);
       if (bodyParameterValidationResult.status == false){
+        logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
         return res.status(401).send({
           statusCode: 401,
           message: bodyParameterValidationResult.message
         });
       }
+      logger.debug(`Validated body parameters successfully...`);
 
       //check if the email exists or not ?
       const userExists = await User.findOne({ where: {email: req.body.email  } });
-      if (!userExists)
+      if (!userExists){
+        logger.debug(`User with this EMAIL (${req.body.email}) doesn't exist !`);
         return res.status(401).send({
           statusCode: 401,
           message: `User with this EMAIL (${req.body.email}) doesn't exist !`
         });
+      }  
 
       //check password
       const validPass = await bcrypt.compare(req.body.password, userExists.password);
-      if (!validPass)
-        return res.status(403).send({
+      if (!validPass){
+        logger.debug(`Password doesn't match for this EMAIL (${req.body.email}) !`);
+        return res.status(401).send({
           statusCode: 401,
           message: `Password doesn't match for this EMAIL (${req.body.email}) !`
         });
+      }
+
+      // Check user status
+      const userStatus = userExists.status;
+      if (userStatus != 'active'){
+        logger.debug(`User status is ${userStatus} for this EMAIL (${req.body.email}) !`);
+        return res.status(403).send({
+          statusCode: 403,
+          message: `User status is ${userStatus} for this EMAIL (${req.body.email}) !`
+        });
+      }
 
       req.user=userExists;
       req.auth={
         id:req.user.id,
-        register:false
+        register:true
       };
       next();
   }, 

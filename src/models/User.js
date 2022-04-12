@@ -27,7 +27,7 @@
  *         description: Password of the User
  *       phoneNumber:
  *         type: string
- *         description: Phone number of the User. (Format: <Country code> <Phone number>. Ex for India: +91 8765432189)
+ *         description: Phone number of the User (Format - <Country code> <Phone number> | Ex for India - +91 8765432189)
  *       role:
  *         type: string
  *         description: Roles assigned to the User. Multiple roles can be added using "," as delimiter.
@@ -87,21 +87,26 @@
             type: DataTypes.STRING, 
             allowNull: false,
         },
-        role: {
+        tenantName: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            defaultValue: 'default'
+        },
+        roles: {
             type: DataTypes.STRING,
             allowNull: false,
             defaultValue: 'user',
             get() {
-                const roleString = this.getDataValue('role');
-                let roleArray = roleString.split(",");
-                return roleArray;
+                const roleString = this.getDataValue('roles');
+                let rolesArray = roleString.split(",");
+                return rolesArray;
             },
-            set(roleArray) {
+            set(rolesArray) {
                 let roleString = "";
-                roleArray.forEach(role => {
+                rolesArray.forEach(role => {
                     roleString = roleString + ',' + String(role);
                 });
-                this.setDataValue('role', roleString);
+                this.setDataValue('roles', roleString);
             }
         },
         emailVerified: {

@@ -4,7 +4,6 @@ const UserModel = require('./models/User');
 const UserLoginModel = require('./models/UserLogin');
 const RoleModel = require('./models/Role');
 const PermissionModel = require('./models/Permission');
-const BlacklistTokenModel = require('./models/BlacklistToken');
 
 let path = require('path');
 let dotenv = require('dotenv');
@@ -35,7 +34,6 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
 
 const User = UserModel(sequelize, Sequelize);
 const UserLogin = UserLoginModel(sequelize, Sequelize);
-const BlacklistToken = BlacklistTokenModel(sequelize, Sequelize);
 const Role = RoleModel(sequelize, Sequelize);
 const Permission = PermissionModel(sequelize, Sequelize);
 
@@ -44,4 +42,5 @@ sequelize.sync().then(() => {
   console.log('[INFO] Database and Tables have been created'.green.bold);
 });
 
-module.exports = { User, UserLogin, BlacklistToken, Role, Permission };
+
+module.exports = { sequelize, User, UserLogin, Role, Permission };

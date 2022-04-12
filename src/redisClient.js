@@ -24,8 +24,8 @@ const redisClient = redis.createClient({
   },
   password: REDIS_PASS 
 });
-await redisClient.connect(); // jshint ignore:line
+redisClient.connect(); // jshint ignore:line
 console.log(`[INFO] - Connected to Redis server (${REDIS_HOST} on ${REDIS_PORT})`);
-await redisClient.ping(); // jshint ignore:line
+redisClient.ping(); // jshint ignore:line
 
 module.exports = redisClient;

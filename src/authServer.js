@@ -6,6 +6,7 @@ let cors = require('cors');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const colors = require('colors');
+const { sequelize } = require('./sequelize');
 
 // Load the Winston logger
 const logger = require('./winston.conf.js');
@@ -100,14 +101,14 @@ app.use(
 const login = require('./routes/loginUser.route.js');
 const register = require('./routes/registerUser.route.js');
 const logout=require('./routes/logout.route.js');
-const forgetPassword = require('./routes/forgotPassword.route.js');
-const resetPassword = require('./routes/resetPassword.route.js');
-const updatePassword = require('./routes/updatePassword.route.js');
-const updatePasswordViaEmail = require('./routes/updatePasswordViaEmail.route.js');
+// const forgetPassword = require('./routes/forgotPassword.route.js');
+// const resetPassword = require('./routes/resetPassword.route.js');
+// const updatePassword = require('./routes/updatePassword.route.js');
+// const updatePasswordViaEmail = require('./routes/updatePasswordViaEmail.route.js');
 const findUsers = require('./routes/findUsers.route.js');
-const deleteUser = require('./routes/deleteUser.route.js');
+// const deleteUser = require('./routes/deleteUser.route.js');
 const updateUser = require('./routes/updateUser.route.js');
-const user_logins = require('./routes/user_logins.route.js');
+// const user_logins = require('./routes/user_logins.route.js');
 
 app.get('/', function (req, res) {
   res.send('hello world');
@@ -116,21 +117,21 @@ app.get('/', function (req, res) {
 app.use('/api/v1', login);
 app.use('/api/v1', register);
 app.use('/api/v1', logout);
-app.use('/api/v1', forgetPassword);
-app.use('/api/v1', resetPassword);
-app.use('/api/v1', updatePassword);
-app.use('/api/v1', updatePasswordViaEmail);
+// app.use('/api/v1', forgetPassword);
+// app.use('/api/v1', resetPassword);
+// app.use('/api/v1', updatePassword);
+// app.use('/api/v1', updatePasswordViaEmail);
 app.use('/api/v1', findUsers);
-app.use('/api/v1', deleteUser);
+// app.use('/api/v1', deleteUser);
 app.use('/api/v1', updateUser);
-app.use('/api/v1', user_logins);
+// app.use('/api/v1', user_logins);
 
 const server = app.listen(PORT, () => {
   console.log(`Authentication Service is running on Port : ${PORT}`.green.bold.underline);
   logger.info(`Authentication Service is running on Port : ${PORT}`);
 });
 
-process.on('unhandledRejection', (err, promise) => {
+process.on('unhandledRejection', async (err, promise) => {
     logger.error(`An Unhandled Rejection occured !!`);
     console.error(`An Unhandled Rejection occured !!`.red.bold.underline);
 
@@ -139,5 +140,7 @@ process.on('unhandledRejection', (err, promise) => {
 
     logger.error(`Stack trace: ${err.stack}`);
     console.log(`Stack trace: ${err.stack}`.blue.italic);
+
+    await sequelize.close();
     server.close(() => process.exit(1));
 });
