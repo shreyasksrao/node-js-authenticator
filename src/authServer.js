@@ -47,7 +47,7 @@ const swaggerDefinition = {
   info: {
     title: 'Node-Js-Auth API',
     version: '1.0.0',
-    description: 'Documentation for Node-Js Auth backend API',
+    description: 'Documentation of Node Js Auth backend API',
     license: {
       name: "MIT",
       url: "https://spdx.org/licenses/MIT.html",
@@ -79,7 +79,7 @@ const swaggerJsDocoptions = {
   swaggerDefinition,
   apis: [
     path.join(__dirname  + '/routes/*.js'), 
-    path.join(__dirname + '/models/User.js')
+    path.join(__dirname + '/models/*.js')
   ]
 };
 

@@ -24,7 +24,7 @@
  *         description: ID of the User who created the role
  *       permissions:
  *         type: JSON
- *         description: Permission array (JSON string) Ex: {"permissions": ["<Permission ID>"]}
+ *         description: Permission array (JSON string). Value should be an array of Permission IDs with "permissions" as Key
  *     required:
  *       - id
  *       - name

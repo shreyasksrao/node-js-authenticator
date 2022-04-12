@@ -24,8 +24,15 @@ const redisClient = redis.createClient({
   },
   password: REDIS_PASS 
 });
-redisClient.connect(); // jshint ignore:line
-console.log(`[INFO] - Connected to Redis server (${REDIS_HOST} on ${REDIS_PORT})`);
-redisClient.ping(); // jshint ignore:line
+redisClient.connect()
+.then(() => {
+  console.log(`[INFO] - Connected to Redis server (${REDIS_HOST} on ${REDIS_PORT})`);
+})
+.catch(err => {
+  console.log(`Redis Connection Error`);
+  console.error(err);
+});
+
+redisClient.ping();
 
 module.exports = redisClient;
