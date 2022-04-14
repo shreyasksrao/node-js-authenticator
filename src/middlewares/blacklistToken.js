@@ -1,8 +1,10 @@
 /*jshint esversion: 8 */
 /* eslint-disable no-console */
-
+const fs = require('fs');
+const path = require('path');
 const jwt = require('jsonwebtoken');
 const redisClient = require('../redisClient');
+const publickey = fs.readFileSync(path.join(process.cwd(), 'config/keys', process.env.TOKEN_SIGNING_PUBLIC_KEY), 'utf8');
 
 async function isBlacklisted(token_id) {
   try {
@@ -26,22 +28,22 @@ async function blacklistToken(req, res, next) {
       statusCode: 401,
       message: `JWT token is not present in the Authorization header !`
     });
-  
-  jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, async (err, payload) => {
+
+  jwt.verify(token, publickey, async (err, payload) => {
     let currentUtc = Math.floor(new Date().getTime() / 1000);
     if (payload.eat < currentUtc)
-      return res.status(401).json({
+      return res.status(403).json({
         statusCode: 403,
         message: 'Forbidden, Token expired !!'
       });
-    else if (isBlacklisted(token))
-      return res.status(401).json({
+    else if (await isBlacklisted(token.tid))
+      return res.status(403).json({
         statusCode: 403,
         message: 'Token already Blacklisted !!'
       });
     else{
       try {
-        await redisClient.set(String(token), String(payload.id), 'EX', 60*60);
+        await redisClient.set(String(token.tid), String(payload.id), 'EX', process.env.ACCESS_TOKEN_EXPIRY_SECONDS);
         return res.status(200).json({
           statusCode: 201,
           message: `Token Blacklisted successfully`
@@ -53,7 +55,6 @@ async function blacklistToken(req, res, next) {
       }
     }
   });
-  next();
 }
 
 module.exports = {

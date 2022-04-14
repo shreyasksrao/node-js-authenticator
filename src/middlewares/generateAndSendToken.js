@@ -8,6 +8,8 @@ const dotenv = require('dotenv');
 let path = require('path');
 let fs = require('fs');
 
+const logger = require('../winston.conf.js');
+
 
 dotenv.config({ path: path.join(process.cwd(), 'config/config.env') });
 const token_expiry_seconds = parseInt(process.env.ACCESS_TOKEN_EXPIRY_SECONDS);
@@ -45,7 +47,7 @@ var generateRefreshToken = async function(req, token_id) {
 
 var createToken = async function(req) {
   try{
-    const token_id = await customId({
+    const token_id = customId({
       user_id : req.auth.id,
       date : Date.now(),
       randomLength: 4 
@@ -66,43 +68,50 @@ var createToken = async function(req) {
         user_id: req.auth.id ,
         ip_address: ip
     });
-    // Update the token in the UserLogin table.
-    user_logins.forEach(async(login) => {
-      if(login){
-        if (login.device == req.headers["user-agent"]){
-          const accessToken = await generateAccessToken(req, token_id, userRoles, userStatus);
-          const refreshToken = await generateRefreshToken(req, token_id);
-          login.logged_in_at = Sequelize.literal("CURRENT_TIMESTAMP");
-          login.token_id = token_id;
-          await login.save();
-          return {
-            accessToken: accessToken,
-            refreshToken: refreshToken,
-            authCode: 1,
-            message: `Token generated successfully.`
-          };
-        }
-      }      
-    });
 
-    // New device Logged-in , Add a UserLogin entry in the Table with all the new Session details
-    const loginRecord = await UserLogin.create({
-      user_id : req.auth.id,
-      token_id : token_id,
-      ip_address : ip,
-      device : req.headers["user-agent"]
-    });
-    const accessToken = await generateAccessToken(req, token_id, userRoles, userStatus);
-    const refreshToken = await generateRefreshToken(req, token_id);
-    return {
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-      authCode: 2,
-      message: `Successfully Logged-in from other device !`,
-      loggedInAt: Date.now(),
-      ipAddress: ip,
-      deviceAgent: req.headers["user-agent"]
-    };  
+    const deviceExists = await user_logins.find(obj => obj.device == req.headers["user-agent"]);
+    // Update the token in the UserLogin table.
+    if (deviceExists){
+      for (var i=0; i<user_logins.length; i++){
+        var login = user_logins[i];
+        if(login){
+          if (login.device == req.headers["user-agent"]){
+            const accessToken = await generateAccessToken(req, token_id, userRoles, userStatus);
+            const refreshToken = await generateRefreshToken(req, token_id);
+            const currentTime = new Date(new Date().toUTCString());
+            login.logged_in_at = currentTime;
+            login.token_id = token_id;
+            await login.save();
+            return {
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+              authCode: 1,
+              message: `Token generated successfully.`
+            };
+          }
+        } 
+      }
+    }
+    else {
+      // New device Logged-in , Add a UserLogin entry in the Table with all the new Session details
+      const loginRecord = await UserLogin.create({
+        user_id : req.auth.id,
+        token_id : token_id,
+        ip_address : ip,
+        device : req.headers["user-agent"]
+      });
+      const accessToken = await generateAccessToken(req, token_id, userRoles, userStatus);
+      const refreshToken = await generateRefreshToken(req, token_id);
+      return {
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        authCode: 2,
+        message: `Successfully Logged-in from other device !`,
+        loggedInAt: Date.now(),
+        ipAddress: ip,
+        deviceAgent: req.headers["user-agent"]
+      };
+    }
   }
   catch(e){
     logger.error(`Internal Server Error ${e.message}\nStack trace: ${e}`);
