@@ -110,6 +110,8 @@ const findUsers = require('./routes/findUsers.route.js');
 const updateUser = require('./routes/updateUser.route.js');
 // const user_logins = require('./routes/user_logins.route.js');
 
+const createPermission = require('./routes/createPermission.route');
+
 app.get('/', function (req, res) {
   res.send('hello world');
 });
@@ -125,6 +127,8 @@ app.use('/api/v1', findUsers);
 // app.use('/api/v1', deleteUser);
 app.use('/api/v1', updateUser);
 // app.use('/api/v1', user_logins);
+
+app.use('/api/v1', createPermission);
 
 const server = app.listen(PORT, () => {
   console.log(`Authentication Service is running on Port : ${PORT}`.green.bold.underline);

@@ -65,8 +65,10 @@ var createToken = async function(req) {
 
     // Get all the User login instances from the same Device and IP to update the Tokens.
     const user_logins=await UserLogin.findAll({
+      where:{
         user_id: req.auth.id ,
         ip_address: ip
+      }
     });
 
     const deviceExists = await user_logins.find(obj => obj.device == req.headers["user-agent"]);

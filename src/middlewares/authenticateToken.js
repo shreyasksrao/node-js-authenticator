@@ -1,6 +1,5 @@
 /*jshint esversion: 8 */
 const jwt = require('jsonwebtoken');
-const { BlacklistToken, UserLogin } = require('../sequelize');
 const redisClient = require('../redisClient');
 
 const dotenv = require('dotenv');
@@ -8,7 +7,6 @@ let path = require('path');
 let fs = require('fs');
 
 dotenv.config({ path: path.join(process.cwd(), 'config/config.env') });
-const token_expiry_seconds = process.env.TOKEN_EXPIRY_SECONDS;
 const publickey = fs.readFileSync(path.join(process.cwd(), 'config/keys', process.env.TOKEN_SIGNING_PUBLIC_KEY), 'utf8');
 
 
@@ -25,7 +23,7 @@ async function authenticateToken(req, res, next) {
         message: "Token is not passed in the header. Ex: authorization: Bearer <JWT token>"
       });
 
-    const tokenBlacklisted = await redisClient.exists(token);
+    const tokenBlacklisted = await redisClient.exists(token.tid);
     if(tokenBlacklisted){
       return res.status(403).json({
         status: 403,

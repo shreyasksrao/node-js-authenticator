@@ -19,9 +19,9 @@
  *       '200':
  *         description: User logged-out successfully
  *       '401':
- *         description: Bad username, not found in db
+ *         description: Token not passed in the Auth header
  *       '403':
- *         description: Username and password don't match
+ *         description: Invalid token (Either Expired or already blacklisted token...)
  */
 
 const router = require("express").Router();
