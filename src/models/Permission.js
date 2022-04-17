@@ -18,6 +18,9 @@
  *       endpoint:
  *         type: string
  *         description: REST endpoint
+ *       method:
+ *         type: string
+ *         description: HTTP method of the REST endpoint
  *       permissionType:
  *         type: string
  *         description: One of ['Allow', 'Deny']
@@ -25,6 +28,7 @@
  *       - id
  *       - name
  *       - endpoint
+ *       - method
  *       - permissionType
  */
 /* jshint indent: 1 */
@@ -49,7 +53,8 @@ module.exports = function(sequelize, DataTypes) {
 		},
 		method:{
 			type: DataTypes.STRING,
-			allowNull: false
+			allowNull: false,
+			defaultValue: 'GET'
 		},
         permissionType: {
 			type: DataTypes.STRING,

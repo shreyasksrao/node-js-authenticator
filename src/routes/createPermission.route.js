@@ -86,7 +86,7 @@ router.post('/createPermission', async (req, res) => {
   });
   if (permissionExists){
     logger.info(`Permission already exists !!`);
-    logger.debug(`Permission details -- Name: ${req.body.name}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`)
+    logger.debug(`Permission details -- Name: ${req.body.name}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
     return res.status(400).send({
       statusCode: 400,
       message: 'Bad request !! - Permission already exists',

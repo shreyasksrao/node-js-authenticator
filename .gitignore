@@ -6,6 +6,11 @@ config/keys
 logs/
 /dist
 
+# Ignore Sequelize files
+src/config/
+src/seeders/
+src/migrations/
+
 
 # local env files
 .env.local

@@ -76,7 +76,7 @@ router.post('/registerUser', async (req, res) => {
   const userExists = await User.findOne({ where: {username: req.body.username ,email: req.body.email } });
   if (userExists){
     logger.info(`Username or Email is already taken`);
-    logger.debug(`User details -- User name: ${req.body.username}, Email: ${req.body.email}`)
+    logger.debug(`User details -- User name: ${req.body.username}, Email: ${req.body.email}`);
     return res.status(400).send({
       statusCode: 400,
       message: 'Bad request !! - Username or Email already taken',

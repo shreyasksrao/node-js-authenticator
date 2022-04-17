@@ -3,7 +3,7 @@
 
 /**
  * @swagger
- * /logout:
+ * /logoutUser:
  *   post:
  *     tags:
  *       - Users
@@ -27,6 +27,6 @@
 const router = require("express").Router();
 const { blacklistToken } = require('../middlewares/blacklistToken');
 
-router.post('/logout', blacklistToken);
+router.post('/logoutUser', blacklistToken);
  
 module.exports = router;

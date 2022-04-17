@@ -100,7 +100,7 @@ app.use(
 // Get the routes
 const login = require('./routes/loginUser.route.js');
 const register = require('./routes/registerUser.route.js');
-const logout=require('./routes/logout.route.js');
+const logoutUser =require('./routes/logout.route.js');
 // const forgetPassword = require('./routes/forgotPassword.route.js');
 // const resetPassword = require('./routes/resetPassword.route.js');
 // const updatePassword = require('./routes/updatePassword.route.js');
@@ -111,6 +111,7 @@ const updateUser = require('./routes/updateUser.route.js');
 // const user_logins = require('./routes/user_logins.route.js');
 
 const createPermission = require('./routes/createPermission.route');
+const getPermission = require('./routes/getPermission.route');
 
 app.get('/', function (req, res) {
   res.send('hello world');
@@ -118,7 +119,7 @@ app.get('/', function (req, res) {
 
 app.use('/api/v1', login);
 app.use('/api/v1', register);
-app.use('/api/v1', logout);
+app.use('/api/v1', logoutUser);
 // app.use('/api/v1', forgetPassword);
 // app.use('/api/v1', resetPassword);
 // app.use('/api/v1', updatePassword);
@@ -129,6 +130,7 @@ app.use('/api/v1', updateUser);
 // app.use('/api/v1', user_logins);
 
 app.use('/api/v1', createPermission);
+app.use('/api/v1', getPermission);
 
 const server = app.listen(PORT, () => {
   console.log(`Authentication Service is running on Port : ${PORT}`.green.bold.underline);
