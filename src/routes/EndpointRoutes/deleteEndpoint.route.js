@@ -98,4 +98,65 @@ router.post('/deleteEndpoint', async (req, res) => {
 });
 
 
+/**
+ * @swagger
+ * /deleteEndpointById/{endpointId}:
+ *   delete:
+ *     tags:
+ *       - Endpoint
+ *     name: Deletes an Endpoint (Using Endpoint ID)
+ *     summary: Delete an Endpoint in the DB
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: endpointId
+ *         schema:
+ *           type: UUID
+ *         description: ID of the Endpoint
+ *         required: true
+ *     responses:
+ *       '200':
+ *         description: Endpoint Deleted successfully.
+ *       '400':
+ *         description: Endpoint doesn't exist.
+ *       '401':
+ *         description: Parameter validation failed.
+ */
+
+ router.delete('/deleteEndpointById/:endpointId', async (req, res) => {
+  try{
+    // If Endpoint exists
+    const endpointExists = await Endpoint.findOne({ where: {
+      id: req.params.endpointId
+    }
+    });
+    logger.debug(`[ DELETE ENDPOINT BY ID ] Details -- Endpoint: ${endpointExists.endpoint}, Method: ${endpointExists.method}`);
+    if (endpointExists){
+        await endpointExists.destroy();
+        return res.status(200).send({
+            statusCode: 200,
+            message: `Deleted Endpoint successfully. Details -- ID: ${endpointExists.id}, Endpoint: ${endpointExists.endpoint}, Method: ${endpointExists.method}`,
+        });
+    }
+    else{
+        logger.debug(`[ DELETE ENDPOINT ] Failed to delete endpoint. Endpoint Doesn't exist`);
+        return res.status(400).send({
+            statusCode: 400,
+            message: `Failed to delete endpoint. Endpoint Doesn't exist. Details -- ID: ${req.params.endpointId}`,
+        });
+    }
+  }
+  catch (err) {
+      logger.error(err);
+      return res.status(500).send({
+        statusCode: 500,
+        message: 'Internal Server Error !!!',
+        devMessage: err.message,
+        stackTrace: err.stack
+      });
+  }
+});
+
+
 module.exports=router;

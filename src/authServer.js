@@ -115,8 +115,11 @@ const updateUser = require('./routes/updateUser.route.js');
 
 const createPermission = require('./routes/PermissionRoutes/createPermission.route');
 const getPermission = require('./routes/PermissionRoutes/getPermission.route');
+
+const getEndpoints = require('./routes/EndpointRoutes/getEndpoint.route');
 const registerEndpoint = require('./routes/EndpointRoutes/registerEndpoint.route');
 const deleteEndpoint = require('./routes/EndpointRoutes/deleteEndpoint.route');
+const updateEndpoint = require('./routes/EndpointRoutes/updateEndpoint.route');
 
 app.get('/', function (req, res) {
   res.send('hello world');
@@ -136,8 +139,11 @@ app.use('/api/v1', updateUser);
 
 app.use('/api/v1', createPermission);
 app.use('/api/v1', getPermission);
+
 app.use('/api/v1', registerEndpoint);
 app.use('/api/v1', deleteEndpoint);
+app.use('/api/v1', getEndpoints);
+app.use('/api/v1', updateEndpoint);
 
 const server = app.listen(PORT, () => {
   console.log(`Authentication Service is running on Port : ${PORT}`.green.bold.underline);
