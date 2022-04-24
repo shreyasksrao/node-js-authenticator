@@ -1,13 +1,13 @@
 /*jshint esversion: 8 */
 /* eslint-disable arrow-parens */
 /* eslint-disable no-console */
-const { Permission } = require('../sequelize');
+const { Permission } = require('../../sequelize');
 const router = require("express").Router();
 
 // Load the Winston logger
-const logger = require('../winston.conf.js');
-const { validateBodyParamsExistence } = require('../utils/validateBodyParameters');
-const { VALID_METHODS, httpMethodsValidator } = require('../validators/httpMethodsValidator');
+const logger = require('../../winston.conf.js');
+const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
+const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMethodsValidator');
 /**
  * @swagger
  * /createPermission:

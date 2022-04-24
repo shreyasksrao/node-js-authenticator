@@ -1,13 +1,13 @@
 /*jshint esversion: 8 */
 /* eslint-disable arrow-parens */
 /* eslint-disable no-console */
-const { Permission } = require('../sequelize');
+const { Permission } = require('../../sequelize');
 const router = require("express").Router();
 
 // Load the Winston logger
-const logger = require('../winston.conf.js');
-const { validateBodyParamsExistence } = require('../utils/validateBodyParameters');
-const { VALID_METHODS, httpMethodsValidator } = require('../validators/httpMethodsValidator');
+const logger = require('../../winston.conf.js');
+const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
+const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMethodsValidator');
 /**
  * @swagger
  * /getPermission:
@@ -40,11 +40,11 @@ const { VALID_METHODS, httpMethodsValidator } = require('../validators/httpMetho
  *               description: Permission type (Allowed values are - "Allow" or "Deny")
  *     responses:
  *       '200':
- *         description: Permission created successfully.
+ *         description: Permissions fetched successfully.
  *       '400':
- *         description: Permission already exists.
- *       '401':
- *         description: Parameter validation failed.
+ *         description: Bad Request.
+ *       '500':
+ *         description: Internal Server error.
  *       '403':
  *         description: Username or email already taken.
  */
@@ -66,8 +66,6 @@ router.post('/getPermission', async (req, res) => {
         filters[key] = req.body[key];
     }
   
-    console.log(JSON.stringify(`Permission Filter: ${filters}`));
-  
     let permissionArray = [];
   
     // TODO : Implement Caching ...
@@ -75,13 +73,13 @@ router.post('/getPermission', async (req, res) => {
       permissionArray = await Permission.findAll();
     }
     else{
-      permissionArray = await Permission.findAll(filters);
+      permissionArray = await Permission.findAll({ where: filters});
     }
   
-    console.log(JSON.stringify(`Permissions: ${permissionArray}`));
     return res.status(200).json({
         statusCode: 200,
         message: `Permissions fetched successfully`,
+        filters: filters,
         permissions: permissionArray
     });
   }
