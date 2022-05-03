@@ -27,7 +27,7 @@ const logger = require('../../winston.conf.js');
 
 router.get('/getAllEndpoints', async (req, res) => {
    try{
-    const allEndpoints = await Endpoint.findOne({});
+    const allEndpoints = await Endpoint.findAll({});
     logger.debug(`[ GET ALL ENDPOINTS ]`);
     if (allEndpoints){
         return res.status(200).json({

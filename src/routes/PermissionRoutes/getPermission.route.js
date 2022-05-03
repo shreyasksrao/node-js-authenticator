@@ -2,42 +2,21 @@
 /* eslint-disable arrow-parens */
 /* eslint-disable no-console */
 const { Permission } = require('../../sequelize');
+const sequelize = require('sequelize');
 const router = require("express").Router();
 
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
-const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
-const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMethodsValidator');
 /**
  * @swagger
- * /getPermission:
- *   post:
+ * /getAllPermissions:
+ *   get:
  *     tags:
  *       - Permission
  *     name: Get Permission/s
- *     summary: Gets the Permission/s by passing [name, endpoint, method, permissionType]. Multiple filters allowed. If now filters are passed, returns all Permissions.
- *     consumes:
- *       - application/json
+ *     summary: Get all the Permissions.
  *     produces:
  *       - application/json
- *     parameters:
- *       - name: body
- *         in: body
- *         required: true
- *         schema:
- *           type: object
- *           properties:
- *             name:
- *               description: Unique name given to a permission (Ex - <Permission type>_<Resource name like URL>)
- *             endpoint:
- *               type: string
- *               description: REST endpoint to which the permission is assigned.
- *             method:
- *               type: string
- *               description: HTTP method
- *             permissionType:
- *               type: string
- *               description: Permission type (Allowed values are - "Allow" or "Deny")
  *     responses:
  *       '200':
  *         description: Permissions fetched successfully.
@@ -49,43 +28,105 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *         description: Username or email already taken.
  */
 
-router.post('/getPermission', async (req, res) => {
-  try{
-    let permissionAttributes = [];
-    for (var attr in Permission.rawAttributes)
-      permissionAttributes.push(attr);
-  
-    let filters = {};
-    for(var key in req.body){
-        if (! permissionAttributes.includes(key)){
-            return res.status(401).json({
-              statusCode: 401,
-              message: `Invalid filter !! Valid filters are - ${JSON.stringify(permissionAttributes)}`
-          });
-        }
-        filters[key] = req.body[key];
-    }
-  
-    let permissionArray = [];
-  
+router.get('/getAllPermissions', async (req, res) => {
+  try{    
     // TODO : Implement Caching ...
-    if (Object.entries(filters).length === 0){
-      permissionArray = await Permission.findAll();
-    }
-    else{
-      permissionArray = await Permission.findAll({ where: filters});
-    }
-  
+    let permissionArray = await Permission.findAll({});
     return res.status(200).json({
         statusCode: 200,
         message: `Permissions fetched successfully`,
-        filters: filters,
         permissions: permissionArray
     });
   }
   catch (err) {
+    logger.error(err);
+    return res.status(500).send({
+      statusCode: 500,
+      message: 'Internal Server Error !!!',
+      devMessage: err.message,
+      stackTrace: err.stack
+    });
+  }
+});
+
+/**
+ * @swagger
+ * /getPermissions/{key}/{keyHint}:
+ *   get:
+ *     tags:
+ *       - Permission
+ *     name: Get Permissions by passing Permission hint (Name, Permission type)
+ *     summary: Get Permissions by passing hint about the Permission name or Type
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: path
+ *         name: key
+ *         schema:
+ *           type: string
+ *         description: Hint key (One of ["name", "permissionType"] )
+ *         required: true
+ *       - in: path
+ *         name: keyHint
+ *         schema:
+ *           type: string
+ *         description: Hint value for the KEY
+ *     responses:
+ *       '200':
+ *         description: Permissions fetched successfully.
+ *       '400':
+ *         description: Permission doesn't exist.
+ *       '401':
+ *         description: Parameter validation failed.
+ */
+
+ router.get('/getPermissions/:key/:keyHint', async (req, res) => {
+  try{
+    let column = req.params.key.toLowerCase();
+    let value = req.params.keyHint.toLowerCase();
+    
+    logger.debug(`[ GET ENDPOINTS BY HINT ] Details -- Hint key: ${column}, Hint value: ${value}`);
+
+    // If the Hint is for the "name" column
+    if (column == 'name'){
+      let permissions = await Permission.findAll({ 
+        where: {
+            name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + value + '%')
+        }
+      });
+      return res.status(201).json({
+        statusCode: 201,
+        message: `Permissions fetched successfully. Details -- Hint Key: ${column}, Hint Value: ${value}`,
+        endpoints: JSON.stringify(permissions)
+      });
+    }
+
+    // If the Hint is for the "permissionType" column
+    else if(column == 'permissionType'){
+      let permissions = await Permission.findAll({ 
+        where: {
+            permissionType: sequelize.where(sequelize.fn('LOWER', sequelize.col('permissionType')), 'LIKE', '%' + value + '%')
+        }
+      });
+      return res.status(201).json({
+        statusCode: 201,
+        message: `Permissions fetched successfully. Details -- Hint Key: ${column}, Hint Value: ${value}`,
+        endpoints: JSON.stringify(permissions)
+      });
+    }
+
+    // Else, throw the error saying invalid hint key
+    else{
+        logger.debug(`[ GET ENDPOINTS BY HINT ] Failed to fetch endpoints. Hint key is invalid. Valid Hint keys are ["name", "permissionType"]`);
+        return res.status(400).json({
+            statusCode: 400,
+            message: `Failed to fetch endpoints. Hint key is invalid. Valid Hint keys are ["name", "permissionType"]`,
+        });
+    }
+  }
+  catch (err) {
       logger.error(err);
-      return res.status(500).send({
+      return res.status(500).json({
         statusCode: 500,
         message: 'Internal Server Error !!!',
         devMessage: err.message,
@@ -93,6 +134,5 @@ router.post('/getPermission', async (req, res) => {
       });
   }
 });
-
 
 module.exports=router;

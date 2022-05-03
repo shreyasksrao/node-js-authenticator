@@ -35,13 +35,13 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *           properties:
  *             endpoint:
  *               type: string
- *               description: REST endpoint to which the permission is assigned.
+ *               description: REST endpoint.
  *             method:
  *               type: string
  *               description: HTTP method
  *             description:
  *               type: string
- *               description: Description about the permission.
+ *               description: Description about the endpoint.
  *           required:
  *             - description
  *             - endpoint
@@ -74,6 +74,14 @@ router.put('/updateEndpoint/:endpointId', async (req, res) => {
   logger.debug(`Validated body parameters successfully...`);
 
   try{
+    const uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
+    if( ! uuidRegex.test(req.params.endpointId) ){
+      logger.info(`Invalid UUID passed - Validator failed !!`);
+      return res.status(401).json({
+        statusCode: 401,
+        message: `Invalid Endpoint ID (${req.params.endpointId}) passed. It is not a valid UUIDv4`
+      });
+    }
     // If endpoint exists then only Update
     const endpointExists = await Endpoint.findOne({ where: {
             id: req.params.endpointId

@@ -115,6 +115,8 @@ const updateUser = require('./routes/updateUser.route.js');
 
 const createPermission = require('./routes/PermissionRoutes/createPermission.route');
 const getPermission = require('./routes/PermissionRoutes/getPermission.route');
+const deletePermission = require('./routes/PermissionRoutes/deletePermission.route');
+const updatePermission = require('./routes/PermissionRoutes/updatePermission.route');
 
 const getEndpoints = require('./routes/EndpointRoutes/getEndpoint.route');
 const registerEndpoint = require('./routes/EndpointRoutes/registerEndpoint.route');
@@ -139,6 +141,8 @@ app.use('/api/v1', updateUser);
 
 app.use('/api/v1', createPermission);
 app.use('/api/v1', getPermission);
+app.use('/api/v1', updatePermission);
+app.use('/api/v1', deletePermission);
 
 app.use('/api/v1', registerEndpoint);
 app.use('/api/v1', deleteEndpoint);

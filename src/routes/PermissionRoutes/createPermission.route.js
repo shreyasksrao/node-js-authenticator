@@ -7,7 +7,6 @@ const router = require("express").Router();
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
 const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
-const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMethodsValidator');
 /**
  * @swagger
  * /createPermission:
@@ -33,35 +32,29 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *             description:
  *               type: string
  *               description: Description about the permission.
- *             endpoint:
- *               type: string
- *               description: REST endpoint to which the permission is assigned.
- *             method:
- *               type: string
- *               description: HTTP method
+ *             endpointId:
+ *               type: UUID
+ *               description: ID of the endpoint created in the DB 
  *             permissionType:
  *               type: string
  *               description: Permission type (Allowed values are - "Allow" or "Deny")
  *           required:
  *             - name
  *             - description
- *             - endpoint
- *             - method
+ *             - endpointId
  *             - permissionType
  *     responses:
- *       '200':
+ *       '201':
  *         description: Permission created successfully.
  *       '400':
- *         description: Permission already exists.
+ *         description: Bad Request ! Permission already exists.
  *       '401':
- *         description: Parameter validation failed.
- *       '403':
- *         description: Username or email already taken.
+ *         description: Body Parameters validation failed.
  */
 
 router.post('/createPermission', async (req, res) => {
   // Validate weather the request body contains all the parameters or not
-  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpoint', 'permissionType', 'method']);
+  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpointId', 'permissionType']);
   if (bodyParameterValidationResult.status == false){
     logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
     return res.status(401).send({
@@ -69,24 +62,17 @@ router.post('/createPermission', async (req, res) => {
       message: bodyParameterValidationResult.message
     });
   }
-  if (! httpMethodsValidator(req.body.method)) {
-    return res.status(401).send({
-        statusCode: 401,
-        message: `Invalid HTTP method passed. Valid methods are: ${VALID_METHODS}`
-    });
-  }
   logger.debug(`Validated body parameters successfully...`);
 
   // If User exists, then throw the Error
   const permissionExists = await Permission.findOne({ where: {
-      endpoint: req.body.endpoint ,
-      method: req.body.method,
+      endpointId: req.body.endpointId ,
       permissionType: req.body.permissionType
     }
   });
   if (permissionExists){
     logger.info(`Permission already exists !!`);
-    logger.debug(`Permission details -- Name: ${req.body.name}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
+    logger.debug(`Permission details -- Name: ${req.body.name}, EndpointId: ${req.body.endpointId}`);
     return res.status(400).send({
       statusCode: 400,
       message: 'Bad request !! - Permission already exists',
@@ -95,18 +81,17 @@ router.post('/createPermission', async (req, res) => {
 
   // Create a Permission in the DB
   try {
-    logger.debug(`Creating a Permission -- Name: ${req.body.name}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
+    logger.debug(`Creating a Permission -- Name: ${req.body.name}, Endpoint ID: ${req.body.endpointId}`);
     const savedPermission = await Permission.create({
       name:req.body.name,
       description: req.body.description,
-      endpoint: req.body.endpoint,
-      method: req.body.method,
+      endpointId: req.body.endpointId,
       permissionType: req.body.permissionType
     });
-    logger.info(`Permission created and saved in the DB -- ID: ${savedPermission.id}, Endpoint: ${savedPermission.endpoint}, Method: ${savedPermission.method}, Type: ${savedPermission.permissionType}`);
+    logger.info(`Permission created and saved in the DB -- ID: ${savedPermission.id}, Endpoint ID: ${savedPermission.endpointId}, Type: ${savedPermission.permissionType}`);
     return res.status(201).send({
       statusCode: 201,
-      message: `Permission has been created. ID: ${savedPermission.id}, Endpoint: ${savedPermission.endpoint}, Method: ${savedPermission.method}, Type: ${savedPermission.permissionType}`,
+      message: `Permission has been created. ID: ${savedPermission.id}, Endpoint ID: ${savedPermission.endpointId}, Type: ${savedPermission.permissionType}`,
     });
   } 
   catch (err) {

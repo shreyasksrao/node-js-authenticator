@@ -26,8 +26,9 @@
  *         type: JSON
  *         description: Permission array (JSON string). Value should be an array of Permission IDs with "permissions" as Key
  *     required:
- *       - id
  *       - name
+ *       - description
+ *       - permissions
  */
 /* jshint indent: 1 */
 module.exports = function(sequelize, DataTypes) {
