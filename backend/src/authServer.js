@@ -80,7 +80,8 @@ const swaggerJsDocoptions = {
   apis: [
     path.join(__dirname  + '/routes/*.js'),
     path.join(__dirname  + '/routes/EndpointRoutes/*.js'),
-    path.join(__dirname  + '/routes/PermissionRoutes/*.js'), 
+    path.join(__dirname  + '/routes/PermissionRoutes/*.js'),
+    path.join(__dirname  + '/routes/RoleRoutes/*.js'),
 
     path.join(__dirname + '/models/*.js')
   ]
@@ -123,6 +124,9 @@ const registerEndpoint = require('./routes/EndpointRoutes/registerEndpoint.route
 const deleteEndpoint = require('./routes/EndpointRoutes/deleteEndpoint.route');
 const updateEndpoint = require('./routes/EndpointRoutes/updateEndpoint.route');
 
+const createRole = require('./routes/RoleRoutes/createRole.route');
+const getRole = require('./routes/RoleRoutes/getRoles.route');
+
 app.get('/', function (req, res) {
   res.send('hello world');
 });
@@ -148,6 +152,9 @@ app.use('/api/v1', registerEndpoint);
 app.use('/api/v1', deleteEndpoint);
 app.use('/api/v1', getEndpoints);
 app.use('/api/v1', updateEndpoint);
+
+app.use('/api/v1', createRole);
+app.use('/api/v1', getRole);
 
 const server = app.listen(PORT, () => {
   console.log(`Authentication Service is running on Port : ${PORT}`.green.bold.underline);

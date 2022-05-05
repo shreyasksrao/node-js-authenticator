@@ -1,15 +1,18 @@
 .DS_Store
-node_modules
-package-lock.json
-config/config.env
-config/keys
-logs/
+backend/node_modules
+backend/package-lock.json
+backend/config/config.env
+backend/config/keys
+backend/logs/
 /dist
 
+frontend/authenticator-ui/node_modules
+frontend/authenticator-ui/package-lock.json
+
 # Ignore Sequelize files
-src/config/
-src/seeders/
-src/migrations/
+backend/src/config/
+backend/src/seeders/
+backend/src/migrations/
 
 
 # local env files
