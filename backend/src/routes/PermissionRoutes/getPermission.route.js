@@ -85,7 +85,7 @@ router.get('/getAllPermissions', async (req, res) => {
     let column = req.params.key.toLowerCase();
     let value = req.params.keyHint.toLowerCase();
     
-    logger.debug(`[ GET ENDPOINTS BY HINT ] Details -- Hint key: ${column}, Hint value: ${value}`);
+    logger.debug(`[ GET PERMISSIONS BY HINT ] Details -- Hint key: ${column}, Hint value: ${value}`);
 
     // If the Hint is for the "name" column
     if (column == 'name'){

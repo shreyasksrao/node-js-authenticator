@@ -7,7 +7,7 @@ const sequelize = require('sequelize');
 
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
-let addEndpointAlias = require('../../middlewares/addEndpointAlias');
+let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 
 /**
  * @swagger
@@ -26,7 +26,7 @@ let addEndpointAlias = require('../../middlewares/addEndpointAlias');
  *         description: Endpoint doesn't exist.
  */
 
-router.get('/getAllEndpoints', addEndpointAlias('get_all_endpoints'), async (req, res) => {
+router.get('/getAllEndpoints', addEndpointNameToRequest('get_all_endpoints'), async (req, res) => {
    try{
     const allEndpoints = await Endpoint.findAll({});
     logger.debug(`[ GET ALL ENDPOINTS ]`);
@@ -60,7 +60,7 @@ router.get('/getAllEndpoints', addEndpointAlias('get_all_endpoints'), async (req
 
 /**
  * @swagger
- * /getEndpoints/{endpointHint}:
+ * /getEndpoints/{endpointHintColumn}/{endpointHintValue}:
  *   get:
  *     tags:
  *       - Endpoint
@@ -70,10 +70,16 @@ router.get('/getAllEndpoints', addEndpointAlias('get_all_endpoints'), async (req
  *       - application/json
  *     parameters:
  *       - in: path
- *         name: endpointHint
+ *         name: endpointHintColumn
  *         schema:
  *           type: string
  *         description: Hint about the endpoint
+ *         required: true
+ *       - in: path
+ *         name: endpointHintValue
+ *         schema:
+ *           type: string
+ *         description: Hint value about the endpoint
  *         required: true
  *     responses:
  *       '200':
@@ -84,21 +90,34 @@ router.get('/getAllEndpoints', addEndpointAlias('get_all_endpoints'), async (req
  *         description: Parameter validation failed.
  */
 
- router.get('/getEndpoints/:endpointHint',addEndpointAlias('get_endpoints_by_hint'), async (req, res) => {
+ router.get('/getEndpoints/:endpointHintColumn/:endpointHintValue',addEndpointNameToRequest('get_endpoints_by_hint'), async (req, res) => {
   try{
-      console.log(req.urlAlias);
-    let lookupValue = req.params.endpointHint.toLowerCase();
-    // If Endpoint exists
-    const endpoints = await Endpoint.findAll({ 
-        where: {
-            endpoint: sequelize.where(sequelize.fn('LOWER', sequelize.col('endpoint')), 'LIKE', '%' + lookupValue + '%')
-        }
-    });
-    logger.debug(`[ GET ENDPOINTS BY HINT ] Details -- Hint: ${lookupValue}`);
-    if (endpoints){
+    let lookupKey = req.params.endpointHintColumn.toLowerCase();
+    let lookupValue = req.params.endpointHintValue.toLowerCase();
+
+    logger.debug(`[ GET ENDPOINTS BY HINT ] Details -- Hint key: ${lookupKey}, Hint value: ${lookupValue}`);
+
+    if(lookupKey == "name"){
+        const endpoints = await Endpoint.findAll({ 
+            where: {
+                name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + lookupValue + '%')
+            }
+        });
         return res.status(200).json({
             statusCode: 200,
-            message: `Endpoints fetched successfully. Details -- Hint: ${lookupValue}`,
+            message: `Endpoints fetched successfully. Details -- Hint key: ${lookupKey}, Hint value: ${lookupValue}`,
+            endpoints: JSON.stringify(endpoints)
+        });
+    }
+    else if (lookupKey == "endpoint"){
+        const endpoints = await Endpoint.findAll({ 
+            where: {
+                endpoint: sequelize.where(sequelize.fn('LOWER', sequelize.col('endpoint')), 'LIKE', '%' + lookupValue + '%')
+            }
+        });
+        return res.status(200).json({
+            statusCode: 200,
+            message: `Endpoints fetched successfully. Details -- Hint key: ${lookupKey}, Hint value: ${lookupValue}`,
             endpoints: JSON.stringify(endpoints)
         });
     }
@@ -106,7 +125,7 @@ router.get('/getAllEndpoints', addEndpointAlias('get_all_endpoints'), async (req
         logger.debug(`[ GET ENDPOINTS BY HINT ] Failed to fetch endpoints. Endpoints Doesn't exist`);
         return res.status(400).json({
             statusCode: 400,
-            message: `Failed to fetch endpoints. Endpoints Doesn't exist. Details -- Hint: ${lookupValue}`,
+            message: `Failed to fetch endpoints. Endpoints Doesn't exist. Details -- Hint key: ${lookupKey}, Hint value: ${lookupValue}`,
         });
     }
   }

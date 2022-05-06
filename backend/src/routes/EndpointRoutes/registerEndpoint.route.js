@@ -9,7 +9,7 @@ const logger = require('../../winston.conf.js');
 const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
 const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMethodsValidator');
 
-let addEndpointAlias = require("../../middlewares/addEndpointAlias");
+let addEndpointNameToRequest = require("../../middlewares/addEndpointNameToRequest");
 /**
  * @swagger
  * /createEndpoint:
@@ -55,7 +55,7 @@ let addEndpointAlias = require("../../middlewares/addEndpointAlias");
  *         description: Parameter validation failed.
  */
 
-router.post('/createEndpoint', addEndpointAlias('create_new_endpoint'), async (req, res) => {
+router.post('/createEndpoint', addEndpointNameToRequest('create_new_endpoint'), async (req, res) => {
   // Validate weather the request body contains all the parameters or not
   var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpoint', 'method']);
   if (bodyParameterValidationResult.status == false){
