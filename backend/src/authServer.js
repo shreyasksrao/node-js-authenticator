@@ -101,16 +101,16 @@ app.use(
 );
 
 // Get the routes
-const login = require('./routes/loginUser.route.js');
-const register = require('./routes/registerUser.route.js');
-const logoutUser =require('./routes/logout.route.js');
+const login = require('./routes/UserRoutes/loginUser.route.js');
+const register = require('./routes/UserRoutes/registerUser.route.js');
+const logoutUser =require('./routes/UserRoutes/logout.route.js');
 // const forgetPassword = require('./routes/forgotPassword.route.js');
 // const resetPassword = require('./routes/resetPassword.route.js');
 // const updatePassword = require('./routes/updatePassword.route.js');
 // const updatePasswordViaEmail = require('./routes/updatePasswordViaEmail.route.js');
-const findUsers = require('./routes/findUsers.route.js');
+const findUsers = require('./routes/UserRoutes/findUsers.route.js');
 // const deleteUser = require('./routes/deleteUser.route.js');
-const updateUser = require('./routes/updateUser.route.js');
+const updateUser = require('./routes/UserRoutes/updateUser.route.js');
 // const user_logins = require('./routes/user_logins.route.js');
 
 const createPermission = require('./routes/PermissionRoutes/createPermission.route');

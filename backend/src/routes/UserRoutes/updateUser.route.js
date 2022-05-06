@@ -3,6 +3,7 @@
 const {User} = require('../sequelize');
 const authenticateToken = require('../middlewares/authenticateToken');
 const router = require('express').Router();
+let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 
 /**
  * @swagger
@@ -42,7 +43,7 @@ const router = require('express').Router();
  *         description: No authorization / user not found
  */
 
-router.put('/updateUser',authenticateToken ,(req, res, next) => {  
+router.put('/updateUser', addEndpointNameToRequest('update_user'), authenticateToken ,(req, res, next) => {  
         User.findOne({
           where: {
             username: req.body.username,

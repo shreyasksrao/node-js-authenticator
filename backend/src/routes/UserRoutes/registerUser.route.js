@@ -8,6 +8,7 @@ const router = require("express").Router();
 // Load the Winston logger
 const logger = require('../winston.conf.js');
 const { validateBodyParamsExistence } = require('../utils/validateBodyParameters');
+let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 /**
  * @swagger
  * /registerUser:
@@ -60,7 +61,7 @@ const { validateBodyParamsExistence } = require('../utils/validateBodyParameters
  *         description: Username or email already taken
  */
 
-router.post('/registerUser', async (req, res) => {
+router.post('/registerUser', addEndpointNameToRequest('register_user'), async (req, res) => {
   // Validate weather the request body contains all the parameters or not
   var bodyParameterValidationResult = validateBodyParamsExistence(req, ['username', 'email', 'password', 'first_name', 'last_name', 'phoneNumber']);
   if (bodyParameterValidationResult.status == false){

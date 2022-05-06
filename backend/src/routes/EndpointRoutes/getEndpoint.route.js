@@ -125,7 +125,7 @@ router.get('/getAllEndpoints', addEndpointNameToRequest('get_all_endpoints'), as
         logger.debug(`[ GET ENDPOINTS BY HINT ] Failed to fetch endpoints. Endpoints Doesn't exist`);
         return res.status(400).json({
             statusCode: 400,
-            message: `Failed to fetch endpoints. Endpoints Doesn't exist. Details -- Hint key: ${lookupKey}, Hint value: ${lookupValue}`,
+            message: `Invalid Endpoint Hint Key. Valid keys are ["name", "endpoint"]`,
         });
     }
   }

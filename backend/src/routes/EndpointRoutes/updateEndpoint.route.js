@@ -8,9 +8,10 @@ const router = require("express").Router();
 const logger = require('../../winston.conf.js');
 const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
 const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMethodsValidator');
+let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 /**
  * @swagger
- * /updateEndpoint/{endpointId}:
+ * /updateEndpoint/{endpointName}:
  *   put:
  *     tags:
  *       - Endpoint
@@ -22,11 +23,11 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *       - application/json
  *     parameters:
  *       - in: path
- *         name: endpointId
+ *         name: endpointName
  *         required: true
  *         schema:
- *           type: UUID
- *         description: Endpoint ID
+ *           type: string
+ *         description: Name of the Endpoint
  *       - name: body
  *         in: body
  *         required: true
@@ -55,9 +56,9 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *         description: Parameter validation failed.
  */
 
-router.put('/updateEndpoint/:endpointId', async (req, res) => {
+router.put('/updateEndpoint/:endpointName', addEndpointNameToRequest('update_endpoint_by_passing_endpoint_name'), async (req, res) => {
   // Validate weather the request body contains all the parameters or not
-  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['description', 'endpoint', 'method']);
+  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpoint', 'method']);
   if (bodyParameterValidationResult.status == false){
     logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
     return res.status(401).send({
@@ -74,36 +75,28 @@ router.put('/updateEndpoint/:endpointId', async (req, res) => {
   logger.debug(`Validated body parameters successfully...`);
 
   try{
-    const uuidRegex = /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/gi;
-    if( ! uuidRegex.test(req.params.endpointId) ){
-      logger.info(`Invalid UUID passed - Validator failed !!`);
-      return res.status(401).json({
-        statusCode: 401,
-        message: `Invalid Endpoint ID (${req.params.endpointId}) passed. It is not a valid UUIDv4`
-      });
-    }
     // If endpoint exists then only Update
     const endpointExists = await Endpoint.findOne({ where: {
-            id: req.params.endpointId
+            name: req.params.endpointName
         }
     });
-    logger.debug(`[ UPDATE ENDPOINT ] Details -- Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
+    logger.debug(`[ UPDATE ENDPOINT ] Details -- Endpoint Name: ${req.params.endpointName}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
     if (endpointExists){
         endpointExists.endpoint = req.body.endpoint;
         endpointExists.method = req.body.method;
         endpointExists.description = req.body.description;
         await endpointExists.save();
-        logger.debug(`[ UPDATE ENDPOINT ] Successfully updated endpoint. Details -- Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
+        logger.debug(`[ UPDATE ENDPOINT ] Successfully updated endpoint. Details -- Endpoint Name: ${req.params.endpointName}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
         return res.status(200).send({
         statusCode: 200,
-        message: `Endpoint Updated Successfully. Details -- Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`
+        message: `Endpoint Updated Successfully. Details --  Endpoint Name: ${req.params.endpointName}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`
         });
     }
     else {
-        logger.error(`[ UPDATE ENDPOINT ] Failed updated endpoint. Details -- Endpoint with ID ${req.params.endpointId} doesn't exist`);
+        logger.error(`[ UPDATE ENDPOINT ] Failed updated endpoint. Details -- Endpoint with Name '${req.params.endpointName}' doesn't exist`);
         return res.status(400).send({
         statusCode: 400,
-        message: `Failed updated endpoint. Details -- Endpoint with ID ${req.params.endpointId} doesn't exist`
+        message: `Failed updated endpoint. Details -- Endpoint with Name '${req.params.endpointName}' doesn't exist`
         });
     }
   }

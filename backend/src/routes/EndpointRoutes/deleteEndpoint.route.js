@@ -8,10 +8,12 @@ const router = require("express").Router();
 const logger = require('../../winston.conf.js');
 const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
 const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMethodsValidator');
+
+let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 /**
  * @swagger
- * /deleteEndpoint:
- *   post:
+ * /deleteEndpoint/{endpointName}:
+ *   delete:
  *     tags:
  *       - Endpoint
  *     name: Deletes an Endpoint
@@ -21,21 +23,12 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: body
- *         in: body
+ *       - name: endpointName
+ *         in: path
  *         required: true
  *         schema:
- *           type: object
- *           properties:
- *             endpoint:
- *               type: string
- *               description: REST endpoint to which the permission is assigned.
- *             method:
- *               type: string
- *               description: HTTP method
- *           required:
- *             - endpoint
- *             - method
+ *           type: string
+ *         description: Endpoint name.
  *     responses:
  *       '200':
  *         description: Endpoint Deleted successfully.
@@ -45,44 +38,26 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *         description: Parameter validation failed.
  */
 
-router.post('/deleteEndpoint', async (req, res) => {
-  // Validate weather the request body contains all the parameters or not
-  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['endpoint', 'method']);
-  if (bodyParameterValidationResult.status == false){
-    logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
-    return res.status(401).send({
-      statusCode: 401,
-      message: bodyParameterValidationResult.message
-    });
-  }
-  if (! httpMethodsValidator(req.body.method)) {
-    return res.status(401).send({
-        statusCode: 401,
-        message: `Invalid HTTP method passed. Valid methods are: ${VALID_METHODS}`
-    });
-  }
-  logger.debug(`Validated body parameters successfully...`);
-
+router.delete('/deleteEndpoint/:endpointName', addEndpointNameToRequest('delete_endpoint_by_passing_endpoint_name'), async (req, res) => {
   try{
     // If Endpoint exists
     const endpointExists = await Endpoint.findOne({ where: {
-        endpoint: req.body.endpoint ,
-        method: req.body.method
+        name: req.params.endpointName
     }
     });
-    logger.debug(`[ DELETE ENDPOINT ] Details -- Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
+    logger.debug(`[ DELETE ENDPOINT ] Details -- Endpoint Name: ${req.params.endpointName}`);
     if (endpointExists){
         await endpointExists.destroy();
         return res.status(200).send({
             statusCode: 200,
-            message: `Deleted Endpoint successfully. Details -- Endpoint: ${endpointExists.endpoint}, Method: ${endpointExists.method}`,
+            message: `Deleted Endpoint successfully. Details -- Endpoint Name: ${req.params.endpointName}`,
         });
     }
     else{
         logger.debug(`[ DELETE ENDPOINT ] Failed to delete endpoint. Endpoint Doesn't exist`);
         return res.status(400).send({
             statusCode: 400,
-            message: `Failed to delete endpoint. Endpoint Doesn't exist. Details -- Endpoint: ${endpointExists.endpoint}, Method: ${endpointExists.method}`,
+            message: `Failed to delete endpoint. Endpoint Doesn't exist. Details -- Endpoint Name: ${req.params.endpointName}`,
         });
     }
   }
@@ -124,7 +99,7 @@ router.post('/deleteEndpoint', async (req, res) => {
  *         description: Parameter validation failed.
  */
 
- router.delete('/deleteEndpointById/:endpointId', async (req, res) => {
+ router.delete('/deleteEndpointById/:endpointId', addEndpointNameToRequest('delete_endpoint_by_passing_endpoint_id'), async (req, res) => {
   try{
     // If Endpoint exists
     const endpointExists = await Endpoint.findOne({ where: {

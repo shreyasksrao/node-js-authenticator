@@ -7,6 +7,7 @@ const bcrypt = require("bcryptjs");
 var { generateAndSendToken } = require('../middlewares/generateAndSendToken');
 const { validateBodyParamsExistence } = require('../utils/validateBodyParameters');
 const logger = require('../winston.conf.js');
+let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 
 /**
  * @swagger
@@ -55,7 +56,7 @@ const logger = require('../winston.conf.js');
  *         description: Username and password don't match
  */
 
-router.post('/loginUser', async (req, res, next) => {
+router.post('/loginUser', addEndpointNameToRequest('login_user'), async (req, res, next) => {
       // Validate weather the request body contains all the parameters or not
       const bodyParameterValidationResult = validateBodyParamsExistence(req, ['email', 'password']);
       if (bodyParameterValidationResult.status == false){

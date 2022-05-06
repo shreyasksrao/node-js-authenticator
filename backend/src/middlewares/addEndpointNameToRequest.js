@@ -1,8 +1,8 @@
 /*jshint esversion: 8 */
 
-async function addEndpointNameToRequest(endpointName) {
+function addEndpointNameToRequest(_endpointName) {
     return (req, res, next) => {
-        req.endpointName = endpointName;
+        req.endpointName = _endpointName;
         next();
     };
 }
