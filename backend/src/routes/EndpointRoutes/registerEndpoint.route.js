@@ -8,9 +8,11 @@ const router = require("express").Router();
 const logger = require('../../winston.conf.js');
 const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
 const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMethodsValidator');
+
+let addEndpointAlias = require("../../middlewares/addEndpointAlias");
 /**
  * @swagger
- * /registerEndpoint:
+ * /createEndpoint:
  *   post:
  *     tags:
  *       - Endpoint
@@ -27,6 +29,9 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *         schema:
  *           type: object
  *           properties:
+ *             name:
+ *               type: string
+ *               description: Name given to an Endpoint (Should match with the 'name' given in the API implementation)
  *             endpoint:
  *               type: string
  *               description: REST endpoint to which the permission is assigned.
@@ -37,6 +42,7 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *               type: string
  *               description: Description about the permission.
  *           required:
+ *             - name
  *             - description
  *             - endpoint
  *             - method
@@ -49,9 +55,9 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *         description: Parameter validation failed.
  */
 
-router.post('/registerEndpoint', async (req, res) => {
+router.post('/createEndpoint', addEndpointAlias('create_new_endpoint'), async (req, res) => {
   // Validate weather the request body contains all the parameters or not
-  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['description', 'endpoint', 'method']);
+  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpoint', 'method']);
   if (bodyParameterValidationResult.status == false){
     logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
     return res.status(401).send({
@@ -69,31 +75,31 @@ router.post('/registerEndpoint', async (req, res) => {
 
   // If User exists, then throw the Error
   const endpointExists = await Endpoint.findOne({ where: {
-      endpoint: req.body.endpoint ,
-      method: req.body.method
+      name: req.body.name
     }
   });
   if (endpointExists){
-    logger.info(`Endpoint already exists !!`);
+    logger.info(`Endpoint with the name "${req.body.name}" already exists !!`);
     logger.debug(`Endpoint details -- Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
     return res.status(400).send({
       statusCode: 400,
-      message: 'Bad request !! - Endpoint already exists',
+      message: `Bad request !! - Endpoint with the name "${req.body.name}" already exists`,
     });
   }
 
   // Create a Endpoint in the DB
   try {
-    logger.debug(`Creating an Endpoint -- Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
+    logger.debug(`Creating an Endpoint -- Name: ${req.body.name}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
     const savedEndpoint = await Endpoint.create({
+      name: req.body.name,
       description: req.body.description,
       endpoint: req.body.endpoint,
       method: req.body.method
     });
-    logger.info(`Endpoint created and saved in the DB -- ID: ${savedEndpoint.id}, Endpoint: ${savedEndpoint.endpoint}, Method: ${savedEndpoint.method}`);
+    logger.info(`Endpoint created and saved in the DB -- ID: ${savedEndpoint.id}, Name: ${req.body.name}, Endpoint: ${savedEndpoint.endpoint}, Method: ${savedEndpoint.method}`);
     return res.status(201).send({
       statusCode: 201,
-      message: `Endpoint has been created. ID: ${savedEndpoint.id}, Endpoint: ${savedEndpoint.endpoint}, Method: ${savedEndpoint.method}`,
+      message: `Endpoint has been created. ID: ${savedEndpoint.id}, Name: ${req.body.name}, Endpoint: ${savedEndpoint.endpoint}, Method: ${savedEndpoint.method}`,
     });
   } 
   catch (err) {

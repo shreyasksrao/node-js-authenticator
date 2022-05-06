@@ -9,6 +9,9 @@
  *       id:
  *         type: UUID
  *         description: Unique ID generated for every Endpoint (Auto-generated field).
+ *       name:
+ *         type: string
+ *         description: Name given to an Endpoint (Required during Role-Permission mapping creation)
  *       description:
  *         type: string
  *         description: A brief description about the Endpoint
@@ -24,6 +27,7 @@
  *         default: false
  *     required:
  *       - id
+ *       - name
  *       - endpoint
  *       - method
  */
@@ -34,6 +38,10 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.UUID,
 			primaryKey: true,
             defaultValue: DataTypes.UUIDV4,
+		},
+		name: {
+			type: DataTypes.STRING,
+			allowNull: false
 		},
 		description: {
 			type: DataTypes.STRING,

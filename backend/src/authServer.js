@@ -100,7 +100,6 @@ app.use(
   swaggerUi.setup(swaggerSpec, swaggerUiOptions)
 );
 
-
 // Get the routes
 const login = require('./routes/loginUser.route.js');
 const register = require('./routes/registerUser.route.js');

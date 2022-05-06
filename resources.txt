@@ -1,0 +1,3 @@
+https://www.bezkoder.com/vue-3-authentication-jwt/
+https://www.bezkoder.com/node-express-vue-jwt-auth/
+https://www.bezkoder.com/vue-3-crud/

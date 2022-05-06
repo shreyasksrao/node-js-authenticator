@@ -7,6 +7,7 @@ const sequelize = require('sequelize');
 
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
+let addEndpointAlias = require('../../middlewares/addEndpointAlias');
 
 /**
  * @swagger
@@ -25,7 +26,7 @@ const logger = require('../../winston.conf.js');
  *         description: Endpoint doesn't exist.
  */
 
-router.get('/getAllEndpoints', async (req, res) => {
+router.get('/getAllEndpoints', addEndpointAlias('get_all_endpoints'), async (req, res) => {
    try{
     const allEndpoints = await Endpoint.findAll({});
     logger.debug(`[ GET ALL ENDPOINTS ]`);
@@ -83,8 +84,9 @@ router.get('/getAllEndpoints', async (req, res) => {
  *         description: Parameter validation failed.
  */
 
- router.get('/getEndpoints/:endpointHint', async (req, res) => {
+ router.get('/getEndpoints/:endpointHint',addEndpointAlias('get_endpoints_by_hint'), async (req, res) => {
   try{
+      console.log(req.urlAlias);
     let lookupValue = req.params.endpointHint.toLowerCase();
     // If Endpoint exists
     const endpoints = await Endpoint.findAll({ 
