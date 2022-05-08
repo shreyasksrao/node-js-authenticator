@@ -14,10 +14,13 @@
   "author": "Shreyas KS",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.0.1",
+    "bcryptjs": "^2.4.3",
     "colors": "^1.4.0",
     "commander": "^9.2.0",
     "figlet": "^1.5.2",
     "inquirer": "^8.2.4",
-    "pg": "^8.7.3"
+    "pg": "^8.7.3",
+    "uuid": "^8.3.2"
   }
 }

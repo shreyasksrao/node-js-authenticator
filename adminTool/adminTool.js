@@ -4,6 +4,9 @@ const program = require('commander');
 const figlet = require('figlet');
 const { Pool } = require('pg');
 
+const { v4: uuidv4 } = require('uuid');
+const bcrypt = require("bcryptjs");
+
 var colors = require('colors');
 colors.setTheme({
   silly: 'rainbow',
@@ -91,6 +94,86 @@ function setupCommander(){
     program.parse(process.argv);
 }
 
+async function createSuperUserHandler(pool){
+    let { username } = await inquirer.prompt([
+        {
+            name: 'username',
+            message: 'Enter the Super Admin Username : ',
+            default: 'super_admin',
+    }]);
+    usernameValidator(username, pool);
+
+    // Check if the Username already exists or not
+    const checkUserExistsQuery = 'SELECT EXISTS(SELECT 1 FROM "User" WHERE username=$1)';
+    const values = [username];
+    const res = await pool.query(checkUserExistsQuery, values);
+    console.log(`[ DEBUG ] Checking for the user existence...`.debug);
+    if(res.rows[0].exists == true){
+        console.error(`[ ERROR ] User with the name ${username} already exists !`.error);
+        pool.end();
+        process.exit(-1);
+    }
+    // Take the User details from the Console
+    let { first_name } = await inquirer.prompt([
+        {
+            name: 'first_name',
+            message: 'Enter First name : ',
+            default: 'admin',
+        }
+    ]);
+    let { last_name } = await inquirer.prompt([
+        {
+            name: 'last_name',
+            message: 'Enter Last name : ',
+            default: 'user',
+        }
+    ]);
+
+    let { email } = await inquirer.prompt([
+        {
+            name: 'email',
+            message: 'Enter Email ID : ',
+        }
+    ]);
+    emailValidator(email, pool);
+
+    let { password1 } = await inquirer.prompt([
+        {
+            type: "password",
+            name: 'password1',
+            message: 'Enter Password : ',
+        },
+    ]);
+    passwordValidator(password1, pool);
+
+    let { password2 } = await inquirer.prompt([
+        {
+            type: "password",
+            name: 'password2',
+            message: 'Confirm Password',
+        }
+    ]);
+    if(password1 != password2){
+        console.error(`[ ERROR ] Passwords doesn't match !`.error);
+        return -1;
+    }
+    let { phone_number } = await inquirer.prompt([
+        {
+            name: 'phone_number',
+            message: 'Enter Phone number (<Country code> <Phone number>) : ',
+        }
+    ]);     
+    let userId = uuidv4(); 
+    let creationDate = new Date();
+    let hashedPassword = await bcrypt.hash(req.body.password, salt);  
+    console.log(`[ DEBUG ] Creating the User '${username}' with ID '${userId}' in the database...`.debug);
+    const insertUserQuery = `INSERT INTO public."User"(id, first_name, last_name, email, username, password, phone_number, roles, email_verified, status, created_at)
+                             VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, username`;
+    const userValues = [userId, first_name, last_name, email, username, hashedPassword, phone_number, ["superAdmin"], true, "active", creationDate ];
+    const userCreateRes = await pool.query(insertUserQuery, userValues);
+    console.log(userCreateRes.rows);
+}
+
 async function runHandler(options){
     console.log(await generateAsciiArt());
     console.log(`[ DEBUG ] Launching Admin tool...`.debug);
@@ -137,83 +220,8 @@ async function runHandler(options){
             },
         ],
     });
-    if(taskChoice == 'Create Super User'){
-        let { username } = await inquirer.prompt([
-            {
-                name: 'username',
-                message: 'Enter the Super Admin Username : ',
-                default: 'super_admin',
-        }]);
-        usernameValidator(username, pool);
-
-        // Check if the Username already exists or not
-        const checkUserExistsQuery = 'SELECT EXISTS(SELECT 1 FROM "User" WHERE username=$1)';
-        const values = [username];
-        const res = await pool.query(checkUserExistsQuery, values);
-        console.log(`[ DEBUG ] Checking for the user existence...`.debug);
-        if(res.rows[0].exists == true){
-            console.error(`[ ERROR ] User with the name ${username} already exists !`.error);
-            return -1;
-        }
-
-        // Take the User details from the Console
-        let { first_name } = await inquirer.prompt([
-            {
-                name: 'first_name',
-                message: 'Enter First name : ',
-                default: 'admin',
-            }
-        ]);
-        let { last_name } = await inquirer.prompt([
-            {
-                name: 'last_name',
-                message: 'Enter Last name : ',
-                default: 'user',
-            }
-        ]);
-
-        let { email } = await inquirer.prompt([
-            {
-                name: 'email',
-                message: 'Enter Email ID : ',
-            }
-        ]);
-        emailValidator(email, pool);
-
-        let { password1 } = await inquirer.prompt([
-            {
-                type: "password",
-                name: 'password1',
-                message: 'Enter Password : ',
-            },
-        ]);
-        passwordValidator(password1, pool);
-
-        let { password2 } = await inquirer.prompt([
-            {
-                type: "password",
-                name: 'password2',
-                message: 'Confirm Password',
-            }
-        ]);
-        if(password1 != password2){
-            console.error(`[ ERROR ] Passwords doesn't match !`.error);
-            return -1;
-        }
-        let { phone_number } = await inquirer.prompt([
-            {
-                name: 'phone_number',
-                message: 'Enter Phone number (<Country code> <Phone number>) : ',
-            }
-        ]);        
-        console.log(`[ DEBUG ] Creating the User '${username}' in the database...`.debug);
-        const insertUserQuery = `INSERT INTO public."User"(first_name, last_name, email, username, password, phoneNumber, roles, emailVerified, status)
-                                 VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, username`;
-        const userValues = [first_name, last_name, email, username, password1, phone_number, ["superAdmin"], true, "active" ];
-        const userCreateRes = await pool.query(insertUserQuery, userValues);
-        console.log(userCreateRes.rows);
-        console.log(JSON.stringify(userCreateRes));
-    }
+    if(taskChoice == 'Create Super User')
+        createSuperUserHandler(pool);
 }
 
 setupCommander();
