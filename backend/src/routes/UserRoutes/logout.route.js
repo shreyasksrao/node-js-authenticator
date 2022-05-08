@@ -25,7 +25,7 @@
  */
 
 const router = require("express").Router();
-const { blacklistToken } = require('../middlewares/blacklistToken');
+const { blacklistToken } = require('../../middlewares/blacklistToken');
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 
 router.post('/logoutUser', addEndpointNameToRequest('logout_user'), blacklistToken);

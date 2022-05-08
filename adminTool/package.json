@@ -1,0 +1,23 @@
+{
+  "name": "admintool",
+  "version": "1.0.0",
+  "description": "Admin CLI tool to create User and Role ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "NodeJS",
+    "inquirer",
+    "pg"
+  ],
+  "author": "Shreyas KS",
+  "license": "ISC",
+  "dependencies": {
+    "colors": "^1.4.0",
+    "commander": "^9.2.0",
+    "figlet": "^1.5.2",
+    "inquirer": "^8.2.4",
+    "pg": "^8.7.3"
+  }
+}

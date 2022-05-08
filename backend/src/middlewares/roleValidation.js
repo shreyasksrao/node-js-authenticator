@@ -8,7 +8,7 @@ async function getEndpointIdMap(){
     let endpointIdMap = {};
     let endpoints = await Endpoint.findAll({});
     await endpoints.forEach(e => {
-        endpointIdMap[e.id] = {"endpoint": e.endpoint, "method": e.method}; 
+        endpointIdMap[e.id] = {"name": e.name, "endpoint": e.endpoint, "method": e.method}; 
     });
     console.log(`Endpoint ID Map: ${JSON.stringify(endpointIdMap)}`);
     return endpointIdMap;
@@ -21,6 +21,7 @@ async function buildPermissionMap(){
     let permissions = await Permission.findAll({});
     await permissions.forEach(p => {
         permissionIdMap[p.id] = {
+            "name": endpointIdMap[p.endpointId].name,
             "endpoint": endpointIdMap[p.endpointId].endpoint,
             "method": endpointIdMap[p.endpointId].method,
             "permissionType": p.permissionType

@@ -1,13 +1,13 @@
 /*jshint esversion: 8 */
 /* eslint-disable arrow-parens */
 /* eslint-disable no-console */
-const { User } = require('../sequelize');
+const { User } = require('../../sequelize');
 const bcrypt = require("bcryptjs");
 const router = require("express").Router();
 
 // Load the Winston logger
-const logger = require('../winston.conf.js');
-const { validateBodyParamsExistence } = require('../utils/validateBodyParameters');
+const logger = require('../../winston.conf.js');
+const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 /**
  * @swagger

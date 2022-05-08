@@ -1,12 +1,12 @@
 /*jshint esversion: 8 */
 /* eslint-disable no-console */
-const {User} = require('../sequelize');
+const {User} = require('../../sequelize');
 const router = require("express").Router();
 const bcrypt = require("bcryptjs");
 
-var { generateAndSendToken } = require('../middlewares/generateAndSendToken');
-const { validateBodyParamsExistence } = require('../utils/validateBodyParameters');
-const logger = require('../winston.conf.js');
+var { generateAndSendToken } = require('../../middlewares/generateAndSendToken');
+const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
+const logger = require('../../winston.conf.js');
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 
 /**

@@ -9,6 +9,9 @@ backend/logs/
 frontend/authenticator-ui/node_modules
 frontend/authenticator-ui/package-lock.json
 
+adminTool/node_modules
+adminTool/package-lock.json
+
 # Ignore Sequelize files
 backend/src/config/
 backend/src/seeders/
