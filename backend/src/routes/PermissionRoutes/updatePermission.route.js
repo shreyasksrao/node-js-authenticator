@@ -10,7 +10,7 @@ const { validateBodyParamsExistence } = require('../../utils/validateBodyParamet
 const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMethodsValidator');
 /**
  * @swagger
- * /updatePermission/{permissionId}:
+ * /updatePermission/{permission_id}:
  *   put:
  *     tags:
  *       - Permission
@@ -22,7 +22,7 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *       - application/json
  *     parameters:
  *       - in: path
- *         name: permissionId
+ *         name: permission_id
  *         required: true
  *         schema:
  *           type: uuid
@@ -36,10 +36,10 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *             name:
  *               type: string
  *               description: Unique name given to a permission (Ex - <Permission type> <Resource name like URL>)
- *             endpointId:
+ *             endpoint_id:
  *               type: uuid
  *               description: ID of the endpoint created in the DB
- *             permissionType:
+ *             permission_type:
  *               type: string
  *               description: Permission type (Allowed values are - "Allow" or "Deny")
  *             description:
@@ -47,9 +47,9 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *               description: Description about the permission.
  *           required:
  *             - description
- *             - endpointId
+ *             - endpoint_id
  *             - name
- *             - permissionType
+ *             - permission_type
  *     responses:
  *       '202':
  *         description: Permission updated successfully.
@@ -59,9 +59,9 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *         description: Parameter validation failed.
  */
 
-router.put('/updatePermission/:permissionId', async (req, res) => {
+router.put('/updatePermission/:permission_id', async (req, res) => {
   // Validate weather the request body contains all the parameters or not
-  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['description', 'endpointId', 'name', 'permissionType']);
+  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['description', 'endpoint_id', 'name', 'permission_type']);
   if (bodyParameterValidationResult.status == false){
     logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
     return res.status(401).send({
@@ -74,27 +74,27 @@ router.put('/updatePermission/:permissionId', async (req, res) => {
   try{
     // If Permission exists then only Update
     const permissionExists = await Permission.findOne({ where: {
-            id: req.params.permissionId
+            id: req.params.permission_id
         }
     });
-    logger.debug(`[ UPDATE PERMISSION ] Details -- Permission name: ${req.body.name}, Endpoint ID: ${req.body.endpointId}`);
+    logger.debug(`[ UPDATE PERMISSION ] Details -- Permission name: ${req.body.name}, Endpoint ID: ${req.body.endpoint_id}`);
     if (permissionExists){
         permissionExists.name = req.body.name;
-        permissionExists.endpointId = req.body.endpointId;
+        permissionExists.endpoint_id = req.body.endpoint_id;
         permissionExists.description = req.body.description;
-        permissionExists.permissionType = req.body.permissionType;
+        permissionExists.permission_type = req.body.permission_type;
         await permissionExists.save();
-        logger.debug(`[ UPDATE PERMISSION ] Successfully updated Permission. Details -- Permission name: ${req.body.name}, Endpoint ID: ${req.body.endpointId}, Permission type: ${req.body.permissionType}`);
+        logger.debug(`[ UPDATE PERMISSION ] Successfully updated Permission. Details -- Permission name: ${req.body.name}, Endpoint ID: ${req.body.endpoint_id}, Permission type: ${req.body.permission_type}`);
         return res.status(202).json({
         statusCode: 202,
-        message: `Permission Updated Successfully. Details -- Permission name: ${req.body.name}, Endpoint ID: ${req.body.endpointId}, Permission type: ${req.body.permissionType}`
+        message: `Permission Updated Successfully. Details -- Permission name: ${req.body.name}, Endpoint ID: ${req.body.endpoint_id}, Permission type: ${req.body.permission_type}`
         });
     }
     else {
-        logger.error(`[ UPDATE PERMISSION ] Failed updated permission. Details -- Permission with ID ${req.params.permissionId} doesn't exist`);
+        logger.error(`[ UPDATE PERMISSION ] Failed updated permission. Details -- Permission with ID ${req.params.permission_id} doesn't exist`);
         return res.status(400).json({
         statusCode: 400,
-        message: `Failed updated Permission. Details -- Permission with ID ${req.params.permissionId} doesn't exist`
+        message: `Failed updated Permission. Details -- Permission with ID ${req.params.permission_id} doesn't exist`
         });
     }
   }

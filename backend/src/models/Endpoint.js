@@ -21,7 +21,7 @@
  *       method:
  *         type: string
  *         description: HTTP method of the REST endpoint
- *       isDepricated:
+ *       is_depricated:
  *         type: boolean
  *         description: Is this endpoint depricated
  *         default: false
@@ -56,7 +56,7 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: false,
 			defaultValue: 'GET'
 		},
-		isDepricated:{
+		is_depricated:{
 			type: DataTypes.BOOLEAN,
 			allowNull: false,
 			defaultValue: false

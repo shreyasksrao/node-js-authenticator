@@ -25,14 +25,14 @@
  *         type: string
  *         format: password
  *         description: Password of the User
- *       phoneNumber:
+ *       phone_number:
  *         type: string
  *         description: Phone number of the User (Format - <Country code> <Phone number> | Ex for India - +91 8765432189)
  *       role:
  *         type: string
  *         description: Roles assigned to the User. Multiple roles can be added using "," as delimiter.
  *         default: default
- *       emailVerified:
+ *       email_verified:
  *         type: boolean
  *         description: Is email verified for this User
  *         default: false
@@ -40,20 +40,15 @@
  *         type: string
  *         default: inactive
  *         description: Status of the User
- *       createdAt:
+ *       created_at:
  *         type: Date
  *         description: Time at which the User is created
  *         default: Current DB time
- *       resetPasswordToken:
- *         type: string
- *       resetPasswordExpires:
- *         type: string
- *         format: date-time
  *     required:
  *       - email
  *       - username
  *       - password
- *       - phoneNumber
+ *       - phone_number
  */
 
  module.exports = function(sequelize, DataTypes) {
@@ -83,11 +78,11 @@
             type: DataTypes.STRING,
             allowNull: false,
         },
-        phoneNumber: {
+        phone_number: {
             type: DataTypes.STRING, 
             allowNull: false,
         },
-        tenantName: {
+        tenant_name: {
             type: DataTypes.STRING,
             allowNull: true,
             defaultValue: 'default'
@@ -109,7 +104,7 @@
                 this.setDataValue('roles', roleString);
             }
         },
-        emailVerified: {
+        email_verified: {
             type: DataTypes.BOOLEAN, 
             allowNull: false,
             defaultValue: false
@@ -119,7 +114,7 @@
             allowNull: false,
             defaultValue: 'inactive'
         },
-        createdAt: {
+        created_at: {
             type: DataTypes.DATE, 
             defaultValue: sequelize.fn('now')
         }

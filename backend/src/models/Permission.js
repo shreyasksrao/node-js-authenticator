@@ -15,17 +15,17 @@
  *       description:
  *         type: string
  *         description: A brief description about the Permission
- *       endpointId:
+ *       endpoint_id:
  *         type: UUID
  *         description: REST endpoint ID
- *       permissionType:
+ *       permission_type:
  *         type: string
  *         description: One of ['Allow', 'Deny']
  *     required:
  *       - id
  *       - name
- *       - endpointId
- *       - permissionType
+ *       - endpoint_id
+ *       - permission_type
  */
 /* jshint indent: 1 */
 module.exports = function(sequelize, DataTypes) {
@@ -43,11 +43,11 @@ module.exports = function(sequelize, DataTypes) {
 			type: DataTypes.STRING,
 			allowNull: true
 		},
-		endpointId: {
+		endpoint_id: {
 			type: DataTypes.UUID,
 			allowNull: false
 		},
-        permissionType: {
+        permission_type: {
 			type: DataTypes.STRING,
 			allowNull: false,
             defaultValue: 'Allow'

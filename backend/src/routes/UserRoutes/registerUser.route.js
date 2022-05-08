@@ -44,7 +44,7 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
  *               type: string
  *               description: Password must contains minimum of 8 Characters (Min 1 Special character, Upper case, Lower case and number).
  *               format: password
- *             phoneNumber:
+ *             phone_number:
  *               type: string
  *               description: Phone number of the registered user (Format - <Country code> <Phone number>)
  *           required:
@@ -53,7 +53,7 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
  *             - last_name
  *             - email
  *             - password
- *             - phoneNumber
+ *             - phone_number
  *     responses:
  *       '200':
  *         description: User created
@@ -63,7 +63,7 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
 
 router.post('/registerUser', addEndpointNameToRequest('register_user'), async (req, res) => {
   // Validate weather the request body contains all the parameters or not
-  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['username', 'email', 'password', 'first_name', 'last_name', 'phoneNumber']);
+  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['username', 'email', 'password', 'first_name', 'last_name', 'phone_number']);
   if (bodyParameterValidationResult.status == false){
     logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
     return res.status(401).send({
@@ -96,7 +96,7 @@ router.post('/registerUser', addEndpointNameToRequest('register_user'), async (r
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       password: hashedPassword,
-      phoneNumber: req.body.phoneNumber
+      phone_number: req.body.phone_number
     });
     req.user=savedUser;
     req.auth={

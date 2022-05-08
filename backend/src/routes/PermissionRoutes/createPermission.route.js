@@ -32,17 +32,17 @@ const { validateBodyParamsExistence } = require('../../utils/validateBodyParamet
  *             description:
  *               type: string
  *               description: Description about the permission.
- *             endpointId:
+ *             endpoint_id:
  *               type: UUID
  *               description: ID of the endpoint created in the DB 
- *             permissionType:
+ *             permission_type:
  *               type: string
  *               description: Permission type (Allowed values are - "Allow" or "Deny")
  *           required:
  *             - name
  *             - description
- *             - endpointId
- *             - permissionType
+ *             - endpoint_id
+ *             - permission_type
  *     responses:
  *       '201':
  *         description: Permission created successfully.
@@ -54,7 +54,7 @@ const { validateBodyParamsExistence } = require('../../utils/validateBodyParamet
 
 router.post('/createPermission', async (req, res) => {
   // Validate weather the request body contains all the parameters or not
-  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpointId', 'permissionType']);
+  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpoint_id', 'permission_type']);
   if (bodyParameterValidationResult.status == false){
     logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
     return res.status(401).send({
@@ -66,13 +66,13 @@ router.post('/createPermission', async (req, res) => {
 
   // If User exists, then throw the Error
   const permissionExists = await Permission.findOne({ where: {
-      endpointId: req.body.endpointId ,
-      permissionType: req.body.permissionType
+      endpoint_id: req.body.endpoint_id ,
+      permission_type: req.body.permission_type
     }
   });
   if (permissionExists){
     logger.info(`Permission already exists !!`);
-    logger.debug(`Permission details -- Name: ${req.body.name}, EndpointId: ${req.body.endpointId}`);
+    logger.debug(`Permission details -- Name: ${req.body.name}, EndpointId: ${req.body.endpoint_id}`);
     return res.status(400).send({
       statusCode: 400,
       message: 'Bad request !! - Permission already exists',
@@ -81,17 +81,17 @@ router.post('/createPermission', async (req, res) => {
 
   // Create a Permission in the DB
   try {
-    logger.debug(`Creating a Permission -- Name: ${req.body.name}, Endpoint ID: ${req.body.endpointId}`);
+    logger.debug(`Creating a Permission -- Name: ${req.body.name}, Endpoint ID: ${req.body.endpoint_id}`);
     const savedPermission = await Permission.create({
       name:req.body.name,
       description: req.body.description,
-      endpointId: req.body.endpointId,
-      permissionType: req.body.permissionType
+      endpoint_id: req.body.endpoint_id,
+      permission_type: req.body.permission_type
     });
-    logger.info(`Permission created and saved in the DB -- ID: ${savedPermission.id}, Endpoint ID: ${savedPermission.endpointId}, Type: ${savedPermission.permissionType}`);
+    logger.info(`Permission created and saved in the DB -- ID: ${savedPermission.id}, Endpoint ID: ${savedPermission.endpoint_id}, Type: ${savedPermission.permission_type}`);
     return res.status(201).send({
       statusCode: 201,
-      message: `Permission has been created. ID: ${savedPermission.id}, Endpoint ID: ${savedPermission.endpointId}, Type: ${savedPermission.permissionType}`,
+      message: `Permission has been created. ID: ${savedPermission.id}, Endpoint ID: ${savedPermission.endpoint_id}, Type: ${savedPermission.permission_type}`,
     });
   } 
   catch (err) {

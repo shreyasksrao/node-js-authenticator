@@ -12,7 +12,7 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 /**
  * @swagger
- * /deleteEndpoint/{endpointName}:
+ * /deleteEndpoint/{endpoint_name}:
  *   delete:
  *     tags:
  *       - Endpoint
@@ -23,7 +23,7 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
  *     produces:
  *       - application/json
  *     parameters:
- *       - name: endpointName
+ *       - name: endpoint_name
  *         in: path
  *         required: true
  *         schema:
@@ -38,26 +38,26 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
  *         description: Parameter validation failed.
  */
 
-router.delete('/deleteEndpoint/:endpointName', addEndpointNameToRequest('delete_endpoint_by_passing_endpoint_name'), async (req, res) => {
+router.delete('/deleteEndpoint/:endpoint_name', addEndpointNameToRequest('delete_endpoint_by_passing_endpoint_name'), async (req, res) => {
   try{
     // If Endpoint exists
     const endpointExists = await Endpoint.findOne({ where: {
-        name: req.params.endpointName
+        name: req.params.endpoint_name
     }
     });
-    logger.debug(`[ DELETE ENDPOINT ] Details -- Endpoint Name: ${req.params.endpointName}`);
+    logger.debug(`[ DELETE ENDPOINT ] Details -- Endpoint Name: ${req.params.endpoint_name}`);
     if (endpointExists){
         await endpointExists.destroy();
         return res.status(200).send({
             statusCode: 200,
-            message: `Deleted Endpoint successfully. Details -- Endpoint Name: ${req.params.endpointName}`,
+            message: `Deleted Endpoint successfully. Details -- Endpoint Name: ${req.params.endpoint_name}`,
         });
     }
     else{
         logger.debug(`[ DELETE ENDPOINT ] Failed to delete endpoint. Endpoint Doesn't exist`);
         return res.status(400).send({
             statusCode: 400,
-            message: `Failed to delete endpoint. Endpoint Doesn't exist. Details -- Endpoint Name: ${req.params.endpointName}`,
+            message: `Failed to delete endpoint. Endpoint Doesn't exist. Details -- Endpoint Name: ${req.params.endpoint_name}`,
         });
     }
   }
@@ -75,7 +75,7 @@ router.delete('/deleteEndpoint/:endpointName', addEndpointNameToRequest('delete_
 
 /**
  * @swagger
- * /deleteEndpointById/{endpointId}:
+ * /deleteEndpointById/{endpoint_id}:
  *   delete:
  *     tags:
  *       - Endpoint
@@ -85,9 +85,9 @@ router.delete('/deleteEndpoint/:endpointName', addEndpointNameToRequest('delete_
  *       - application/json
  *     parameters:
  *       - in: path
- *         name: endpointId
+ *         name: endpoint_id
  *         schema:
- *           type: UUID
+ *           type: uuid
  *         description: ID of the Endpoint
  *         required: true
  *     responses:
@@ -99,11 +99,11 @@ router.delete('/deleteEndpoint/:endpointName', addEndpointNameToRequest('delete_
  *         description: Parameter validation failed.
  */
 
- router.delete('/deleteEndpointById/:endpointId', addEndpointNameToRequest('delete_endpoint_by_passing_endpoint_id'), async (req, res) => {
+ router.delete('/deleteEndpointById/:endpoint_id', addEndpointNameToRequest('delete_endpoint_by_passing_endpoint_id'), async (req, res) => {
   try{
     // If Endpoint exists
     const endpointExists = await Endpoint.findOne({ where: {
-      id: req.params.endpointId
+      id: req.params.endpoint_id
     }
     });
     logger.debug(`[ DELETE ENDPOINT BY ID ] Details -- Endpoint: ${endpointExists.endpoint}, Method: ${endpointExists.method}`);
@@ -118,7 +118,7 @@ router.delete('/deleteEndpoint/:endpointName', addEndpointNameToRequest('delete_
         logger.debug(`[ DELETE ENDPOINT ] Failed to delete endpoint. Endpoint Doesn't exist`);
         return res.status(400).send({
             statusCode: 400,
-            message: `Failed to delete endpoint. Endpoint Doesn't exist. Details -- ID: ${req.params.endpointId}`,
+            message: `Failed to delete endpoint. Endpoint Doesn't exist. Details -- ID: ${req.params.endpoint_id}`,
         });
     }
   }

@@ -207,9 +207,12 @@ async function runHandler(options){
             }
         ]);        
         console.log(`[ DEBUG ] Creating the User '${username}' in the database...`.debug);
-        // const insertUserQuery = `INSERT INTO User(first_name, last_name, email, username, password, phoneNumber, roles, emailVerified, status)
-        //                          VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, username`;
-        // const userValues = [first_name, last_name, email, username, password1, phone_number, ["superAdmin"], true, "active" ];
+        const insertUserQuery = `INSERT INTO public."User"(first_name, last_name, email, username, password, phoneNumber, roles, emailVerified, status)
+                                 VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id, username`;
+        const userValues = [first_name, last_name, email, username, password1, phone_number, ["superAdmin"], true, "active" ];
+        const userCreateRes = await pool.query(insertUserQuery, userValues);
+        console.log(userCreateRes.rows);
+        console.log(JSON.stringify(userCreateRes));
     }
 }
 

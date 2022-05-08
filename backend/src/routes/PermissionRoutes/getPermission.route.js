@@ -51,7 +51,7 @@ router.get('/getAllPermissions', async (req, res) => {
 
 /**
  * @swagger
- * /getPermissions/{key}/{keyHint}:
+ * /getPermissions/{key}/{key_hint}:
  *   get:
  *     tags:
  *       - Permission
@@ -64,10 +64,10 @@ router.get('/getAllPermissions', async (req, res) => {
  *         name: key
  *         schema:
  *           type: string
- *         description: Hint key (One of ["name", "permissionType"] )
+ *         description: Hint key (One of ["name", "permission_type"] )
  *         required: true
  *       - in: path
- *         name: keyHint
+ *         name: key_hint
  *         schema:
  *           type: string
  *         description: Hint value for the KEY
@@ -80,10 +80,10 @@ router.get('/getAllPermissions', async (req, res) => {
  *         description: Parameter validation failed.
  */
 
- router.get('/getPermissions/:key/:keyHint', async (req, res) => {
+ router.get('/getPermissions/:key/:key_hint', async (req, res) => {
   try{
     let column = req.params.key.toLowerCase();
-    let value = req.params.keyHint.toLowerCase();
+    let value = req.params.key_hint.toLowerCase();
     
     logger.debug(`[ GET PERMISSIONS BY HINT ] Details -- Hint key: ${column}, Hint value: ${value}`);
 
@@ -102,10 +102,10 @@ router.get('/getAllPermissions', async (req, res) => {
     }
 
     // If the Hint is for the "permissionType" column
-    else if(column == 'permissionType'){
+    else if(column == 'permission_type'){
       let permissions = await Permission.findAll({ 
         where: {
-            permissionType: sequelize.where(sequelize.fn('LOWER', sequelize.col('permissionType')), 'LIKE', '%' + value + '%')
+            permissionType: sequelize.where(sequelize.fn('LOWER', sequelize.col('permission_type')), 'LIKE', '%' + value + '%')
         }
       });
       return res.status(201).json({
@@ -117,10 +117,10 @@ router.get('/getAllPermissions', async (req, res) => {
 
     // Else, throw the error saying invalid hint key
     else{
-        logger.debug(`[ GET ENDPOINTS BY HINT ] Failed to fetch endpoints. Hint key is invalid. Valid Hint keys are ["name", "permissionType"]`);
+        logger.debug(`[ GET ENDPOINTS BY HINT ] Failed to fetch endpoints. Hint key is invalid. Valid Hint keys are ["name", "permission_type"]`);
         return res.status(400).json({
             statusCode: 400,
-            message: `Failed to fetch endpoints. Hint key is invalid. Valid Hint keys are ["name", "permissionType"]`,
+            message: `Failed to fetch endpoints. Hint key is invalid. Valid Hint keys are ["name", "permission_type"]`,
         });
     }
   }

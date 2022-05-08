@@ -49,7 +49,7 @@ router.get('/getAllRoles', async (req, res) => {
 
 /**
  * @swagger
- * /getRoles/{key}/{keyHint}:
+ * /getRoles/{key}/{key_hint}:
  *   get:
  *     tags:
  *       - Role
@@ -65,7 +65,7 @@ router.get('/getAllRoles', async (req, res) => {
  *         description: Hint key (One of ["name"] )
  *         required: true
  *       - in: path
- *         name: keyHint
+ *         name: key_hint
  *         schema:
  *           type: string
  *         description: Hint value for the KEY
@@ -78,10 +78,10 @@ router.get('/getAllRoles', async (req, res) => {
  *         description: Parameter validation failed.
  */
 
- router.get('/getRoles/:key/:keyHint', async (req, res) => {
+ router.get('/getRoles/:key/:key_hint', async (req, res) => {
   try{
     let column = req.params.key.toLowerCase();
-    let value = req.params.keyHint.toLowerCase();
+    let value = req.params.key_hint.toLowerCase();
     
     logger.debug(`[ GET ROLES BY HINT ] Details -- Hint key: ${column}, Hint value: ${value}`);
 

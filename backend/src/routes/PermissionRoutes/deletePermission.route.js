@@ -9,7 +9,7 @@ const logger = require('../../winston.conf.js');
 const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
 /**
  * @swagger
- * /deletePermission/{permissionId}:
+ * /deletePermission/{permission_id}:
  *   delete:
  *     tags:
  *       - Permission
@@ -19,7 +19,7 @@ const { validateBodyParamsExistence } = require('../../utils/validateBodyParamet
  *       - application/json
  *     parameters:
  *       - in: path
- *         name: permissionId
+ *         name: permission_id
  *         schema:
  *           type: uuid
  *         description: ID of the Permission
@@ -33,26 +33,26 @@ const { validateBodyParamsExistence } = require('../../utils/validateBodyParamet
  *         description: Parameter validation failed.
  */
 
- router.delete('/deletePermission/:permissionId', async (req, res) => {
+ router.delete('/deletePermission/:permission_id', async (req, res) => {
   try{
     // If Permission exists
     const permissionExists = await Permission.findOne({ where: {
-      id: req.params.permissionId
+      id: req.params.permission_id
     }
     });
-    logger.debug(`[ DELETE PERMISSION ] Details -- Name: ${permissionExists.name}, Endpoint ID: ${permissionExists.endpointId}, Permission Type: ${permissionExists.permissionType}`);
+    logger.debug(`[ DELETE PERMISSION ] Details -- Name: ${permissionExists.name}, Endpoint ID: ${permissionExists.endpoint_id}, Permission Type: ${permissionExists.permission_type}`);
     if (permissionExists){
         await permissionExists.destroy();
         return res.status(200).send({
             statusCode: 200,
-            message: `Deleted Permission successfully. Details -- Name: ${permissionExists.name}, Endpoint ID: ${permissionExists.endpointId}, Permission Type: ${permissionExists.permissionType}}`,
+            message: `Deleted Permission successfully. Details -- Name: ${permissionExists.name}, Endpoint ID: ${permissionExists.endpoint_id}, Permission Type: ${permissionExists.permission_type}}`,
         });
     }
     else{
         logger.debug(`[ DELETE PERMISSION ] Failed to delete Permission. Permission Doesn't exist`);
         return res.status(400).send({
             statusCode: 400,
-            message: `Failed to delete permission. Permission Doesn't exist. Details -- ID: ${req.params.permissionId}`,
+            message: `Failed to delete permission. Permission Doesn't exist. Details -- ID: ${req.params.permission_id}`,
         });
     }
   }
