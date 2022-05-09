@@ -1,6 +1,6 @@
 # Authentication application written in Node JS
 
-## Backend Features:
+## Backend Features
 
 1. Written in Express JS as the API framework
 2. Uses PostgreSQL as the database to store the User details
@@ -9,13 +9,13 @@
 5. Log management using Winston JS
 6. Redis as the Caching engine
 
-## Edit the Environment file:
+## Edit the Environment file
 
 Details about the PostgreSQL server, Redis server, JWT token specifications etc. is stored in the ***config.env*** file. Express server reads this file to get the details about the components.
 
 Template config file can be found in the config directory(***backend/config/config.template.env***). Rename this template file to ***config.env***  
 
-### Environment Variables:
+### Environment Variables
 
 > AUTH_SERVER_PORT=5001  
 > AUTH_SERVER_ENV="development"
@@ -69,7 +69,29 @@ Logs will be stored in the ***backend/logs/server.log***
 
 ## How to run the Express server
 
-```bash
-cd authenticator/backend
-npm install
-```
+1. Install the server dependencies.
+
+    ```bash
+    cd authenticator/backend
+    npm install
+    ```
+
+2. To run the server
+
+    In development mode,
+
+    ```bash
+    nodemon ./src/authServer
+    ```
+
+    In production mode,
+
+    ```bash
+    node ./src/authServer
+    ```
+
+## Access the Swagger UI  
+
+To access the Swagger UI, navigate to,
+
+`http://localhost:5001/api-docs/`  
