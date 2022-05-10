@@ -7,6 +7,7 @@ const router = require("express").Router();
 
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
+let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 /**
  * @swagger
  * /getAllPermissions:
@@ -28,7 +29,7 @@ const logger = require('../../winston.conf.js');
  *         description: Username or email already taken.
  */
 
-router.get('/getAllPermissions', async (req, res) => {
+router.get('/getAllPermissions', addEndpointNameToRequest('get_all_permissions'), async (req, res) => {
   try{    
     // TODO : Implement Caching ...
     let permissionArray = await Permission.findAll({});
@@ -80,7 +81,7 @@ router.get('/getAllPermissions', async (req, res) => {
  *         description: Parameter validation failed.
  */
 
- router.get('/getPermissions/:key/:key_hint', async (req, res) => {
+ router.get('/getPermissions/:key/:key_hint', addEndpointNameToRequest('get_permissions_by_hint'), async (req, res) => {
   try{
     let column = req.params.key.toLowerCase();
     let value = req.params.key_hint.toLowerCase();

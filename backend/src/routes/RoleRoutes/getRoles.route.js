@@ -4,7 +4,7 @@
 const { Role } = require('../../sequelize');
 const sequelize = require('sequelize');
 const router = require("express").Router();
-
+let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
 /**
@@ -26,7 +26,7 @@ const logger = require('../../winston.conf.js');
  *         description: Internal Server error.
  */
 
-router.get('/getAllRoles', async (req, res) => {
+router.get('/getAllRoles', addEndpointNameToRequest('get_all_roles'), async (req, res) => {
   try{    
     // TODO : Implement Caching ...
     let roleArray = await Role.findAll({});
@@ -78,7 +78,7 @@ router.get('/getAllRoles', async (req, res) => {
  *         description: Parameter validation failed.
  */
 
- router.get('/getRoles/:key/:key_hint', async (req, res) => {
+ router.get('/getRoles/:key/:key_hint', addEndpointNameToRequest('get_roles_by_passing_hints'), async (req, res) => {
   try{
     let column = req.params.key.toLowerCase();
     let value = req.params.key_hint.toLowerCase();

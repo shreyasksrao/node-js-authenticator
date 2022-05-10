@@ -7,6 +7,7 @@ const router = require("express").Router();
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
 const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
+let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 /**
  * @swagger
  * /deletePermission/{permission_id}:
@@ -33,7 +34,7 @@ const { validateBodyParamsExistence } = require('../../utils/validateBodyParamet
  *         description: Parameter validation failed.
  */
 
- router.delete('/deletePermission/:permission_id', async (req, res) => {
+ router.delete('/deletePermission/:permission_id', addEndpointNameToRequest('delete_permission_by_passing_id'), async (req, res) => {
   try{
     // If Permission exists
     const permissionExists = await Permission.findOne({ where: {

@@ -7,6 +7,7 @@ const router = require("express").Router();
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
 const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
+let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 /**
  * @swagger
  * /createRole:
@@ -48,7 +49,7 @@ const { validateBodyParamsExistence } = require('../../utils/validateBodyParamet
  *         description: Body Parameters validation failed.
  */
 
-router.post('/createRole', async (req, res) => {
+router.post('/createRole', addEndpointNameToRequest('create_role'), async (req, res) => {
   // Validate weather the request body contains all the parameters or not
   var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'permissions']);
   if (bodyParameterValidationResult.status == false){

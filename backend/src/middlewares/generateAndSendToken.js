@@ -14,7 +14,7 @@ const logger = require('../winston.conf.js');
 dotenv.config({ path: path.join(process.cwd(), 'config/config.env') });
 const token_expiry_seconds = parseInt(process.env.ACCESS_TOKEN_EXPIRY_SECONDS);
 const refresh_token_expiry_seconds = parseInt(process.env.REFRESH_TOKEN_EXPIRY_SECONDS);
-const privateKey = fs.readFileSync(path.join(process.cwd(), 'config/jwt', process.env.TOKEN_SIGNING_PRIVATE_KEY), 'utf8');
+const privateKey = fs.readFileSync(path.join(process.cwd(), 'config/jwt/keys', process.env.TOKEN_SIGNING_PRIVATE_KEY), 'utf8');
 
 
 var generateAccessToken = async function(req, token_id, userRoles, userStatus) {

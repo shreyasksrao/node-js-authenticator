@@ -58,7 +58,8 @@ To change the token expiration seconds, update the above 2 properties.
 > TOKEN_SIGNING_PRIVATE_KEY="rsa_private_key.key"  
 > TOKEN_SIGNING_PUBLIC_KEY="rsa_public_key.key"
 
-Update the token signing key file name. Place the private and public key file in the keys directory (**backend/config/keys**).
+Create a directory jwt/keys in the config folder and place the private and public key file in the keys directory (**backend/config/jwt/keys**)  
+Update the token signing key file name.
 
 ---------
 

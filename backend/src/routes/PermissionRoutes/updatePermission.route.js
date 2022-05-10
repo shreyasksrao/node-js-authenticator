@@ -7,7 +7,7 @@ const router = require("express").Router();
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
 const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
-const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMethodsValidator');
+let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 /**
  * @swagger
  * /updatePermission/{permission_id}:
@@ -59,7 +59,7 @@ const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMe
  *         description: Parameter validation failed.
  */
 
-router.put('/updatePermission/:permission_id', async (req, res) => {
+router.put('/updatePermission/:permission_id', addEndpointNameToRequest('update_permission_by_passing_id'), async (req, res) => {
   // Validate weather the request body contains all the parameters or not
   var bodyParameterValidationResult = validateBodyParamsExistence(req, ['description', 'endpoint_id', 'name', 'permission_type']);
   if (bodyParameterValidationResult.status == false){

@@ -7,7 +7,7 @@ let path = require('path');
 let fs = require('fs');
 
 dotenv.config({ path: path.join(process.cwd(), 'config/config.env') });
-const publickey = fs.readFileSync(path.join(process.cwd(), 'config/jwt', process.env.TOKEN_SIGNING_PUBLIC_KEY), 'utf8');
+const publickey = fs.readFileSync(path.join(process.cwd(), 'config/jwt/keys', process.env.TOKEN_SIGNING_PUBLIC_KEY), 'utf8');
 
 
 //MIDDLEWARE TO AUTHENTICATE TOKEN BEFORE ACCESSING PROTECTED ROUTES
