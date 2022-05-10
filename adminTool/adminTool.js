@@ -94,6 +94,31 @@ function setupCommander(){
     program.parse(process.argv);
 }
 
+async function createSuperUserRoleHandler(pool){
+    const roleId = uuidv4(); 
+    const roleName = 'super_admin';
+    const roleDescription = 'Super User role which has access to all the Endpoints';
+    let roleCreationDate = new Date();
+    let permissions = {permissions: ['*']};
+
+    const checkRoleExistsQuery = 'SELECT EXISTS(SELECT 1 FROM "Role" WHERE name=$1)';
+    const res = await pool.query(checkRoleExistsQuery, [roleName]);
+    console.log(`[ DEBUG ] Checking for the role existence...`.debug);
+    if(res.rows[0].exists == true){
+        console.error(`[ ERROR ] Role with the name ${roleName} already exists !`.error);
+        pool.end();
+        process.exit(-1);
+    }
+
+    const insertUserQuery = `INSERT INTO public."Role"(id, name, description, created_at, permissions)
+                             VALUES($1, $2, $3, $4, $5) RETURNING id, name, permissions`;
+    const roleValues = [roleId, roleName, roleDescription, roleCreationDate, permissions ];
+    console.log(`[ DEBUG ] Creating the Role '${roleName}' with ID '${roleId}' in the database...`.debug);
+    const roleCreateRes = await pool.query(insertUserQuery, roleValues);
+    console.log(roleCreateRes.rows);
+    return 0;
+}
+
 async function createSuperUserHandler(pool){
     let { username } = await inquirer.prompt([
         {
@@ -169,9 +194,10 @@ async function createSuperUserHandler(pool){
     console.log(`[ DEBUG ] Creating the User '${username}' with ID '${userId}' in the database...`.debug);
     const insertUserQuery = `INSERT INTO public."User"(id, first_name, last_name, email, username, password, phone_number, roles, email_verified, status, created_at)
                              VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, username`;
-    const userValues = [userId, first_name, last_name, email, username, hashedPassword, phone_number, ["superAdmin"], true, "active", creationDate ];
+    const userValues = [userId, first_name, last_name, email, username, hashedPassword, phone_number, ["super_admin"], true, "active", creationDate ];
     const userCreateRes = await pool.query(insertUserQuery, userValues);
     console.log(userCreateRes.rows);
+    return 0;
 }
 
 async function runHandler(options){
@@ -221,7 +247,9 @@ async function runHandler(options){
         ],
     });
     if(taskChoice == 'Create Super User')
-        createSuperUserHandler(pool);
+        return createSuperUserHandler(pool);
+    else if(taskChoice == 'Create Super User Role')
+        return createSuperUserRoleHandler(pool);
 }
 
 setupCommander();

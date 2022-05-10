@@ -1,0 +1,6 @@
+**/node_modules
+src/config
+src/migrations
+src/seeders
+logs/
+config/

@@ -8,7 +8,7 @@ const redisClient = require('../redisClient');
 const dotenv = require('dotenv');
 dotenv.config({ path: path.join(process.cwd(), 'config/config.env') });
 
-const publickey = fs.readFileSync(path.join(process.cwd(), 'config/keys', process.env.TOKEN_SIGNING_PUBLIC_KEY), 'utf8');
+const publickey = fs.readFileSync(path.join(process.cwd(), 'config/jwt', process.env.TOKEN_SIGNING_PUBLIC_KEY), 'utf8');
 
 async function isBlacklisted(token_id) {
   try {
