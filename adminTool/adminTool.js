@@ -115,7 +115,8 @@ async function createSuperUserRoleHandler(pool){
     const roleValues = [roleId, roleName, roleDescription, roleCreationDate, permissions ];
     console.log(`[ DEBUG ] Creating the Role '${roleName}' with ID '${roleId}' in the database...`.debug);
     const roleCreateRes = await pool.query(insertUserQuery, roleValues);
-    console.log(roleCreateRes.rows);
+    console.log(JSON.stringify(roleCreateRes.rows));
+    pool.end();
     return 0;
 }
 
@@ -190,13 +191,15 @@ async function createSuperUserHandler(pool){
     ]);     
     let userId = uuidv4(); 
     let creationDate = new Date();
-    let hashedPassword = await bcrypt.hash(req.body.password, salt);  
+    const salt = await bcrypt.genSalt(10);
+    let hashedPassword = await bcrypt.hash(password1, salt);  
     console.log(`[ DEBUG ] Creating the User '${username}' with ID '${userId}' in the database...`.debug);
     const insertUserQuery = `INSERT INTO public."User"(id, first_name, last_name, email, username, password, phone_number, roles, email_verified, status, created_at)
                              VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, username`;
-    const userValues = [userId, first_name, last_name, email, username, hashedPassword, phone_number, ["super_admin"], true, "active", creationDate ];
+    const userValues = [userId, first_name, last_name, email, username, hashedPassword, phone_number, "super_admin", true, "active", creationDate ];
     const userCreateRes = await pool.query(insertUserQuery, userValues);
     console.log(userCreateRes.rows);
+    pool.end();
     return 0;
 }
 
@@ -224,7 +227,7 @@ async function runHandler(options){
         options.dbUserPassword = dbPassword;
     }
     // Connects to PostgreSQL database
-    console.log(`[ DEBUG ] Connecting to Database...`.debug);
+    console.log(`[ DEBUG ] Connecting to Database ${options.db} on ${options.dbHost}...`.debug);
     const pool = await connectToDB(options.dbHost, parseInt(options.dbPort), options.db, options.dbUser, options.dbUserPassword);
 
     const { taskChoice } = await inquirer.prompt({

@@ -32,7 +32,6 @@ async function authenticateToken(req, res, next) {
     }
     else{
       jwt.verify(token, publickey, {algorithm: 'RS256'}, async (err, payload) => {
-        console.log(payload);
         // Any error with token verification, throw 403
         if (err){
           console.log(err);

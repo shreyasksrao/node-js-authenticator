@@ -43,7 +43,7 @@ sequelize.sync().then(() => {
   // eslint-disable-next-line no-console
   console.log('[INFO] Database and Tables have been created'.green.bold);
   let r = require('./middlewares/roleValidation');
-  r.buildPermissionMap();
+  r.buildRoleMap();
 });
 
 

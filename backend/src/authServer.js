@@ -78,7 +78,7 @@ const swaggerDefinition = {
 const swaggerJsDocoptions = {
   swaggerDefinition,
   apis: [
-    path.join(__dirname  + '/routes/*.js'),
+    path.join(__dirname  + '/routes/UserRoutes/*.js'),
     path.join(__dirname  + '/routes/EndpointRoutes/*.js'),
     path.join(__dirname  + '/routes/PermissionRoutes/*.js'),
     path.join(__dirname  + '/routes/RoleRoutes/*.js'),

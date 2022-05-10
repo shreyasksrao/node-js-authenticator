@@ -8,6 +8,8 @@ const sequelize = require('sequelize');
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
+const authenticateToken = require('../../middlewares/authenticateToken');
+const { validateRole } = require('../../middlewares/roleValidation');
 
 /**
  * @swagger
@@ -17,6 +19,8 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
  *       - Endpoint
  *     name: Get all Endpoints
  *     summary: Get all Endpoints in the DB
+ *     security:
+ *       - bearerAuth: []
  *     produces:
  *       - application/json
  *     responses:
@@ -26,35 +30,39 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
  *         description: Endpoint doesn't exist.
  */
 
-router.get('/getAllEndpoints', addEndpointNameToRequest('get_all_endpoints'), async (req, res) => {
-   try{
-    const allEndpoints = await Endpoint.findAll({});
-    logger.debug(`[ GET ALL ENDPOINTS ]`);
-    if (allEndpoints){
-        return res.status(200).json({
-            statusCode: 200,
-            message: `Endpoints fetched successfully.`,
-            endpoints: JSON.stringify(allEndpoints)
-        });
-    }
-    else{
-        logger.debug(`[ GET ALL ENDPOINT ] Failed to fetch endpoints. Empty array`);
-        return res.status(400).json({
-            statusCode: 400,
-            message: `Failed to fetch endpoints. No endpoints exist`,
-            endpoints: JSON.stringify(allEndpoints)
-        });
-    }
-  }
-  catch (err) {
-      logger.error(err);
-      return res.status(500).json({
-        statusCode: 500,
-        message: 'Internal Server Error !!!',
-        devMessage: err.message,
-        stackTrace: err.stack
-      });
-  }
+router.get('/getAllEndpoints', 
+            addEndpointNameToRequest('get_all_endpoints'), 
+            authenticateToken, 
+            validateRole(['super_admin', ]), 
+            async (req, res) => {
+                try{
+                    const allEndpoints = await Endpoint.findAll({});
+                    logger.debug(`[ GET ALL ENDPOINTS ]`);
+                    if (allEndpoints){
+                        return res.status(200).json({
+                            statusCode: 200,
+                            message: `Endpoints fetched successfully.`,
+                            endpoints: JSON.stringify(allEndpoints)
+                        });
+                    }
+                    else{
+                        logger.debug(`[ GET ALL ENDPOINT ] Failed to fetch endpoints. Empty array`);
+                        return res.status(400).json({
+                            statusCode: 400,
+                            message: `Failed to fetch endpoints. No endpoints exist`,
+                            endpoints: JSON.stringify(allEndpoints)
+                        });
+                    }
+                }
+                catch (err) {
+                    logger.error(err);
+                    return res.status(500).json({
+                        statusCode: 500,
+                        message: 'Internal Server Error !!!',
+                        devMessage: err.message,
+                        stackTrace: err.stack
+                    });
+                }
 });
 
 
@@ -90,54 +98,56 @@ router.get('/getAllEndpoints', addEndpointNameToRequest('get_all_endpoints'), as
  *         description: Parameter validation failed.
  */
 
- router.get('/getEndpoints/:endpointHintColumn/:endpointHintValue',addEndpointNameToRequest('get_endpoints_by_hint'), async (req, res) => {
-  try{
-    let lookupKey = req.params.endpointHintColumn.toLowerCase();
-    let lookupValue = req.params.endpointHintValue.toLowerCase();
+ router.get('/getEndpoints/:endpointHintColumn/:endpointHintValue',
+            addEndpointNameToRequest('get_endpoints_by_hint'), 
+            async (req, res) => {
+                try{
+                    let lookupKey = req.params.endpointHintColumn.toLowerCase();
+                    let lookupValue = req.params.endpointHintValue.toLowerCase();
 
-    logger.debug(`[ GET ENDPOINTS BY HINT ] Details -- Hint key: ${lookupKey}, Hint value: ${lookupValue}`);
+                    logger.debug(`[ GET ENDPOINTS BY HINT ] Details -- Hint key: ${lookupKey}, Hint value: ${lookupValue}`);
 
-    if(lookupKey == "name"){
-        const endpoints = await Endpoint.findAll({ 
-            where: {
-                name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + lookupValue + '%')
-            }
-        });
-        return res.status(200).json({
-            statusCode: 200,
-            message: `Endpoints fetched successfully. Details -- Hint key: ${lookupKey}, Hint value: ${lookupValue}`,
-            endpoints: JSON.stringify(endpoints)
-        });
-    }
-    else if (lookupKey == "endpoint"){
-        const endpoints = await Endpoint.findAll({ 
-            where: {
-                endpoint: sequelize.where(sequelize.fn('LOWER', sequelize.col('endpoint')), 'LIKE', '%' + lookupValue + '%')
-            }
-        });
-        return res.status(200).json({
-            statusCode: 200,
-            message: `Endpoints fetched successfully. Details -- Hint key: ${lookupKey}, Hint value: ${lookupValue}`,
-            endpoints: JSON.stringify(endpoints)
-        });
-    }
-    else{
-        logger.debug(`[ GET ENDPOINTS BY HINT ] Failed to fetch endpoints. Endpoints Doesn't exist`);
-        return res.status(400).json({
-            statusCode: 400,
-            message: `Invalid Endpoint Hint Key. Valid keys are ["name", "endpoint"]`,
-        });
-    }
-  }
-  catch (err) {
-      logger.error(err);
-      return res.status(500).json({
-        statusCode: 500,
-        message: 'Internal Server Error !!!',
-        devMessage: err.message,
-        stackTrace: err.stack
-      });
-  }
+                    if(lookupKey == "name"){
+                        const endpoints = await Endpoint.findAll({ 
+                            where: {
+                                name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + lookupValue + '%')
+                            }
+                        });
+                        return res.status(200).json({
+                            statusCode: 200,
+                            message: `Endpoints fetched successfully. Details -- Hint key: ${lookupKey}, Hint value: ${lookupValue}`,
+                            endpoints: JSON.stringify(endpoints)
+                        });
+                    }
+                    else if (lookupKey == "endpoint"){
+                        const endpoints = await Endpoint.findAll({ 
+                            where: {
+                                endpoint: sequelize.where(sequelize.fn('LOWER', sequelize.col('endpoint')), 'LIKE', '%' + lookupValue + '%')
+                            }
+                        });
+                        return res.status(200).json({
+                            statusCode: 200,
+                            message: `Endpoints fetched successfully. Details -- Hint key: ${lookupKey}, Hint value: ${lookupValue}`,
+                            endpoints: JSON.stringify(endpoints)
+                        });
+                    }
+                    else{
+                        logger.debug(`[ GET ENDPOINTS BY HINT ] Failed to fetch endpoints. Endpoints Doesn't exist`);
+                        return res.status(400).json({
+                            statusCode: 400,
+                            message: `Invalid Endpoint Hint Key. Valid keys are ["name", "endpoint"]`,
+                        });
+                    }
+                }
+                catch (err) {
+                    logger.error(err);
+                    return res.status(500).json({
+                        statusCode: 500,
+                        message: 'Internal Server Error !!!',
+                        devMessage: err.message,
+                        stackTrace: err.stack
+                    });
+                }
 });
 
 

@@ -59,9 +59,6 @@ module.exports = function(sequelize, DataTypes) {
 		permissions: {
 			type: DataTypes.JSON,
 			allowNull: true,
-			get() {
-				return JSON.parse(this.getDataValue("permissions"));
-			},
 			set(value) {
 				return this.setDataValue("permissions", JSON.stringify(value));
 			}

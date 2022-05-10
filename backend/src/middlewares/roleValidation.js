@@ -2,6 +2,9 @@
 const redisClient = require('../redisClient');
 let { Role, Endpoint, Permission } = require('../sequelize');
 
+// Globals
+var IN_MEMORY_OBJECT_CACHE_EXPIRATION_AT = Math.floor(new Date().getTime() / 1000) - 100;
+var IN_MEMORY_CACHE = {};
 
 async function getEndpointIdMap(){
     console.log(`Building Endpoint ID Map...`);
@@ -32,23 +35,49 @@ async function buildPermissionMap(){
 }
 
 async function buildRoleMap(){
+    console.log(`Building Role Map...`);
     let roleMap = {};
+    const permissionIdMap = await buildPermissionMap();
     let roles = await Role.findAll({});
     await roles.forEach(r => {
-        const permissions = r.permissions.permissions;
+        const permissions = JSON.parse(JSON.stringify(r.permissions)).permissions;
         roleMap[r.name] = [];
         permissions.forEach(p => {
-            roleMap[r.name].push({
-                
-            });
+            if(p == '*'){
+                roleMap[r.name].push('*');
+                roleString = '*';
+                return;
+            }
+            roleMap[r.name].push(permissionIdMap[p]);
+            
         });
+        IN_MEMORY_CACHE = roleMap;
+        IN_MEMORY_OBJECT_CACHE_EXPIRATION_AT = Math.floor(new Date().getTime() / 1000) + 12*60*60;
     }); 
+    console.log(`Role Map: ${JSON.stringify(roleMap)}`);
 }
 
-async function validateRole(){
-
+function validateRole(roleArray){
+    return async (req, res, next) => {
+        try {
+            let currentTime = Math.floor(new Date().getTime() / 1000);
+            if (currentTime > IN_MEMORY_OBJECT_CACHE_EXPIRATION_AT){
+                console.log(`Building Role Map due to In-Memory Cache expire...`);
+                await buildRoleMap();
+            }
+            let endpointName = req.endpointName;
+            console.log(`Endpoint name is - ${endpointName}`);
+            console.log(JSON.stringify(req.user));
+            console.log(roleArray);
+            next();
+        } catch (error) {
+            console.error(`Promise error ${error}`);
+        }
+        
+    };
 }
 
 module.exports = {
-    buildPermissionMap
+    validateRole,
+    buildRoleMap
 };
