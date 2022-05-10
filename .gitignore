@@ -2,7 +2,8 @@
 backend/node_modules
 backend/package-lock.json
 backend/config/config.env
-backend/config/keys
+backend/config/jwt
+backend/config/ssl
 backend/logs/
 /dist
 
