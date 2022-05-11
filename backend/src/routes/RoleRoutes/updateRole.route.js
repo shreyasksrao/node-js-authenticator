@@ -13,12 +13,12 @@ const authenticateToken = require('../../middlewares/authenticateToken');
 
 /**
  * @swagger
- * /createRole:
- *   post:
+ * /updateRole:
+ *   put:
  *     tags:
  *       - Role
- *     name: Create a Role
- *     summary: Create a new Role
+ *     name: Update a Role
+ *     summary: Update a Role
  *     consumes:
  *       - application/json
  *     produces:
@@ -54,8 +54,8 @@ const authenticateToken = require('../../middlewares/authenticateToken');
  *         description: Body Parameters validation failed.
  */
 
-router.post('/createRole', 
-            addEndpointNameToRequest('create_role'), 
+router.post('/updateRole', 
+            addEndpointNameToRequest('update_role'), 
             authenticateToken,
             validateRole,
             async (req, res) => {
@@ -68,44 +68,33 @@ router.post('/createRole',
                   message: bodyParameterValidationResult.message
                 });
               }
-              logger.debug(`Validated body parameters successfully...`);
-
-              // If Role exists, then throw the Error
-              const roleExists = await Role.findOne({ where: {
-                  name: req.body.name
-                }
-              });
-              if (roleExists){
-                logger.info(`Role already exists !!`);
-                logger.debug(`Role details -- Name: ${req.body.name}, Permission: ${JSON.stringify(req.body.permissions)}`);
-                return res.status(400).send({
-                  statusCode: 400,
-                  message: 'Bad request !! - Role already exists',
-                });
-              }
-
-              // Create a Role in the DB
               try {
-                logger.debug(`Creating a Role -- Name: ${req.body.name}, Permission: ${JSON.stringify(req.body.permissions)}`);
-                const savedRole = await Role.create({
-                  name:req.body.name,
-                  description: req.body.description,
-                  permissions: req.body.permissions
+                  // If Role exists, then throw the Error
+                const roleExists = await Role.findOne({ where: { name: req.body.name }});
+                if (roleExists){
+                    logger.debug(`Updating Role ${req.body.name}...`);
+                    logger.debug(`Updated Role details -- Name: ${req.body.name}, Permission: ${JSON.stringify(req.body.permissions)}`);
+                    roleExists.description = req.body.description;
+                    roleExists.permissions = req.body.permissions;
+                    await roleExists.save();
+                    return res.status(201).send({
+                        statusCode: 201,
+                        message: `Role Updated. ID: ${roleExists.id}, Permissions: ${roleExists.permissions}`,
+                      });
+                }
+                else
+                return res.status(400).send({
+                    statusCode: 400,
+                    message: `Bad request !! - Role Doesn't exist. Details: Name - ${req.body.name}`,
                 });
-                logger.info(`Role created and saved in the DB -- ID: ${savedRole.id}, Permissions: ${savedRole.permissions}`);
-                return res.status(201).send({
-                  statusCode: 201,
-                  message: `Role has been created. ID: ${savedRole.id}, Permissions: ${savedRole.permissions}`,
+              } catch (error) {
+                logger.error(err);
+                return res.status(500).send({
+                  statusCode: 500,
+                  message: 'Internal Server Error !!!',
+                  devMessage: err.message,
+                  stackTrace: err.stack
                 });
-              } 
-              catch (err) {
-                  logger.error(err);
-                  return res.status(500).send({
-                    statusCode: 500,
-                    message: 'Internal Server Error !!!',
-                    devMessage: err.message,
-                    stackTrace: err.stack
-                  });
               }
 });
 

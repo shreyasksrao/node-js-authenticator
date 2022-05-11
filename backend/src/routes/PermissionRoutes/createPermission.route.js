@@ -21,6 +21,8 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
  *       - application/json
  *     produces:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: body
  *         in: body

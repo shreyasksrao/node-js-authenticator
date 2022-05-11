@@ -33,7 +33,7 @@ const { validateRole } = require('../../middlewares/roleValidation');
 router.get('/getAllEndpoints', 
             addEndpointNameToRequest('get_all_endpoints'), 
             authenticateToken, 
-            validateRole(['super_admin', ]), 
+            validateRole, 
             async (req, res) => {
                 try{
                     const allEndpoints = await Endpoint.findAll({});
@@ -76,6 +76,8 @@ router.get('/getAllEndpoints',
  *     summary: Get Endpoints in the DB
  *     produces:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: endpointHintColumn
@@ -100,6 +102,8 @@ router.get('/getAllEndpoints',
 
  router.get('/getEndpoints/:endpointHintColumn/:endpointHintValue',
             addEndpointNameToRequest('get_endpoints_by_hint'), 
+            authenticateToken,
+            validateRole,
             async (req, res) => {
                 try{
                     let lookupKey = req.params.endpointHintColumn.toLowerCase();

@@ -57,24 +57,35 @@ async function buildRoleMap(){
     console.log(`Role Map: ${JSON.stringify(roleMap)}`);
 }
 
-function validateRole(roleArray){
-    return async (req, res, next) => {
-        try {
-            let currentTime = Math.floor(new Date().getTime() / 1000);
-            if (currentTime > IN_MEMORY_OBJECT_CACHE_EXPIRATION_AT){
-                console.log(`Building Role Map due to In-Memory Cache expire...`);
-                await buildRoleMap();
-            }
-            let endpointName = req.endpointName;
-            console.log(`Endpoint name is - ${endpointName}`);
-            console.log(JSON.stringify(req.user));
-            console.log(roleArray);
-            next();
-        } catch (error) {
-            console.error(`Promise error ${error}`);
+async function validateRole(req, res, next){
+    try {
+        let currentTime = Math.floor(new Date().getTime() / 1000);
+        if (currentTime > IN_MEMORY_OBJECT_CACHE_EXPIRATION_AT){
+            console.log(`Building Role Map due to In-Memory Cache expire...`);
+            await buildRoleMap();
         }
-        
-    };
+        let endpointName = req.endpointName;
+        console.log(`Endpoint name is - ${endpointName}`);
+        console.log(JSON.stringify(req.user));
+        console.log(IN_MEMORY_CACHE);
+
+        let userRoles = req.user.ur;
+        console.log(userRoles);  
+        for(let i=0; i<userRoles.length; i++){
+            let hasAccessToEndpoints = IN_MEMORY_CACHE[userRoles[i]];
+            if (hasAccessToEndpoints.includes('*') || hasAccessToEndpoints.includes(endpointName)){
+                console.log(`Has access.`); 
+                return next();
+            }
+        }
+        console.log('Not authorized...');
+        return res.status(403).json({
+            statusCode: 403,
+            message: `User doesn't have the role to access this endpoint !!`
+        });
+    } catch (error) {
+        console.error(`Promise error ${error}`);
+    }   
 }
 
 module.exports = {

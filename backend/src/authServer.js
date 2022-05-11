@@ -125,6 +125,7 @@ const updateEndpoint = require('./routes/EndpointRoutes/updateEndpoint.route');
 
 const createRole = require('./routes/RoleRoutes/createRole.route');
 const getRole = require('./routes/RoleRoutes/getRoles.route');
+const updateRole = require('./routes/RoleRoutes/updateRole.route');
 
 app.get('/', function (req, res) {
   res.send('hello world');
@@ -154,6 +155,7 @@ app.use('/api/v1', updateEndpoint);
 
 app.use('/api/v1', createRole);
 app.use('/api/v1', getRole);
+app.use('/api/v1', updateRole);
 
 const server = app.listen(PORT, () => {
   console.log(`Authentication Service is running on Port : ${PORT}`.green.bold.underline);

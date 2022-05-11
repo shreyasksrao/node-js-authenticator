@@ -83,7 +83,7 @@ async function generateAsciiArt() {
 function setupCommander(){
     program
         .command('run')
-        .description('Launch the admin tool.\n\nRequired Options: [ -d, -U, -P ]')
+        .description('Launch the admin tool')
         .option('-h, --dbHost [host]', 'PostgreSQL server hostname', "localhost")
         .option('-p, --dbPort [port]', 'PostgreSQL server port', 5432)
         .option('-d, --db <database>', 'Database name')
@@ -95,12 +95,9 @@ function setupCommander(){
     program.parse(process.argv);
 }
 
-async function createSuperUserRoleHandler(pool, schema){
+async function createRole(pool, schema, roleName, roleDescription, permissions){
     const roleId = uuidv4(); 
-    const roleName = 'super_admin';
-    const roleDescription = 'Super User role which has access to all the Endpoints';
     let roleCreationDate = new Date();
-    let permissions = {permissions: ['*']};
 
     const checkRoleExistsQuery = `SELECT EXISTS(SELECT 1 FROM ${schema}."Role" WHERE name=$1)`;
     const res = await pool.query(checkRoleExistsQuery, [roleName]);
@@ -119,6 +116,21 @@ async function createSuperUserRoleHandler(pool, schema){
     console.log(JSON.stringify(roleCreateRes.rows));
     pool.end();
     return 0;
+}
+
+async function createUserRoleHandler(pool, schema){
+    let roleName = 'user';
+    let roleDescription = 'Normal User role which has only access to Login and Log-out routes.';
+    let permissions = {permissions: []};
+    return createRole(pool, schema, roleName, roleDescription, permissions);
+}
+
+async function createSuperUserRoleHandler(pool, schema){
+    const roleName = 'super_admin';
+    const roleDescription = 'Super User role which has access to all the Endpoints';
+    let permissions = {permissions: ['*']};
+
+    return createRole(pool, schema, roleName, roleDescription, permissions);
 }
 
 async function createSuperUserHandler(pool, schema){
@@ -236,6 +248,7 @@ async function runHandler(options){
         name: 'taskChoice',
         message: 'What do you want to do?',
         choices: [
+            'Create Normal User Role',
             'Create Super User',
             'Create Super User Role',
             new inquirer.Separator(),
@@ -254,6 +267,8 @@ async function runHandler(options){
         return createSuperUserHandler(pool, options.schema);
     else if(taskChoice == 'Create Super User Role')
         return createSuperUserRoleHandler(pool, options.schema);
+    else if(taskChoice == 'Create Normal User Role')
+        return createUserRoleHandler(pool, options.schema);
 }
 
 setupCommander();

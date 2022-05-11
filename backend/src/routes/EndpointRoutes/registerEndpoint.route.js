@@ -10,6 +10,8 @@ const { validateBodyParamsExistence } = require('../../utils/validateBodyParamet
 const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMethodsValidator');
 
 let addEndpointNameToRequest = require("../../middlewares/addEndpointNameToRequest");
+const { validateRole } = require('../../middlewares/roleValidation');
+const authenticateToken = require('../../middlewares/authenticateToken');
 /**
  * @swagger
  * /createEndpoint:
@@ -55,62 +57,66 @@ let addEndpointNameToRequest = require("../../middlewares/addEndpointNameToReque
  *         description: Parameter validation failed.
  */
 
-router.post('/createEndpoint', addEndpointNameToRequest('create_new_endpoint'), async (req, res) => {
-  // Validate weather the request body contains all the parameters or not
-  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpoint', 'method']);
-  if (bodyParameterValidationResult.status == false){
-    logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
-    return res.status(401).send({
-      statusCode: 401,
-      message: bodyParameterValidationResult.message
-    });
-  }
-  if (! httpMethodsValidator(req.body.method)) {
-    return res.status(401).send({
-        statusCode: 401,
-        message: `Invalid HTTP method passed. Valid methods are: ${VALID_METHODS}`
-    });
-  }
-  logger.debug(`Validated body parameters successfully...`);
+router.post('/createEndpoint', 
+             addEndpointNameToRequest('create_new_endpoint'), 
+             authenticateToken,
+             validateRole,
+             async (req, res) => {
+              // Validate weather the request body contains all the parameters or not
+              var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpoint', 'method']);
+              if (bodyParameterValidationResult.status == false){
+                logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
+                return res.status(401).send({
+                  statusCode: 401,
+                  message: bodyParameterValidationResult.message
+                });
+              }
+              if (! httpMethodsValidator(req.body.method)) {
+                return res.status(401).send({
+                    statusCode: 401,
+                    message: `Invalid HTTP method passed. Valid methods are: ${VALID_METHODS}`
+                });
+              }
+              logger.debug(`Validated body parameters successfully...`);
 
-  // If User exists, then throw the Error
-  const endpointExists = await Endpoint.findOne({ where: {
-      name: req.body.name
-    }
-  });
-  if (endpointExists){
-    logger.info(`Endpoint with the name "${req.body.name}" already exists !!`);
-    logger.debug(`Endpoint details -- Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
-    return res.status(400).send({
-      statusCode: 400,
-      message: `Bad request !! - Endpoint with the name "${req.body.name}" already exists`,
-    });
-  }
+              // If User exists, then throw the Error
+              const endpointExists = await Endpoint.findOne({ where: {
+                  name: req.body.name
+                }
+              });
+              if (endpointExists){
+                logger.info(`Endpoint with the name "${req.body.name}" already exists !!`);
+                logger.debug(`Endpoint details -- Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
+                return res.status(400).send({
+                  statusCode: 400,
+                  message: `Bad request !! - Endpoint with the name "${req.body.name}" already exists`,
+                });
+              }
 
-  // Create a Endpoint in the DB
-  try {
-    logger.debug(`Creating an Endpoint -- Name: ${req.body.name}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
-    const savedEndpoint = await Endpoint.create({
-      name: req.body.name,
-      description: req.body.description,
-      endpoint: req.body.endpoint,
-      method: req.body.method
-    });
-    logger.info(`Endpoint created and saved in the DB -- ID: ${savedEndpoint.id}, Name: ${req.body.name}, Endpoint: ${savedEndpoint.endpoint}, Method: ${savedEndpoint.method}`);
-    return res.status(201).send({
-      statusCode: 201,
-      message: `Endpoint has been created. ID: ${savedEndpoint.id}, Name: ${req.body.name}, Endpoint: ${savedEndpoint.endpoint}, Method: ${savedEndpoint.method}`,
-    });
-  } 
-  catch (err) {
-      logger.error(err);
-      return res.status(500).send({
-        statusCode: 500,
-        message: 'Internal Server Error !!!',
-        devMessage: err.message,
-        stackTrace: err.stack
-      });
-  }
+              // Create a Endpoint in the DB
+              try {
+                logger.debug(`Creating an Endpoint -- Name: ${req.body.name}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
+                const savedEndpoint = await Endpoint.create({
+                  name: req.body.name,
+                  description: req.body.description,
+                  endpoint: req.body.endpoint,
+                  method: req.body.method
+                });
+                logger.info(`Endpoint created and saved in the DB -- ID: ${savedEndpoint.id}, Name: ${req.body.name}, Endpoint: ${savedEndpoint.endpoint}, Method: ${savedEndpoint.method}`);
+                return res.status(201).send({
+                  statusCode: 201,
+                  message: `Endpoint has been created. ID: ${savedEndpoint.id}, Name: ${req.body.name}, Endpoint: ${savedEndpoint.endpoint}, Method: ${savedEndpoint.method}`,
+                });
+              } 
+              catch (err) {
+                  logger.error(err);
+                  return res.status(500).send({
+                    statusCode: 500,
+                    message: 'Internal Server Error !!!',
+                    devMessage: err.message,
+                    stackTrace: err.stack
+                  });
+              }
 });
 
 
