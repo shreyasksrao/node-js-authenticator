@@ -32,6 +32,10 @@
  *       - method
  */
 /* jshint indent: 1 */
+const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config({ path: path.join(__dirname, '../../config/config.env') });
+
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('Endpoint', {
 		id: {
@@ -62,6 +66,7 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: false
 		}
 	}, {
-		tableName: 'Endpoint'
+		tableName: 'Endpoint',
+		schema: String(process.env.AUTH_SCHEMA)
 	});
 };

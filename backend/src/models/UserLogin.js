@@ -1,4 +1,9 @@
+/*jshint esversion: 8 */
 /* jshint indent: 1 */
+const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config({ path: path.join(__dirname, '../../config/config.env') });
+
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('User_Login', {
 		id: {
@@ -29,10 +34,10 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: true
 		}
 	},{
-	indexes: [
-	  { fields: ['user_id', 'token_id'], unique: true }
-	]
-  	}, {
-		tableName: 'User_Login'
-	});
+		indexes: [
+			{ fields: ['user_id', 'token_id'], unique: true }
+		],
+		tableName: 'User_Login',
+		schema: process.env.AUTH_SCHEMA
+  	});
 };

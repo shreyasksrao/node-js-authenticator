@@ -10,7 +10,7 @@ let path = require('path');
 let dotenv = require('dotenv');
 dotenv.config({ path: path.join(__dirname, '../config/config.env') });
 
-const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+const sequelize = new Sequelize(process.env.AUTH_DB, process.env.AUTH_DB_USER, process.env.AUTH_DB_USER_PASSWORD, {
   host: process.env.DB_HOST,
   dialect:  'postgres',
   protocol: 'postgres',

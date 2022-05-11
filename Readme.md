@@ -96,3 +96,9 @@ Logs will be stored in the ***backend/logs/server.log***
 To access the Swagger UI, navigate to,
 
 `http://localhost:5001/api-docs/`  
+
+## adminTool.js(Script built on commander js and inquirer js)  
+
+## Creating "super_admin" Role
+
+To create the "super_admin" Role, you can use the adminTool.js script.  

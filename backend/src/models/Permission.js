@@ -28,6 +28,10 @@
  *       - permission_type
  */
 /* jshint indent: 1 */
+const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config({ path: path.join(__dirname, '../../config/config.env') });
+
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('Permission', {
 		id: {
@@ -53,6 +57,7 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: 'Allow'
 		}
 	}, {
-		tableName: 'Permission'
+		tableName: 'Permission',
+		schema: process.env.AUTH_SCHEMA
 	});
 };

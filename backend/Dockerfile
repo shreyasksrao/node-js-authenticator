@@ -5,7 +5,9 @@ USER authuser
 
 WORKDIR /home/authenticator/app
 
+COPY initDB.sh /docker-entrypoint-initdb.d/
 COPY . .
+
 ENV  NODE_ENV production
 
 # Server details

@@ -89,19 +89,20 @@ function setupCommander(){
         .option('-d, --db <database>', 'Database name')
         .option('-U, --dbUser <username>', 'Database Username')
         .option('-P, --dbUserPassword <password>', 'Database User Password')
+        .option('-s, --schema [schema name]', 'Schema name where the tables are present', 'auth_schema')
         .action(runHandler);
 
     program.parse(process.argv);
 }
 
-async function createSuperUserRoleHandler(pool){
+async function createSuperUserRoleHandler(pool, schema){
     const roleId = uuidv4(); 
     const roleName = 'super_admin';
     const roleDescription = 'Super User role which has access to all the Endpoints';
     let roleCreationDate = new Date();
     let permissions = {permissions: ['*']};
 
-    const checkRoleExistsQuery = 'SELECT EXISTS(SELECT 1 FROM "Role" WHERE name=$1)';
+    const checkRoleExistsQuery = `SELECT EXISTS(SELECT 1 FROM ${schema}."Role" WHERE name=$1)`;
     const res = await pool.query(checkRoleExistsQuery, [roleName]);
     console.log(`[ DEBUG ] Checking for the role existence...`.debug);
     if(res.rows[0].exists == true){
@@ -110,7 +111,7 @@ async function createSuperUserRoleHandler(pool){
         process.exit(-1);
     }
 
-    const insertUserQuery = `INSERT INTO public."Role"(id, name, description, created_at, permissions)
+    const insertUserQuery = `INSERT INTO ${schema}."Role"(id, name, description, created_at, permissions)
                              VALUES($1, $2, $3, $4, $5) RETURNING id, name, permissions`;
     const roleValues = [roleId, roleName, roleDescription, roleCreationDate, permissions ];
     console.log(`[ DEBUG ] Creating the Role '${roleName}' with ID '${roleId}' in the database...`.debug);
@@ -120,7 +121,7 @@ async function createSuperUserRoleHandler(pool){
     return 0;
 }
 
-async function createSuperUserHandler(pool){
+async function createSuperUserHandler(pool, schema){
     let { username } = await inquirer.prompt([
         {
             name: 'username',
@@ -130,7 +131,7 @@ async function createSuperUserHandler(pool){
     usernameValidator(username, pool);
 
     // Check if the Username already exists or not
-    const checkUserExistsQuery = 'SELECT EXISTS(SELECT 1 FROM "User" WHERE username=$1)';
+    const checkUserExistsQuery = `SELECT EXISTS(SELECT 1 FROM ${schema}."User" WHERE username=$1)`;
     const values = [username];
     const res = await pool.query(checkUserExistsQuery, values);
     console.log(`[ DEBUG ] Checking for the user existence...`.debug);
@@ -194,7 +195,7 @@ async function createSuperUserHandler(pool){
     const salt = await bcrypt.genSalt(10);
     let hashedPassword = await bcrypt.hash(password1, salt);  
     console.log(`[ DEBUG ] Creating the User '${username}' with ID '${userId}' in the database...`.debug);
-    const insertUserQuery = `INSERT INTO public."User"(id, first_name, last_name, email, username, password, phone_number, roles, email_verified, status, created_at)
+    const insertUserQuery = `INSERT INTO ${schema}."User"(id, first_name, last_name, email, username, password, phone_number, roles, email_verified, status, created_at)
                              VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, username`;
     const userValues = [userId, first_name, last_name, email, username, hashedPassword, phone_number, "super_admin", true, "active", creationDate ];
     const userCreateRes = await pool.query(insertUserQuery, userValues);
@@ -250,9 +251,9 @@ async function runHandler(options){
         ],
     });
     if(taskChoice == 'Create Super User')
-        return createSuperUserHandler(pool);
+        return createSuperUserHandler(pool, options.schema);
     else if(taskChoice == 'Create Super User Role')
-        return createSuperUserRoleHandler(pool);
+        return createSuperUserRoleHandler(pool, options.schema);
 }
 
 setupCommander();

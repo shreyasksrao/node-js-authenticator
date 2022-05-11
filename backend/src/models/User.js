@@ -50,6 +50,9 @@
  *       - password
  *       - phone_number
  */
+ const path = require('path');
+ const dotenv = require('dotenv');
+ dotenv.config({ path: path.join(__dirname, '../../config/config.env') });
 
  module.exports = function(sequelize, DataTypes) {
       return sequelize.define('User', {
@@ -119,6 +122,7 @@
             defaultValue: sequelize.fn('now')
         }
       }, {
-          tableName: 'User'
+          tableName: 'User',
+          schema: process.env.AUTH_SCHEMA
     });
   };

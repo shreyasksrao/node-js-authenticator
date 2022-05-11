@@ -31,6 +31,10 @@
  *       - permissions
  */
 /* jshint indent: 1 */
+const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config({ path: path.join(__dirname, '../../config/config.env') });
+
 module.exports = function(sequelize, DataTypes) {
 	return sequelize.define('Role', {
 		id: {
@@ -64,6 +68,7 @@ module.exports = function(sequelize, DataTypes) {
 			}
 		}
 	}, {
-		tableName: 'Role'
+		tableName: 'Role',
+		schema: process.env.AUTH_SCHEMA
 	});
 };
