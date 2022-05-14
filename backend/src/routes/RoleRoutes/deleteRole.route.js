@@ -1,68 +1,67 @@
 /*jshint esversion: 8 */
 /* eslint-disable arrow-parens */
 /* eslint-disable no-console */
-const { Permission } = require('../../sequelize');
+const { Role } = require('../../sequelize');
 const router = require("express").Router();
 
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
-const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
 
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 const authenticateToken = require('../../middlewares/authenticateToken');
 const { validateRole } = require('../../middlewares/roleValidation');
 /**
  * @swagger
- * /deletePermission/{permission_id}:
+ * /deleteRole/{role_id}:
  *   delete:
  *     tags:
- *       - Permission
- *     name: Deletes a Permission (Using Permission ID)
- *     summary: Delete a Permission in the DB
+ *       - Role
+ *     name: Deletes a Role (Using Role ID)
+ *     summary: Delete a Role in the DB
  *     produces:
  *       - application/json
  *     security:
  *       - bearerAuth: []
  *     parameters:
  *       - in: path
- *         name: permission_id
+ *         name: role_id
  *         schema:
  *           type: uuid
- *         description: ID of the Permission
+ *         description: ID of the Role
  *         required: true
  *     responses:
  *       '200':
- *         description: Permission Deleted successfully.
+ *         description: Role Deleted successfully.
  *       '400':
- *         description: Permission doesn't exist.
+ *         description: Role doesn't exist.
  *       '401':
  *         description: Parameter validation failed.
  */
 
- router.delete('/deletePermission/:permission_id', 
-               addEndpointNameToRequest('delete_permission_by_passing_id'), 
+ router.delete('/deleteRole/:role_id', 
+               addEndpointNameToRequest('delete_role_by_passing_id'), 
                authenticateToken,
                validateRole,
                async (req, res) => {
                 try{
-                  // If Permission exists
-                  const permissionExists = await Permission.findOne({ where: {
-                    id: req.params.permission_id
+                  // If Role exists
+                  const roleExists = await Role.findOne({ where: {
+                    id: req.params.role_id
                   }
                   });
-                  logger.debug(`[ DELETE PERMISSION ] Details -- Name: ${permissionExists.name}, Endpoint ID: ${permissionExists.endpoint_id}, Permission Type: ${permissionExists.permission_type}`);
-                  if (permissionExists){
-                      await permissionExists.destroy();
+                  logger.debug(`[ DELETE ROLE ] Details -- Name: ${roleExists.name}, Role ID: ${roleExists.id}, Role Name: ${roleExists.name}`);
+                  if (roleExists){
+                      await roleExists.destroy();
                       return res.status(200).send({
                           statusCode: 200,
-                          message: `Deleted Permission successfully. Details -- Name: ${permissionExists.name}, Endpoint ID: ${permissionExists.endpoint_id}, Permission Type: ${permissionExists.permission_type}}`,
+                          message: `Deleted Role successfully. Details -- Name: ${roleExists.name}, Role ID: ${roleExists.id}`,
                       });
                   }
                   else{
-                      logger.debug(`[ DELETE PERMISSION ] Failed to delete Permission. Permission Doesn't exist`);
+                      logger.debug(`[ DELETE ROLE ] Failed to delete Role. Role Doesn't exist`);
                       return res.status(400).send({
                           statusCode: 400,
-                          message: `Failed to delete permission. Permission Doesn't exist. Details -- ID: ${req.params.permission_id}`,
+                          message: `Failed to delete role. Role Doesn't exist. Details -- ID: ${req.params.id}`,
                       });
                   }
                 }

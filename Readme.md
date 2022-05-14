@@ -101,4 +101,12 @@ To access the Swagger UI, navigate to,
 
 ## Creating "super_admin" Role
 
-To create the "super_admin" Role, you can use the adminTool.js script.  
+To create the **"super_admin"** Role, you can use the adminTool.js script.  
+
+![alt text](https://github.com/shreyasksrao/node-js-authenticator/blob/master/assets/adminTool_Create_Super_user_role.PNG?raw=true)  
+
+## Creating "Super User"
+
+**Super User** has the *super_admin* Role. He can access all the Endpoint resources.To create the Super User you can simply use the adminTool.js script.  
+
+![alt text](https://github.com/shreyasksrao/node-js-authenticator/blob/master/assets/adminTool_Create_Super_user.PNG?raw=true)  

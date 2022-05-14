@@ -9,6 +9,8 @@ const logger = require('../../winston.conf.js');
 const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
 
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
+const authenticateToken = require('../../middlewares/authenticateToken');
+const { validateRole } = require('../../middlewares/roleValidation');
 /**
  * @swagger
  * /createPermission:
@@ -56,57 +58,61 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
  *         description: Body Parameters validation failed.
  */
 
-router.post('/createPermission', addEndpointNameToRequest('create_permission'), async (req, res) => {
-  // Validate weather the request body contains all the parameters or not
-  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpoint_id', 'permission_type']);
-  if (bodyParameterValidationResult.status == false){
-    logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
-    return res.status(401).send({
-      statusCode: 401,
-      message: bodyParameterValidationResult.message
-    });
-  }
-  logger.debug(`Validated body parameters successfully...`);
+router.post('/createPermission', 
+            addEndpointNameToRequest('create_permission'), 
+            authenticateToken,
+            validateRole,
+            async (req, res) => {
+              // Validate weather the request body contains all the parameters or not
+              var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpoint_id', 'permission_type']);
+              if (bodyParameterValidationResult.status == false){
+                logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
+                return res.status(401).send({
+                  statusCode: 401,
+                  message: bodyParameterValidationResult.message
+                });
+              }
+              logger.debug(`Validated body parameters successfully...`);
 
-  // If User exists, then throw the Error
-  const permissionExists = await Permission.findOne({ where: {
-      endpoint_id: req.body.endpoint_id ,
-      permission_type: req.body.permission_type
-    }
-  });
-  if (permissionExists){
-    logger.info(`Permission already exists !!`);
-    logger.debug(`Permission details -- Name: ${req.body.name}, EndpointId: ${req.body.endpoint_id}`);
-    return res.status(400).send({
-      statusCode: 400,
-      message: 'Bad request !! - Permission already exists',
-    });
-  }
+              // If User exists, then throw the Error
+              const permissionExists = await Permission.findOne({ where: {
+                  endpoint_id: req.body.endpoint_id ,
+                  permission_type: req.body.permission_type
+                }
+              });
+              if (permissionExists){
+                logger.info(`Permission already exists !!`);
+                logger.debug(`Permission details -- Name: ${req.body.name}, EndpointId: ${req.body.endpoint_id}`);
+                return res.status(400).send({
+                  statusCode: 400,
+                  message: 'Bad request !! - Permission already exists',
+                });
+              }
 
-  // Create a Permission in the DB
-  try {
-    logger.debug(`Creating a Permission -- Name: ${req.body.name}, Endpoint ID: ${req.body.endpoint_id}`);
-    const savedPermission = await Permission.create({
-      name:req.body.name,
-      description: req.body.description,
-      endpoint_id: req.body.endpoint_id,
-      permission_type: req.body.permission_type
-    });
-    logger.info(`Permission created and saved in the DB -- ID: ${savedPermission.id}, Endpoint ID: ${savedPermission.endpoint_id}, Type: ${savedPermission.permission_type}`);
-    return res.status(201).send({
-      statusCode: 201,
-      message: `Permission has been created. ID: ${savedPermission.id}, Endpoint ID: ${savedPermission.endpoint_id}, Type: ${savedPermission.permission_type}`,
-    });
-  } 
-  catch (err) {
-      logger.error(err);
-      return res.status(500).send({
-        statusCode: 500,
-        message: 'Internal Server Error !!!',
-        devMessage: err.message,
-        stackTrace: err.stack
-      });
-  }
+              // Create a Permission in the DB
+              try {
+                logger.debug(`Creating a Permission -- Name: ${req.body.name}, Endpoint ID: ${req.body.endpoint_id}`);
+                const savedPermission = await Permission.create({
+                  name:req.body.name,
+                  description: req.body.description,
+                  endpoint_id: req.body.endpoint_id,
+                  permission_type: req.body.permission_type
+                });
+                logger.info(`Permission created and saved in the DB -- ID: ${savedPermission.id}, Endpoint ID: ${savedPermission.endpoint_id}, Type: ${savedPermission.permission_type}`);
+                return res.status(201).send({
+                  statusCode: 201,
+                  message: `Permission has been created. ID: ${savedPermission.id}, Endpoint ID: ${savedPermission.endpoint_id}, Type: ${savedPermission.permission_type}`,
+                });
+              } 
+              catch (err) {
+                  logger.error(err);
+                  return res.status(500).send({
+                    statusCode: 500,
+                    message: 'Internal Server Error !!!',
+                    devMessage: err.message,
+                    stackTrace: err.stack
+                  });
+              }
 });
 
 

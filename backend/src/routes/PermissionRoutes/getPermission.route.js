@@ -8,6 +8,9 @@ const router = require("express").Router();
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
+
+const authenticateToken = require('../../middlewares/authenticateToken');
+const { validateRole } = require('../../middlewares/roleValidation');
 /**
  * @swagger
  * /getAllPermissions:
@@ -18,6 +21,8 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
  *     summary: Get all the Permissions.
  *     produces:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       '200':
  *         description: Permissions fetched successfully.
@@ -29,25 +34,29 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
  *         description: Username or email already taken.
  */
 
-router.get('/getAllPermissions', addEndpointNameToRequest('get_all_permissions'), async (req, res) => {
-  try{    
-    // TODO : Implement Caching ...
-    let permissionArray = await Permission.findAll({});
-    return res.status(200).json({
-        statusCode: 200,
-        message: `Permissions fetched successfully`,
-        permissions: permissionArray
-    });
-  }
-  catch (err) {
-    logger.error(err);
-    return res.status(500).send({
-      statusCode: 500,
-      message: 'Internal Server Error !!!',
-      devMessage: err.message,
-      stackTrace: err.stack
-    });
-  }
+router.get('/getAllPermissions', 
+           addEndpointNameToRequest('get_all_permissions'), 
+           authenticateToken,
+           validateRole,
+           async (req, res) => {
+            try{    
+              // TODO : Implement Caching ...
+              let permissionArray = await Permission.findAll({});
+              return res.status(200).json({
+                  statusCode: 200,
+                  message: `Permissions fetched successfully`,
+                  permissions: permissionArray
+              });
+            }
+            catch (err) {
+              logger.error(err);
+              return res.status(500).send({
+                statusCode: 500,
+                message: 'Internal Server Error !!!',
+                devMessage: err.message,
+                stackTrace: err.stack
+              });
+            }
 });
 
 /**
@@ -60,6 +69,8 @@ router.get('/getAllPermissions', addEndpointNameToRequest('get_all_permissions')
  *     summary: Get Permissions by passing hint about the Permission name or Type
  *     produces:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: key
@@ -81,59 +92,63 @@ router.get('/getAllPermissions', addEndpointNameToRequest('get_all_permissions')
  *         description: Parameter validation failed.
  */
 
- router.get('/getPermissions/:key/:key_hint', addEndpointNameToRequest('get_permissions_by_hint'), async (req, res) => {
-  try{
-    let column = req.params.key.toLowerCase();
-    let value = req.params.key_hint.toLowerCase();
-    
-    logger.debug(`[ GET PERMISSIONS BY HINT ] Details -- Hint key: ${column}, Hint value: ${value}`);
+ router.get('/getPermissions/:key/:key_hint', 
+            addEndpointNameToRequest('get_permissions_by_hint'), 
+            authenticateToken,
+            validateRole,
+            async (req, res) => {
+              try{
+                let column = req.params.key.toLowerCase();
+                let value = req.params.key_hint.toLowerCase();
+                
+                logger.debug(`[ GET PERMISSIONS BY HINT ] Details -- Hint key: ${column}, Hint value: ${value}`);
 
-    // If the Hint is for the "name" column
-    if (column == 'name'){
-      let permissions = await Permission.findAll({ 
-        where: {
-            name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + value + '%')
-        }
-      });
-      return res.status(201).json({
-        statusCode: 201,
-        message: `Permissions fetched successfully. Details -- Hint Key: ${column}, Hint Value: ${value}`,
-        endpoints: JSON.stringify(permissions)
-      });
-    }
+                // If the Hint is for the "name" column
+                if (column == 'name'){
+                  let permissions = await Permission.findAll({ 
+                    where: {
+                        name: sequelize.where(sequelize.fn('LOWER', sequelize.col('name')), 'LIKE', '%' + value + '%')
+                    }
+                  });
+                  return res.status(201).json({
+                    statusCode: 201,
+                    message: `Permissions fetched successfully. Details -- Hint Key: ${column}, Hint Value: ${value}`,
+                    endpoints: JSON.stringify(permissions)
+                  });
+                }
 
-    // If the Hint is for the "permissionType" column
-    else if(column == 'permission_type'){
-      let permissions = await Permission.findAll({ 
-        where: {
-            permissionType: sequelize.where(sequelize.fn('LOWER', sequelize.col('permission_type')), 'LIKE', '%' + value + '%')
-        }
-      });
-      return res.status(201).json({
-        statusCode: 201,
-        message: `Permissions fetched successfully. Details -- Hint Key: ${column}, Hint Value: ${value}`,
-        endpoints: JSON.stringify(permissions)
-      });
-    }
+                // If the Hint is for the "permissionType" column
+                else if(column == 'permission_type'){
+                  let permissions = await Permission.findAll({ 
+                    where: {
+                        permissionType: sequelize.where(sequelize.fn('LOWER', sequelize.col('permission_type')), 'LIKE', '%' + value + '%')
+                    }
+                  });
+                  return res.status(201).json({
+                    statusCode: 201,
+                    message: `Permissions fetched successfully. Details -- Hint Key: ${column}, Hint Value: ${value}`,
+                    endpoints: JSON.stringify(permissions)
+                  });
+                }
 
-    // Else, throw the error saying invalid hint key
-    else{
-        logger.debug(`[ GET ENDPOINTS BY HINT ] Failed to fetch endpoints. Hint key is invalid. Valid Hint keys are ["name", "permission_type"]`);
-        return res.status(400).json({
-            statusCode: 400,
-            message: `Failed to fetch endpoints. Hint key is invalid. Valid Hint keys are ["name", "permission_type"]`,
-        });
-    }
-  }
-  catch (err) {
-      logger.error(err);
-      return res.status(500).json({
-        statusCode: 500,
-        message: 'Internal Server Error !!!',
-        devMessage: err.message,
-        stackTrace: err.stack
-      });
-  }
+                // Else, throw the error saying invalid hint key
+                else{
+                    logger.debug(`[ GET ENDPOINTS BY HINT ] Failed to fetch endpoints. Hint key is invalid. Valid Hint keys are ["name", "permission_type"]`);
+                    return res.status(400).json({
+                        statusCode: 400,
+                        message: `Failed to fetch endpoints. Hint key is invalid. Valid Hint keys are ["name", "permission_type"]`,
+                    });
+                }
+              }
+              catch (err) {
+                  logger.error(err);
+                  return res.status(500).json({
+                    statusCode: 500,
+                    message: 'Internal Server Error !!!',
+                    devMessage: err.message,
+                    stackTrace: err.stack
+                  });
+              }
 });
 
 module.exports=router;

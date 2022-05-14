@@ -24,6 +24,8 @@ const authenticateToken = require('../../middlewares/authenticateToken');
  *       - application/json
  *     produces:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - name: body
  *         in: body
@@ -77,7 +79,6 @@ router.post('/createEndpoint',
                     message: `Invalid HTTP method passed. Valid methods are: ${VALID_METHODS}`
                 });
               }
-              logger.debug(`Validated body parameters successfully...`);
 
               // If User exists, then throw the Error
               const endpointExists = await Endpoint.findOne({ where: {

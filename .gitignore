@@ -10,6 +10,9 @@ backend/logs/
 frontend/authenticator-ui/node_modules
 frontend/authenticator-ui/package-lock.json
 
+reactFrontend/authenticator-ui/node_modules
+reactFrontend/authenticator-ui/package-lock.json
+
 adminTool/node_modules
 adminTool/package-lock.json
 

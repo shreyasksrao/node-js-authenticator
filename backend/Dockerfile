@@ -18,16 +18,16 @@ ENV AUTH_SERVER_ENV "development"
 ENV ISSUER_NAME "authenticator"
 
 # PostgreSQL server details
-ENV DB_HOST "192.168.1.200"
+ENV DB_HOST ""
 ENV DB_PORT 5432
 ENV DB_NAME "AuthDB_Test"
 ENV DB_USER "dbadmin"
-ENV DB_PASSWORD "Postgres@Pass123"
+ENV DB_PASSWORD ""
 
 # Redis server details
-ENV REDIS_HOST "192.168.1.200"
+ENV REDIS_HOST ""
 ENV REDIS_PORT 6379
-ENV REDIS_PASS "FG0RVs9xv025s7bR/zGmifF9zaByxA2eNN0qUmasW1kuLk14/GEYxml5NrLsMacL+mNPBlUCQzcgSgs"
+ENV REDIS_PASS ""
 
 # Token expiration parameters
 ENV ACCESS_TOKEN_EXPIRY_SECONDS 1800

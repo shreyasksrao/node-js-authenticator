@@ -9,6 +9,9 @@ const logger = require('../../winston.conf.js');
 const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
 const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMethodsValidator');
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
+
+const authenticateToken = require('../../middlewares/authenticateToken');
+const { validateRole } = require('../../middlewares/roleValidation');
 /**
  * @swagger
  * /updateEndpoint/{endpointName}:
@@ -21,6 +24,8 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
  *       - application/json
  *     produces:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: endpointName
@@ -56,59 +61,63 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
  *         description: Parameter validation failed.
  */
 
-router.put('/updateEndpoint/:endpointName', addEndpointNameToRequest('update_endpoint_by_passing_endpoint_name'), async (req, res) => {
-  // Validate weather the request body contains all the parameters or not
-  var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpoint', 'method']);
-  if (bodyParameterValidationResult.status == false){
-    logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
-    return res.status(401).send({
-      statusCode: 401,
-      message: bodyParameterValidationResult.message
-    });
-  }
-  if (! httpMethodsValidator(req.body.method)) {
-    return res.status(401).send({
-        statusCode: 401,
-        message: `Invalid HTTP method passed. Valid methods are: ${VALID_METHODS}`
-    });
-  }
-  logger.debug(`Validated body parameters successfully...`);
+router.put('/updateEndpoint/:endpointName', 
+           addEndpointNameToRequest('update_endpoint_by_passing_endpoint_name'), 
+           authenticateToken,
+           validateRole,
+           async (req, res) => {
+              // Validate weather the request body contains all the parameters or not
+              var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpoint', 'method']);
+              if (bodyParameterValidationResult.status == false){
+                logger.debug(`Body parameter validation error: ${bodyParameterValidationResult.message}`);
+                return res.status(401).send({
+                  statusCode: 401,
+                  message: bodyParameterValidationResult.message
+                });
+              }
+              if (! httpMethodsValidator(req.body.method)) {
+                return res.status(401).send({
+                    statusCode: 401,
+                    message: `Invalid HTTP method passed. Valid methods are: ${VALID_METHODS}`
+                });
+              }
+              logger.debug(`Validated body parameters successfully...`);
 
-  try{
-    // If endpoint exists then only Update
-    const endpointExists = await Endpoint.findOne({ where: {
-            name: req.params.endpointName
-        }
-    });
-    logger.debug(`[ UPDATE ENDPOINT ] Details -- Endpoint Name: ${req.params.endpointName}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
-    if (endpointExists){
-        endpointExists.endpoint = req.body.endpoint;
-        endpointExists.method = req.body.method;
-        endpointExists.description = req.body.description;
-        await endpointExists.save();
-        logger.debug(`[ UPDATE ENDPOINT ] Successfully updated endpoint. Details -- Endpoint Name: ${req.params.endpointName}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
-        return res.status(200).send({
-        statusCode: 200,
-        message: `Endpoint Updated Successfully. Details --  Endpoint Name: ${req.params.endpointName}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`
-        });
-    }
-    else {
-        logger.error(`[ UPDATE ENDPOINT ] Failed updated endpoint. Details -- Endpoint with Name '${req.params.endpointName}' doesn't exist`);
-        return res.status(400).send({
-        statusCode: 400,
-        message: `Failed updated endpoint. Details -- Endpoint with Name '${req.params.endpointName}' doesn't exist`
-        });
-    }
-  }
-  catch (err) {
-      logger.error(err);
-      return res.status(500).send({
-        statusCode: 500,
-        message: 'Internal Server Error !!!',
-        devMessage: err.message,
-        stackTrace: err.stack
-      });
-  }
+              try{
+                // If endpoint exists then only Update
+                const endpointExists = await Endpoint.findOne({ where: {
+                        name: req.params.endpointName
+                    }
+                });
+                logger.debug(`[ UPDATE ENDPOINT ] Details -- Endpoint Name: ${req.params.endpointName}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
+                if (endpointExists){
+                    endpointExists.endpoint = req.body.endpoint;
+                    endpointExists.method = req.body.method;
+                    endpointExists.description = req.body.description;
+                    await endpointExists.save();
+                    logger.debug(`[ UPDATE ENDPOINT ] Successfully updated endpoint. Details -- Endpoint Name: ${req.params.endpointName}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`);
+                    return res.status(200).send({
+                    statusCode: 200,
+                    message: `Endpoint Updated Successfully. Details --  Endpoint Name: ${req.params.endpointName}, Endpoint: ${req.body.endpoint}, Method: ${req.body.method}`
+                    });
+                }
+                else {
+                    logger.error(`[ UPDATE ENDPOINT ] Failed updated endpoint. Details -- Endpoint with Name '${req.params.endpointName}' doesn't exist`);
+                    return res.status(400).send({
+                    statusCode: 400,
+                    message: `Failed updated endpoint. Details -- Endpoint with Name '${req.params.endpointName}' doesn't exist`
+                    });
+                }
+              }
+              catch (err) {
+                  logger.error(err);
+                  return res.status(500).send({
+                    statusCode: 500,
+                    message: 'Internal Server Error !!!',
+                    devMessage: err.message,
+                    stackTrace: err.stack
+                  });
+              }
 });
 
 
