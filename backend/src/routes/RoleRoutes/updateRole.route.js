@@ -39,7 +39,7 @@ const authenticateToken = require('../../middlewares/authenticateToken');
  *               type: string
  *               description: Description about the Role.
  *             permissions:
- *               type: JSON
+ *               type: object
  *               description: Permission array (JSON string). Value should be an array of Permission IDs with "permissions" as Key
  *           required:
  *             - name
@@ -54,7 +54,7 @@ const authenticateToken = require('../../middlewares/authenticateToken');
  *         description: Body Parameters validation failed.
  */
 
-router.post('/updateRole', 
+router.put('/updateRole', 
             addEndpointNameToRequest('update_role'), 
             authenticateToken,
             validateRole,

@@ -62,10 +62,7 @@ module.exports = function(sequelize, DataTypes) {
 		// Stores the Permission ID in an JSON array
 		permissions: {
 			type: DataTypes.JSON,
-			allowNull: true,
-			set(value) {
-				return this.setDataValue("permissions", JSON.stringify(value));
-			}
+			allowNull: true
 		}
 	}, {
 		tableName: 'Role',

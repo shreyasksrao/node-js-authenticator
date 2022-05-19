@@ -121,15 +121,15 @@ async function createRole(pool, schema, roleName, roleDescription, permissions){
 async function createUserRoleHandler(pool, schema){
     let roleName = 'user';
     let roleDescription = 'Normal User role which has only access to Login and Log-out routes.';
-    let permissions = {permissions: []};
+    let permissions = JSON.stringify({"permissions": []});
     return createRole(pool, schema, roleName, roleDescription, permissions);
 }
 
 async function createSuperUserRoleHandler(pool, schema){
     const roleName = 'super_admin';
     const roleDescription = 'Super User role which has access to all the Endpoints';
-    let permissions = {permissions: ['*']};
-
+    let permissions = JSON.stringify({"permissions": ['*']});
+    console.log(permissions);
     return createRole(pool, schema, roleName, roleDescription, permissions);
 }
 

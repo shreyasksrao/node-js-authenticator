@@ -104,6 +104,7 @@ app.use(
 const login = require('./routes/UserRoutes/loginUser.route.js');
 const register = require('./routes/UserRoutes/registerUser.route.js');
 const logoutUser =require('./routes/UserRoutes/logout.route.js');
+const changeUserState = require('./routes/UserRoutes/changeUserState.route');
 // const forgetPassword = require('./routes/forgotPassword.route.js');
 // const resetPassword = require('./routes/resetPassword.route.js');
 // const updatePassword = require('./routes/updatePassword.route.js');
@@ -135,6 +136,7 @@ app.get('/', function (req, res) {
 app.use('/api/v1', login);
 app.use('/api/v1', register);
 app.use('/api/v1', logoutUser);
+app.use('/api/v1', changeUserState);
 // app.use('/api/v1', forgetPassword);
 // app.use('/api/v1', resetPassword);
 // app.use('/api/v1', updatePassword);
