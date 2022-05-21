@@ -1,10 +1,10 @@
 .DS_Store
-backend/node_modules
-backend/package-lock.json
-backend/config/config.env
-backend/config/jwt/keys
-backend/config/ssl
-backend/logs/
+backend/auth-admin-service/node_modules
+backend/auth-admin-service/package-lock.json
+backend/auth-admin-service/config/config.env
+backend/auth-admin-service/config/jwt/keys
+backend/auth-admin-service/config/ssl
+backend/auth-admin-service/logs/
 /dist
 
 frontend/authenticator-ui/node_modules
@@ -17,9 +17,9 @@ adminTool/node_modules
 adminTool/package-lock.json
 
 # Ignore Sequelize files
-backend/src/config/
-backend/src/seeders/
-backend/src/migrations/
+backend/auth-admin-service/src/config/
+backend/auth-admin-service/src/seeders/
+backend/auth-admin-service/src/migrations/
 
 
 # local env files
