@@ -48,6 +48,7 @@ async function buildRoleMap(){
         permissions.forEach(p => {
             if(p == '*'){
                 roleMap[r.name].push('*');
+                roleEndpointMap[r.name].push('*');
                 roleString = '*';
                 return;
             }
@@ -64,6 +65,7 @@ async function buildRoleMap(){
 
 async function validateRole(req, res, next){
     try {
+        console.log(IN_MEMORY_ROLE_ENDPOINT_CACHE);
         let currentTime = Math.floor(new Date().getTime() / 1000);
         if (currentTime > IN_MEMORY_OBJECT_CACHE_EXPIRATION_AT){
             console.log(`Building Role Map due to In-Memory Cache expire...`);

@@ -7,6 +7,13 @@ backend/auth-admin-service/config/ssl
 backend/auth-admin-service/logs/
 /dist
 
+backend/token-validator-service/node_modules
+backend/token-validator-service/package-lock.json
+backend/token-validator-service/config/config.env
+backend/token-validator-service/config/jwt/keys
+backend/token-validator-service/config/ssl
+backend/token-validator-service/logs/
+
 frontend/authenticator-ui/node_modules
 frontend/authenticator-ui/package-lock.json
 

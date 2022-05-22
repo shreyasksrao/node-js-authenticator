@@ -23,13 +23,6 @@ async function authenticateToken(req, res, next) {
         message: "Token is not passed in the header. Ex: authorization: Bearer <JWT token>"
       });
 
-    const tokenBlacklisted = await redisClient.exists(token.tid);
-    if(tokenBlacklisted){
-      return res.status(403).json({
-        status: 403,
-        message: "Token is Blacklisted. Please login again with your credentials"
-      });
-    }
     else{
       jwt.verify(token, publickey, {algorithm: 'RS256'}, async (err, payload) => {
         // Any error with token verification, throw 403
@@ -49,6 +42,14 @@ async function authenticateToken(req, res, next) {
               "message":`Forbidden, Token expired !!`
             });
           }
+        }
+
+        const tokenBlacklisted = await redisClient.exists(payload.tid);
+        if(tokenBlacklisted){
+          return res.status(403).json({
+            status: 403,
+            message: "Token is Blacklisted. Please login again with your credentials"
+          });
         }
         req.user = payload;
         next();

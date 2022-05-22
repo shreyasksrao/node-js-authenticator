@@ -40,14 +40,14 @@ async function blacklistToken(req, res, next) {
         statusCode: 403,
         message: 'Forbidden, Token expired !!'
       });
-    else if (await isBlacklisted(token.tid))
+    else if (await isBlacklisted(payload.tid))
       return res.status(403).json({
         statusCode: 403,
         message: 'Token already Blacklisted !!'
       });
     else{
       try {
-        await redisClient.set(String(token.tid), String(payload.id), 'EX', process.env.ACCESS_TOKEN_EXPIRY_SECONDS);
+        await redisClient.set(String(payload.tid), String(payload.id), 'EX', process.env.ACCESS_TOKEN_EXPIRY_SECONDS);
         return res.status(200).json({
           statusCode: 201,
           message: `Token Blacklisted successfully`

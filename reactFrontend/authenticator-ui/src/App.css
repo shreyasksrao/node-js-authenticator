@@ -1,5 +1,13 @@
+:root{
+  --navbarHeight: 70px;
+  --navBarBackgroundColor: #2a55f8;
+  --navBarTextColor: rgb(238, 229, 229);
+  --appTextFont: 'Nunito'
+}
+
 .App {
   text-align: center;
+  font-family: var(--appTextFont);
 }
 
 .App-logo {
@@ -61,6 +69,7 @@
   font-weight: bold;
   padding-left: 20px;
   padding-bottom: 8px;
+  font-family: var(--appTextFont);
 }
 
 .form-input {
@@ -71,6 +80,7 @@
   border: 2px solid rgb(143, 110, 110);
   font-size: 20px;
   font-weight: 550;
+  font-family: var(--appTextFont);
 }
 
 .form-input:focus {
@@ -86,3 +96,45 @@
   box-shadow: 5px 5px 10px rgb(62, 61, 61);
   border-color: rgb(31, 39, 36);
 }
+
+
+/* Nav Bar Styles */
+.navbar-container {
+  box-sizing: border-box;
+  height: var(--navbarHeight);
+  background-color: var(--navBarBackgroundColor);
+  color: var(--navBarTextColor);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 24px;
+  padding: 20px;
+}
+
+.navbar-items {
+  display: flex;
+}
+
+.navbar-item {
+  padding: 20px;
+  font-size: 18px;
+  color: white;
+  font-weight: 600;
+  font-family: var(--appTextFont);
+}
+
+.navbar-link {
+  text-decoration: none;
+  color: white;
+  font-family: var(--appTextFont);
+}
+
+.company-name {
+  padding: 30px;
+  font: 30px solid white;
+  font-weight: 700;
+  font-family: var(--appTextFont);
+}
+
+/* Nav Bar Styles */
