@@ -3,9 +3,12 @@ const inquirer = require('inquirer');
 const program = require('commander');
 const figlet = require('figlet');
 const { Pool } = require('pg');
+const axios = require('axios');
 
 const { v4: uuidv4 } = require('uuid');
 const bcrypt = require("bcryptjs");
+
+const { createEndpoints } = require('./handlers/initializeSeeder');
 
 var colors = require('colors');
 colors.setTheme({
@@ -99,7 +102,7 @@ async function createRole(pool, schema, roleName, roleDescription, permissions){
     const roleId = uuidv4(); 
     let roleCreationDate = new Date();
 
-    const checkRoleExistsQuery = `SELECT EXISTS(SELECT 1 FROM ${schema}."Role" WHERE name=$1)`;
+    const checkRoleExistsQuery = `SELECT EXISTS(SELECT 1 FROM ${schema}."role" WHERE name=$1)`;
     const res = await pool.query(checkRoleExistsQuery, [roleName]);
     console.log(`[ DEBUG ] Checking for the role existence...`.debug);
     if(res.rows[0].exists == true){
@@ -108,7 +111,7 @@ async function createRole(pool, schema, roleName, roleDescription, permissions){
         process.exit(-1);
     }
 
-    const insertUserQuery = `INSERT INTO ${schema}."Role"(id, name, description, created_at, permissions)
+    const insertUserQuery = `INSERT INTO ${schema}."role"(id, name, description, created_at, permissions)
                              VALUES($1, $2, $3, $4, $5) RETURNING id, name, permissions`;
     const roleValues = [roleId, roleName, roleDescription, roleCreationDate, permissions ];
     console.log(`[ DEBUG ] Creating the Role '${roleName}' with ID '${roleId}' in the database...`.debug);
@@ -143,7 +146,7 @@ async function createSuperUserHandler(pool, schema){
     usernameValidator(username, pool);
 
     // Check if the Username already exists or not
-    const checkUserExistsQuery = `SELECT EXISTS(SELECT 1 FROM ${schema}."User" WHERE username=$1)`;
+    const checkUserExistsQuery = `SELECT EXISTS(SELECT 1 FROM ${schema}."user" WHERE username=$1)`;
     const values = [username];
     const res = await pool.query(checkUserExistsQuery, values);
     console.log(`[ DEBUG ] Checking for the user existence...`.debug);
@@ -207,13 +210,59 @@ async function createSuperUserHandler(pool, schema){
     const salt = await bcrypt.genSalt(10);
     let hashedPassword = await bcrypt.hash(password1, salt);  
     console.log(`[ DEBUG ] Creating the User '${username}' with ID '${userId}' in the database...`.debug);
-    const insertUserQuery = `INSERT INTO ${schema}."User"(id, first_name, last_name, email, username, password, phone_number, roles, email_verified, status, created_at)
+    const insertUserQuery = `INSERT INTO ${schema}."user"(id, first_name, last_name, email, username, password, phone_number, roles, email_verified, status, created_at)
                              VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING id, username`;
     const userValues = [userId, first_name, last_name, email, username, hashedPassword, phone_number, "super_admin", true, "active", creationDate ];
     const userCreateRes = await pool.query(insertUserQuery, userValues);
     console.log(userCreateRes.rows);
     pool.end();
     return 0;
+}
+
+async function createEndpointsHandler(){
+    let { auth_server } = await inquirer.prompt([
+        {
+            type: "text",
+            name: 'auth_server',
+            message: 'Enter Authentication Server IP address: '
+        }
+    ]);
+    let { auth_server_port } = await inquirer.prompt([
+        {
+            type: "text",
+            name: 'auth_server_port',
+            message: 'Enter Authentication Server Port: '
+        }
+    ]);
+    let { admin_username } = await inquirer.prompt([
+        {
+            type: "text",
+            name: 'admin_username',
+            message: 'Enter Super Admin Email: ',
+        }
+    ]);
+    let { admin_password } = await inquirer.prompt([
+        {
+            type: "password",
+            name: 'admin_password',
+            message: 'Enter Super Admin Password: ',
+            mask: '*',
+        }
+    ]);
+
+    try {
+        const endpointUrl =`http://${auth_server}:${auth_server_port}/api/v1/loginUser`
+        let authResponse = await axios.post(endpointUrl, 
+                {email: admin_username, password: admin_password}, 
+                {headers: {
+                        'content-type': 'application/json'
+                }});
+        const accessToken = authResponse.data.accessToken;
+        createEndpoints(auth_server, auth_server_port, accessToken);
+    } catch (error) {
+        console.log(`Error: ${error}`);
+    }
+    
 }
 
 async function runHandler(options){
@@ -248,6 +297,7 @@ async function runHandler(options){
         name: 'taskChoice',
         message: 'What do you want to do?',
         choices: [
+            'Register built-in endpoints',
             'Create Normal User Role',
             'Create Super User',
             'Create Super User Role',
@@ -269,6 +319,8 @@ async function runHandler(options){
         return createSuperUserRoleHandler(pool, options.schema);
     else if(taskChoice == 'Create Normal User Role')
         return createUserRoleHandler(pool, options.schema);
+    else if(taskChoice == 'Register built-in endpoints')
+        return createEndpointsHandler();
 }
 
 setupCommander();

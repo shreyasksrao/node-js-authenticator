@@ -37,7 +37,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: path.join(__dirname, '../../config/config.env') });
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('Endpoint', {
+	return sequelize.define('endpoint', {
 		id: {
 			type: DataTypes.UUID,
 			primaryKey: true,
@@ -66,7 +66,7 @@ module.exports = function(sequelize, DataTypes) {
 			defaultValue: false
 		}
 	}, {
-		tableName: 'Endpoint',
+		tableName: 'endpoint',
 		schema: String(process.env.AUTH_SCHEMA)
 	});
 };

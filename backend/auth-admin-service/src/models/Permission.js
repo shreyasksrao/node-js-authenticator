@@ -3,7 +3,7 @@
 /**
  * @swagger
  * definitions:
- *   Permission:
+ *   permission:
  *     type: object
  *     properties:
  *       id:
@@ -33,7 +33,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: path.join(__dirname, '../../config/config.env') });
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('Permission', {
+	return sequelize.define('permission', {
 		id: {
 			type: DataTypes.UUID,
 			primaryKey: true,
@@ -57,7 +57,7 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: 'Allow'
 		}
 	}, {
-		tableName: 'Permission',
+		tableName: 'permission',
 		schema: process.env.AUTH_SCHEMA
 	});
 };

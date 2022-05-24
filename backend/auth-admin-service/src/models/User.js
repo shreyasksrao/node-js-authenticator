@@ -3,7 +3,7 @@
 /**
  * @swagger
  * definitions:
- *   User:
+ *   user:
  *     type: object
  *     properties:
  *       id:
@@ -55,7 +55,7 @@
  dotenv.config({ path: path.join(__dirname, '../../config/config.env') });
 
  module.exports = function(sequelize, DataTypes) {
-      return sequelize.define('User', {
+      return sequelize.define('user', {
         id: {
             type: DataTypes.UUID,
             primaryKey: true,
@@ -122,7 +122,7 @@
             defaultValue: sequelize.fn('now')
         }
       }, {
-          tableName: 'User',
+          tableName: 'user',
           schema: process.env.AUTH_SCHEMA
     });
   };

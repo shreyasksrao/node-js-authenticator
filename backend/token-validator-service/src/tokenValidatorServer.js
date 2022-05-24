@@ -4,9 +4,8 @@ const path = require('path');
 const express = require('express');
 let cors = require('cors');
 const dotenv = require('dotenv');
-const morgan = require('morgan');
 const colors = require('colors');
-const { sequelize } = require('./sequelize');
+const morgan = require('morgan');
 
 // Load the Winston logger
 const logger = require('./winston.conf.js');
@@ -29,8 +28,7 @@ app.use(express.json());
 var corsOption = {
   origin: true,
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-  credentials: true,
-  exposedHeaders: ['x-auth-token']
+  credentials: true
 };
 app.use(cors(corsOption));
 
@@ -45,7 +43,7 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerDefinition = {
   swagger: "2.0",
   info: {
-    title: 'Node-Js-Auth API',
+    title: 'Node-Js-Auth API (Token Validator Service)',
     version: '1.0.0',
     description: 'Documentation of Node Js Auth backend API',
     license: {
@@ -63,22 +61,13 @@ const swaggerDefinition = {
   "schemes": [
     "http",
     "https"
-  ],
-  "securityDefinitions": {
-    "bearerAuth": {
-      "name": "Authorization",
-      "in": "header",
-      "type": "apiKey",
-      "description": "JWT Authorization token"
-    }
-  },
-  "security": [ { "bearerAuth": [] } ]
+  ]
 };
 
 const swaggerJsDocoptions = {
   swaggerDefinition,
   apis: [
-    path.join(__dirname + '/models/*.js')
+    path.join(__dirname + '/routes/*.js')
   ]
 };
 
@@ -95,23 +84,19 @@ app.use(
   swaggerUi.setup(swaggerSpec, swaggerUiOptions)
 );
 
-const createRole = require('./routes/RoleRoutes/createRole.route');
-const getRole = require('./routes/RoleRoutes/getRoles.route');
-const updateRole = require('./routes/RoleRoutes/updateRole.route');
-const deleteRole = require('./routes/RoleRoutes/deleteRole.route');
+const validateRole = require('./routes/validateRole.route');
+const validateToken = require('./routes/validateToken.route');
 
 app.get('/', function (req, res) {
   res.send('hello world');
 });
 
-app.use('/api/v1', createRole);
-app.use('/api/v1', getRole);
-app.use('/api/v1', updateRole);
-app.use('/api/v1', deleteRole);
+app.use('/api/v1', validateRole);
+app.use('/api/v1', validateToken);
 
 const server = app.listen(PORT, () => {
-  console.log(`Authentication Service is running on Port : ${PORT}`.green.bold.underline);
-  logger.info(`Authentication Service is running on Port : ${PORT}`);
+  console.log(`Token Validator Service is running on Port : ${PORT}`.green.bold.underline);
+  logger.info(`Token Validator Service is running on Port : ${PORT}`);
 });
 
 process.on('unhandledRejection', async (err, promise) => {

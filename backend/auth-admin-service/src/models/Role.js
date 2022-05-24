@@ -3,7 +3,7 @@
 /**
  * @swagger
  * definitions:
- *   Role:
+ *   role:
  *     type: object
  *     properties:
  *       id:
@@ -36,7 +36,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: path.join(__dirname, '../../config/config.env') });
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('Role', {
+	return sequelize.define('role', {
 		id: {
 			type: DataTypes.UUID,
 			primaryKey: true,
@@ -65,7 +65,7 @@ module.exports = function(sequelize, DataTypes) {
 			allowNull: true
 		}
 	}, {
-		tableName: 'Role',
+		tableName: 'role',
 		schema: process.env.AUTH_SCHEMA
 	});
 };

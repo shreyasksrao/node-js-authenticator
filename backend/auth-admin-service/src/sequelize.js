@@ -5,6 +5,7 @@ const UserLoginModel = require('./models/UserLogin');
 const RoleModel = require('./models/Role');
 const PermissionModel = require('./models/Permission');
 const EndpointModel = require('./models/Endpoint');
+const EndpointTagModel = require('./models/EndpointTag');
 
 let path = require('path');
 let dotenv = require('dotenv');
@@ -38,6 +39,7 @@ const UserLogin = UserLoginModel(sequelize, Sequelize);
 const Role = RoleModel(sequelize, Sequelize);
 const Permission = PermissionModel(sequelize, Sequelize);
 const Endpoint = EndpointModel(sequelize, Sequelize);
+const EndpointTag = EndpointTagModel(sequelize, Sequelize);
 
 sequelize.sync().then(() => {
   // eslint-disable-next-line no-console
@@ -47,4 +49,4 @@ sequelize.sync().then(() => {
 });
 
 
-module.exports = { sequelize, User, UserLogin, Role, Permission, Endpoint };
+module.exports = { sequelize, User, UserLogin, Role, Permission, Endpoint, EndpointTag };

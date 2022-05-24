@@ -5,7 +5,7 @@ const dotenv = require('dotenv');
 dotenv.config({ path: path.join(__dirname, '../../config/config.env') });
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('User_Login', {
+	return sequelize.define('user_login', {
 		id: {
 			type: DataTypes.BIGINT,
 			allowNull: false,
@@ -37,7 +37,7 @@ module.exports = function(sequelize, DataTypes) {
 		indexes: [
 			{ fields: ['user_id', 'token_id'], unique: true }
 		],
-		tableName: 'User_Login',
+		tableName: 'user_login',
 		schema: process.env.AUTH_SCHEMA
   	});
 };

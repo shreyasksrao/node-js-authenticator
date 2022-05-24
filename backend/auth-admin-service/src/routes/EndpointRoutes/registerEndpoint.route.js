@@ -1,7 +1,7 @@
 /*jshint esversion: 8 */
 /* eslint-disable arrow-parens */
 /* eslint-disable no-console */
-const { Endpoint } = require('../../sequelize');
+const { Endpoint, EndpointTag } = require('../../sequelize');
 const router = require("express").Router();
 
 // Load the Winston logger
@@ -45,6 +45,9 @@ const authenticateToken = require('../../middlewares/authenticateToken');
  *             description:
  *               type: string
  *               description: Description about the permission.
+ *             tags:
+ *               type: object
+ *               description: Tags given to the specified endpoint. Tags are used while building the Role map. Ex are, "model", "method"
  *           required:
  *             - name
  *             - description
@@ -103,6 +106,20 @@ router.post('/createEndpoint',
                   endpoint: req.body.endpoint,
                   method: req.body.method
                 });
+
+                if(req.body.tags != undefined){
+                  const tagArray = req.body.tags;
+                  tagArray.forEach(async tag => {
+                    let tagName = tag.name;
+                    let tagValue = tag.value;
+                    logger.debug(`Creating Tag in the endpoint_tag table. tag_name: ${tagName}, tag_value: ${tagValue}`)
+                    await EndpointTag.create({
+                      tag_name: tagName,
+                      tag_value: tagValue,
+                      endpoint_name: req.body.name
+                    });
+                  });
+                }
                 logger.info(`Endpoint created and saved in the DB -- ID: ${savedEndpoint.id}, Name: ${req.body.name}, Endpoint: ${savedEndpoint.endpoint}, Method: ${savedEndpoint.method}`);
                 return res.status(201).send({
                   statusCode: 201,
