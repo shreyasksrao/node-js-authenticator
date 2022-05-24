@@ -9,6 +9,7 @@ const sequelize = require('sequelize');
 const logger = require('../../winston.conf.js');
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 const authenticateToken = require('../../middlewares/authenticateToken');
+const { authenticateTokenUsingService } = require('../../middlewares/authenticateTokenUsingService');
 const { validateRole } = require('../../middlewares/roleValidation');
 
 /**
@@ -32,7 +33,7 @@ const { validateRole } = require('../../middlewares/roleValidation');
 
 router.get('/getAllEndpoints', 
             addEndpointNameToRequest('get_all_endpoints'), 
-            authenticateToken, 
+            authenticateTokenUsingService, 
             validateRole, 
             async (req, res) => {
                 try{
