@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 /*jshint esversion: 8 */
 const {User} = require('../../sequelize');
-const authenticateToken = require('../../middlewares/authenticateToken');
-const { validateRole } = require('../../middlewares/roleValidation');
+const { authenticateTokenUsingService } = require('../../middlewares/authenticateTokenUsingService');
+const { roleValidationUsingService } = require('../../middlewares/roleValidationUsingService');
 const router = require('express').Router();
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 const { loggers } = require('winston');
@@ -47,8 +47,8 @@ const VALID_USER_STATES = ['active', 'inactive'];
 
 router.put('/changeUserState', 
             addEndpointNameToRequest('change_user_state'), 
-            authenticateToken ,
-            validateRole,
+            authenticateTokenUsingService ,
+            roleValidationUsingService,
             async (req, res, next) => {  
                 try {
                     let userInfo = await User.findOne({ where: { email: req.body.email } });

@@ -8,9 +8,8 @@ const sequelize = require('sequelize');
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
-const authenticateToken = require('../../middlewares/authenticateToken');
 const { authenticateTokenUsingService } = require('../../middlewares/authenticateTokenUsingService');
-const { validateRole } = require('../../middlewares/roleValidation');
+const { roleValidationUsingService } = require('../../middlewares/roleValidationUsingService');
 
 /**
  * @swagger
@@ -34,7 +33,7 @@ const { validateRole } = require('../../middlewares/roleValidation');
 router.get('/getAllEndpoints', 
             addEndpointNameToRequest('get_all_endpoints'), 
             authenticateTokenUsingService, 
-            validateRole, 
+            roleValidationUsingService, 
             async (req, res) => {
                 try{
                     const allEndpoints = await Endpoint.findAll({});
@@ -103,8 +102,8 @@ router.get('/getAllEndpoints',
 
  router.get('/getEndpoints/:endpointHintColumn/:endpointHintValue',
             addEndpointNameToRequest('get_endpoints_by_hint'), 
-            authenticateToken,
-            validateRole,
+            authenticateTokenUsingService, 
+            roleValidationUsingService, 
             async (req, res) => {
                 try{
                     let lookupKey = req.params.endpointHintColumn.toLowerCase();

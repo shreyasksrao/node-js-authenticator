@@ -9,8 +9,8 @@ const logger = require('../../winston.conf.js');
 const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
 
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
-const authenticateToken = require('../../middlewares/authenticateToken');
-const { validateRole } = require('../../middlewares/roleValidation');
+const { authenticateTokenUsingService } = require('../../middlewares/authenticateTokenUsingService');
+const { roleValidationUsingService } = require('../../middlewares/roleValidationUsingService');
 /**
  * @swagger
  * /createPermission:
@@ -60,8 +60,8 @@ const { validateRole } = require('../../middlewares/roleValidation');
 
 router.post('/createPermission', 
             addEndpointNameToRequest('create_permission'), 
-            authenticateToken,
-            validateRole,
+            authenticateTokenUsingService,
+            roleValidationUsingService,
             async (req, res) => {
               // Validate weather the request body contains all the parameters or not
               var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpoint_id', 'permission_type']);

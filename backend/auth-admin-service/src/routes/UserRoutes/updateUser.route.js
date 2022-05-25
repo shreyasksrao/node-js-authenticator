@@ -1,7 +1,8 @@
 /* eslint-disable no-console */
 /*jshint esversion: 8 */
 const {User} = require('../../sequelize');
-const authenticateToken = require('../../middlewares/authenticateToken');
+const { authenticateTokenUsingService } = require('../../middlewares/authenticateTokenUsingService');
+const { roleValidationUsingService } = require('../../middlewares/roleValidationUsingService');
 const router = require('express').Router();
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 
@@ -43,29 +44,33 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
  *         description: No authorization / user not found
  */
 
-router.put('/updateUser', addEndpointNameToRequest('update_user'), authenticateToken ,(req, res, next) => {  
-        User.findOne({
-          where: {
-            username: req.body.username,
-          },
-        }).then((userInfo) => {
-          if (userInfo != null) {
-            console.log('user found in db');
-            userInfo
-              .update({
-                first_name: req.body.first_name,
-                last_name: req.body.last_name,
-                email: req.body.email,
-              })
-              .then(() => {
-                console.log('user updated');
-                res.status(200).send({ auth: true, message: 'user updated' });
-              });
-          } else {
-            console.error('no user exists in db to update');
-            res.status(401).send('no user exists in db to update');
-          }
-        });    
+router.put('/updateUser', 
+            addEndpointNameToRequest('update_user'), 
+            authenticateTokenUsingService,
+            roleValidationUsingService,
+            (req, res, next) => {  
+              User.findOne({
+                where: {
+                  username: req.body.username,
+                },
+              }).then((userInfo) => {
+                if (userInfo != null) {
+                  console.log('user found in db');
+                  userInfo
+                    .update({
+                      first_name: req.body.first_name,
+                      last_name: req.body.last_name,
+                      email: req.body.email,
+                    })
+                    .then(() => {
+                      console.log('user updated');
+                      res.status(200).send({ auth: true, message: 'user updated' });
+                    });
+                } else {
+                  console.error('no user exists in db to update');
+                  res.status(401).send('no user exists in db to update');
+                }
+              });    
   });
 
 

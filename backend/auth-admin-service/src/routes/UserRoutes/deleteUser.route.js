@@ -2,7 +2,8 @@
 /*jshint esversion: 8 */
 const {User} = require('../../sequelize');
 const router = require('express').Router();
-const authenticateToken = require('../../middlewares/authenticateToken');
+const { authenticateTokenUsingService } = require('../../middlewares/authenticateTokenUsingService');
+const { roleValidationUsingService } = require('../../middlewares/roleValidationUsingService');
 
 /**
  * @swagger
@@ -37,25 +38,29 @@ const authenticateToken = require('../../middlewares/authenticateToken');
  *         description: Problem communicating with db
  */
 
-router.delete('/deleteUser', authenticateToken,(req, res, next) => {
-    User.destroy({
-        where: {
-        username: req.query.username,
-        },
-    })
-        .then((userInfo) => {
-        if (userInfo === 1) {
-            console.log('user deleted from db');
-            res.status(200).send('user deleted from db');
-        } else {
-            console.error('user not found in db');
-            res.status(404).send('no user with that username to delete');
-        }
-        })
-        .catch((error) => {
-        console.error('problem communicating with db');
-        res.status(500).send(error);
-        });   
+router.delete('/deleteUser', 
+              addEndpointNameToRequest('delete_user_by_using_username'), 
+              authenticateTokenUsingService,
+              roleValidationUsingService,
+              (req, res, next) => {
+                User.destroy({
+                    where: {
+                    username: req.query.username,
+                    },
+                })
+                    .then((userInfo) => {
+                    if (userInfo === 1) {
+                        console.log('user deleted from db');
+                        res.status(200).send('user deleted from db');
+                    } else {
+                        console.error('user not found in db');
+                        res.status(404).send('no user with that username to delete');
+                    }
+                    })
+                    .catch((error) => {
+                    console.error('problem communicating with db');
+                    res.status(500).send(error);
+                    });   
 });
 
 module.exports=router;

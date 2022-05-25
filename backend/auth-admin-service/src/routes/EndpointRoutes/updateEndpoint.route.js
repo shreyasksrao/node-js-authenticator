@@ -10,8 +10,8 @@ const { validateBodyParamsExistence } = require('../../utils/validateBodyParamet
 const { VALID_METHODS, httpMethodsValidator } = require('../../validators/httpMethodsValidator');
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 
-const authenticateToken = require('../../middlewares/authenticateToken');
-const { validateRole } = require('../../middlewares/roleValidation');
+const { authenticateTokenUsingService } = require('../../middlewares/authenticateTokenUsingService');
+const { roleValidationUsingService } = require('../../middlewares/roleValidationUsingService');
 /**
  * @swagger
  * /updateEndpoint/{endpointName}:
@@ -63,8 +63,8 @@ const { validateRole } = require('../../middlewares/roleValidation');
 
 router.put('/updateEndpoint/:endpointName', 
            addEndpointNameToRequest('update_endpoint_by_passing_endpoint_name'), 
-           authenticateToken,
-           validateRole,
+           authenticateTokenUsingService,
+           roleValidationUsingService,
            async (req, res) => {
               // Validate weather the request body contains all the parameters or not
               var bodyParameterValidationResult = validateBodyParamsExistence(req, ['name', 'description', 'endpoint', 'method']);

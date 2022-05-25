@@ -9,8 +9,8 @@ const router = require("express").Router();
 const logger = require('../../winston.conf.js');
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 
-const authenticateToken = require('../../middlewares/authenticateToken');
-const { validateRole } = require('../../middlewares/roleValidation');
+const { authenticateTokenUsingService } = require('../../middlewares/authenticateTokenUsingService');
+const { roleValidationUsingService } = require('../../middlewares/roleValidationUsingService');
 /**
  * @swagger
  * /getAllPermissions:
@@ -36,8 +36,8 @@ const { validateRole } = require('../../middlewares/roleValidation');
 
 router.get('/getAllPermissions', 
            addEndpointNameToRequest('get_all_permissions'), 
-           authenticateToken,
-           validateRole,
+           authenticateTokenUsingService,
+           roleValidationUsingService,
            async (req, res) => {
             try{    
               // TODO : Implement Caching ...
@@ -94,8 +94,8 @@ router.get('/getAllPermissions',
 
  router.get('/getPermissions/:key/:key_hint', 
             addEndpointNameToRequest('get_permissions_by_hint'), 
-            authenticateToken,
-            validateRole,
+            authenticateTokenUsingService,
+            roleValidationUsingService,
             async (req, res) => {
               try{
                 let column = req.params.key.toLowerCase();

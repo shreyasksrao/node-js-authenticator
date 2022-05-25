@@ -8,8 +8,8 @@ const router = require("express").Router();
 const logger = require('../../winston.conf.js');
 
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
-const authenticateToken = require('../../middlewares/authenticateToken');
-const { validateRole } = require('../../middlewares/roleValidation');
+const { authenticateTokenUsingService } = require('../../middlewares/authenticateTokenUsingService');
+const { roleValidationUsingService } = require('../../middlewares/roleValidationUsingService');
 /**
  * @swagger
  * /deleteRole/{role_id}:
@@ -40,8 +40,8 @@ const { validateRole } = require('../../middlewares/roleValidation');
 
  router.delete('/deleteRole/:role_id', 
                addEndpointNameToRequest('delete_role_by_passing_id'), 
-               authenticateToken,
-               validateRole,
+               authenticateTokenUsingService,
+               roleValidationUsingService,
                async (req, res) => {
                 try{
                   // If Role exists

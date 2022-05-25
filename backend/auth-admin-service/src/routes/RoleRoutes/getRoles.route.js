@@ -5,8 +5,8 @@ const { Role } = require('../../sequelize');
 const sequelize = require('sequelize');
 const router = require("express").Router();
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
-const authenticateToken = require('../../middlewares/authenticateToken');
-const { validateRole } = require('../../middlewares/roleValidation');
+const { authenticateTokenUsingService } = require('../../middlewares/authenticateTokenUsingService');
+const { roleValidationUsingService } = require('../../middlewares/roleValidationUsingService');
 
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
@@ -33,8 +33,8 @@ const logger = require('../../winston.conf.js');
 
 router.get('/getAllRoles', 
            addEndpointNameToRequest('get_all_roles'), 
-           authenticateToken,
-           validateRole,
+           authenticateTokenUsingService,
+           roleValidationUsingService,
            async (req, res) => {
               try{    
                 // TODO : Implement Caching ...
@@ -91,8 +91,8 @@ router.get('/getAllRoles',
 
  router.get('/getRoles/:key/:key_hint', 
             addEndpointNameToRequest('get_roles_by_passing_hints'), 
-            authenticateToken,
-            validateRole,
+            authenticateTokenUsingService,
+            roleValidationUsingService,
             async (req, res) => {
               try{
                 let column = req.params.key.toLowerCase();

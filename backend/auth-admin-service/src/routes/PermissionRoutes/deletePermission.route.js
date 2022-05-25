@@ -6,11 +6,10 @@ const router = require("express").Router();
 
 // Load the Winston logger
 const logger = require('../../winston.conf.js');
-const { validateBodyParamsExistence } = require('../../utils/validateBodyParameters');
 
 let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
-const authenticateToken = require('../../middlewares/authenticateToken');
-const { validateRole } = require('../../middlewares/roleValidation');
+const { authenticateTokenUsingService } = require('../../middlewares/authenticateTokenUsingService');
+const { roleValidationUsingService } = require('../../middlewares/roleValidationUsingService');
 /**
  * @swagger
  * /deletePermission/{permission_id}:
@@ -41,8 +40,8 @@ const { validateRole } = require('../../middlewares/roleValidation');
 
  router.delete('/deletePermission/:permission_id', 
                addEndpointNameToRequest('delete_permission_by_passing_id'), 
-               authenticateToken,
-               validateRole,
+               authenticateTokenUsingService,
+               roleValidationUsingService,
                async (req, res) => {
                 try{
                   // If Permission exists
