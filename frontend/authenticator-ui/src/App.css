@@ -1,7 +1,9 @@
 :root{
-  --navbarHeight: 70px;
-  --navBarBackgroundColor: #2a55f8;
+  --navbarHeight: 50px;
+  --navBarBackgroundColor: #25262b;
   --navBarTextColor: rgb(238, 229, 229);
+  --sidePanelBackgroundColor: rgb(38, 38, 38);
+  --sidePanelTextColor: rgb(253, 237, 237);
   --appTextFont: 'Nunito'
 }
 
@@ -63,7 +65,7 @@
   height: 80px;
 }
 
-.form-label {
+.form-input-label {
   display: block;
   text-align: left;
   font-weight: bold;
@@ -104,11 +106,11 @@
   height: var(--navbarHeight);
   background-color: var(--navBarBackgroundColor);
   color: var(--navBarTextColor);
+  border-bottom: 1px solid rgb(210, 203, 203);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  font-size: 24px;
   padding: 20px;
 }
 
@@ -117,8 +119,8 @@
 }
 
 .navbar-item {
-  padding: 20px;
-  font-size: 18px;
+  padding: 15px;
+  font-size: 14px;
   color: white;
   font-weight: 600;
   font-family: var(--appTextFont);
@@ -136,5 +138,14 @@
   font-weight: 700;
   font-family: var(--appTextFont);
 }
-
 /* Nav Bar Styles */
+
+.app-body {
+  display: flex;
+}
+
+/* Custom Button Styles */
+.custom-btn {
+
+}
+/* Custom Button Styles */

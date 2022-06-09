@@ -26,14 +26,13 @@ let tokenValidationEndpoint = `http://${TOKEN_VALIDATOR_SERVER_HOST}:${TOKEN_VAL
 
 async function authenticateTokenUsingService(req, res, next){
     try {
-        const authHeader = req.headers.authorization;
-        const token = authHeader && authHeader.split(' ')[1];
+        const token = req.headers['x-auth-token'];
 
         // Send ERROR when Token is not passed in the header.
         if (token == null)
         return res.status(401).json({
             status: 401,
-            message: "Token is not passed in the header. Ex: authorization: Bearer <JWT token>"
+            message: "Token is not passed in the header. Ex: x-auth-token: <JWT token>"
         });
 
         let response = await axios.post(tokenValidationEndpoint,

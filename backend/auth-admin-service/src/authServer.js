@@ -3,6 +3,7 @@ const path = require('path');
 
 const express = require('express');
 let cors = require('cors');
+const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv');
 const morgan = require('morgan');
 const colors = require('colors');
@@ -27,13 +28,14 @@ var app = express();
 // Use Body parser middleware
 app.use(express.json());
 var corsOption = {
-  origin: true,
+  origin: '*',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   exposedHeaders: ['x-auth-token']
 };
 app.use(cors(corsOption));
 
+app.use(cookieParser());
 if(NODE_ENV === "development"){
     app.use(morgan("dev"));
 }
@@ -66,9 +68,10 @@ const swaggerDefinition = {
   ],
   "securityDefinitions": {
     "bearerAuth": {
-      "name": "Authorization",
+      "name": "x-auth-token",
       "in": "header",
       "type": "apiKey",
+      "scheme": "bearer",
       "description": "JWT Authorization token"
     }
   },
@@ -114,6 +117,8 @@ const findUsers = require('./routes/UserRoutes/findUsers.route.js');
 const updateUser = require('./routes/UserRoutes/updateUser.route.js');
 // const user_logins = require('./routes/user_logins.route.js');
 
+const googleLogin = require('./routes/UserRoutes/loginGoogle.route');
+
 const createPermission = require('./routes/PermissionRoutes/createPermission.route');
 const getPermission = require('./routes/PermissionRoutes/getPermission.route');
 const deletePermission = require('./routes/PermissionRoutes/deletePermission.route');
@@ -145,6 +150,8 @@ app.use('/api/v1', findUsers);
 // app.use('/api/v1', deleteUser);
 app.use('/api/v1', updateUser);
 // app.use('/api/v1', user_logins);
+
+app.use('/api/v1', googleLogin);
 
 app.use('/api/v1', createPermission);
 app.use('/api/v1', getPermission);

@@ -85,6 +85,7 @@ var createToken = async function(req) {
             login.token_id = token_id;
             await login.save();
             return {
+              statusCode: 200,
               accessToken: accessToken,
               refreshToken: refreshToken,
               authCode: 1,
@@ -105,6 +106,7 @@ var createToken = async function(req) {
       const accessToken = await generateAccessToken(req, token_id, userRoles, userStatus);
       const refreshToken = await generateRefreshToken(req, token_id);
       return {
+        statusCode: 200,
         accessToken: accessToken,
         refreshToken: refreshToken,
         authCode: 2,

@@ -1,26 +1,26 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import PropTypes from 'prop-types'
+import SidePanelItem from './SidePanelItem';
+import PropTypes from 'prop-types';
+import './SidebarPanel.css';
 
-export default function SidePanel(props) {
-
-  const title = props.title;
-  const actions = props.actions;
+export default function SidePanel({ sidePanelLinks }) {
   return (
-    <nav className='navbar'>
-        <div className='navbar-container'>
-            <div className='company-name'>
-                {title}
-            </div>
-            <div className='navbar-items'>
-                {actions.map(action => <div className='navbar-item'><Link className='navbar-link' to={action.href}>{action.title}</Link></div>)}
-            </div>
+    <div className='side-panel-container'>
+        <div className='logo-container'>
+            <img className='logo-image' src={process.env.PUBLIC_URL+"logo.png"} alt='App Logo'/>
         </div>
-    </nav>
+        <div>
+            
+        </div>
+        <nav className='side-panel-list'>
+            {sidePanelLinks.map((item, index) => 
+                <SidePanelItem key={`${item.label}-${index}`} item={item} />
+            )}
+        </nav>
+    </div>
   )
 }
 
-SidePanel.prototype = {
-    title: PropTypes.string,
-    actions: PropTypes.object,
+SidePanel.propTypes = {
+    sidePanelLinks: PropTypes.array,
 };

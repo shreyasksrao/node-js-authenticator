@@ -3,6 +3,7 @@
 const {User} = require('../../sequelize');
 const { authenticateTokenUsingService } = require('../../middlewares/authenticateTokenUsingService');
 const { roleValidationUsingService } = require('../../middlewares/roleValidationUsingService');
+let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToRequest');
 const router = require('express').Router();
 
 /**

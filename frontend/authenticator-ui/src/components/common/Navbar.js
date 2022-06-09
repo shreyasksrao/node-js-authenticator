@@ -7,7 +7,7 @@ export default function Navbar(props) {
   const title = props.title;
   const actions = props.actions;
   return (
-    <nav className='navbar'>
+    <nav>
         <div className='navbar-container'>
             <div className='company-name'>
                 {title}
@@ -22,5 +22,5 @@ export default function Navbar(props) {
 
 Navbar.prototype = {
     title: PropTypes.string,
-    actions: PropTypes.object,
+    actions: PropTypes.array,
 };
