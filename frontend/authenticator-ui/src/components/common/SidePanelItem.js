@@ -17,7 +17,7 @@ const SidePanelItem = props => {
       className="navItem"
       activeClassName="activeNavItem"
     >
-      <div style={{width:'20px'}}></div>
+      <div style={{width:'20px', minWidth:'20px'}}></div>
       <Icon className="navIcon" />
       <span className="navLabel">{label}</span>
     </NavLink>

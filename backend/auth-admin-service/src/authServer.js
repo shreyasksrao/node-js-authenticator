@@ -60,7 +60,7 @@ const swaggerDefinition = {
       url: "mysite.com", // your website
     },
   },
-  host: 'localhost:5001',
+  host: '127.0.0.1:5001',
   basePath: '/api/v1',
   "schemes": [
     "http",

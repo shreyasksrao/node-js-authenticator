@@ -10,13 +10,13 @@ const getAuthHeader = () => {
 
 const isLoggedIn = () => {
     let accessToken = localStorage.getItem('accessToken');
-    if (accessToken == null)
+    if (accessToken === "null")
         return false;
     return true;
 };
 
 const clearAccessTokenInLocalStorage = () => {
-    localStorage.setItem('accessToken', null);
+    localStorage.setItem('accessToken', "null");
 };
 
 const getAccessTokenInLocalStorage = () => {

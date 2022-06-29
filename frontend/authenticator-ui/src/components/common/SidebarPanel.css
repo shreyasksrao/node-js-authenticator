@@ -1,19 +1,47 @@
+/* Scroll bar Style */
+/* Works on Firefox */
+* {
+  /* scrollbar-width: thin; */
+  scrollbar-color: #6c727a #0d1724;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #0d1724;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #6c727a;
+  border-radius: 20px;
+  border: 3px solid #0d1724;
+}
+
+
 /* Side Panel Styles*/
 .side-panel-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 350px;
+    width: var(--sidePanelWidth);
     height: 100vh;
-    background-color: var(--sidePanelBackgroundColor);
+    background-color: #0a1929;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex: 0 0 var(--sidePanelWidth);
+	  transition: all .3s;
 }
 
 .side-panel-list {
     width: 100%;
     margin: 0px;
     padding: 5px 10px;
-    overflow: auto;
+    /* overflow: auto; */
     padding-left: 0px;
+    height: 100%;
 }
 
 .side-panel-list > *:last-child {
@@ -33,14 +61,13 @@
 
 .logo-container{
     width: 100%;
-    padding-bottom: 25px;
-    border-bottom: 1px solid wheat;
+    /* border-bottom: 1px solid #102943; */
 }
 
 .logo-image{
-    width: 150px;
+    width: 125px;
     height: auto;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 /* Side Panel Styles*/
 
@@ -61,16 +88,20 @@
   }
   
   .navIcon {
-    color: #d1d5db;
-    width: 20px;
-    height: 20px;
+    color: rgb(201, 209, 217);
+    width: 17px;
+    min-width: 17px;
+    height: auto;
     margin: 4px;
+    margin-left: 0px;
   }
   
   .navLabel {
-    color: #d1d5db;
-    font-size: 12px;
+    color: rgb(201, 209, 217);
+    font-size: 10px;
     margin: 4px;
+    word-break: break-all;
+    text-align: left;
   }
   
   .navItemHeaderButton {
@@ -82,7 +113,7 @@
   }
   
   .navItemHeaderChevron {
-    color: #263b5b;
+    color: #808791;
     width: 20px;
     height: 20px;
     /* margin-left: auto; */
@@ -94,7 +125,8 @@
   }
   
   .navChildrenBlock {
-    background-color: var(--sidePanelBackgroundColor);
+    background-color: #0a1929;
+    /* width: max-content; */
   }
 
   .sub-menu-navitem {
@@ -104,8 +136,25 @@
     align-items: center;
   }
 
+  .sub-menu-navitem:hover {
+    background-color: #1e3a8a;
+  }
+
   .sub-nav-children-block {
       
   }
   
-  /* marginLeft: `${(depth+1)*15}px`,  style={{marginLeft: `${depth*15}px`}} */
+.company-title-container {
+  text-align: center;
+  width: inherit;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #102943;
+}
+
+.company-title {
+  color: wheat;
+  padding: 10px;
+  margin: 0px;
+  text-transform: full-width;
+  font-weight: bold;
+}

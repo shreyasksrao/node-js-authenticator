@@ -1,30 +1,26 @@
 /*jshint esversion: 8 */
 import './App.css';
-import React, { Fragment, useState } from "react";
-import {BrowserRouter as Router, Routes, Route} from 'react-router-dom';
-import UserLogin from './components/Pages/UserLogin';
+import React from "react";
 import Home from './components/Pages/Home';
+import Error from './components/Pages/Error';
+import { Routes, Route } from 'react-router-dom';
+import UserLogin from './components/Pages/UserLogin';
+import RequireAuth from './components/common/RequireAuth';
+
 
 function App() {
   return (
-    <Router>
-      <div className="App"> 
-        <Routes>
-          <Route path='/' element={ 
+    <div className="App wrapper"> 
+      <Routes>
+        <Route path='/login' element={<UserLogin />} />
+        <Route path='/error' element={<Error />} />
+        <Route exact path='/*' element={
+          <RequireAuth redirectTo="/login">
             <Home />
-          }/>
-          <Route 
-            path='/login' 
-            element={<UserLogin />} />
-          <Route path="*" element={
-            <main style={{ padding: "1rem" }}>
-              <p>There's nothing here!</p>
-            </main>
-          }/>
-        </Routes>
-      </div> 
-
-    </Router>
+          </RequireAuth>} 
+        />
+      </Routes>
+    </div> 
   );
 }
 

@@ -15,6 +15,7 @@ export default function UserLogin() {
         if(response.success){
             console.log('Moving to HOME page');
             navigate('/');
+            console.log('Moved to HOME page');
         }      
         else{
             console.log(response);
@@ -28,14 +29,21 @@ export default function UserLogin() {
         setLoginPassword(event.target.value);
     };
     return (
-        <div className='login-form'>
-            <div className='login-logo'>
-                <img className='logo-image' alt='app-logo' src='/logo.png'/>
-                <h1>Sign In</h1>
+        <div className='login-wrapper'>
+            <div className='login-container'>
+                <div className='login-actions'>
+                    Left hand side
+                </div>
+                <div className='login-form'>
+                    <div className='login-logo'>
+                        <img className='logo-image' alt='app-logo' src='/logo.png'/>
+                        <h1>Sign In</h1>
+                    </div>
+                    <FormInput inputId="email" inputType='text' labelValue='Email Address' onChangeHandler={handleEmailInputChange}/>
+                    <FormInput inputId="pwd" inputType='password' labelValue='Password' onChangeHandler={handlePasswordInputChange}/>
+                    <button className='btn btn-primary' onClick={onLoginBtnClick}>LOG IN</button>
+                </div>
             </div>
-            <FormInput inputId="email" inputType='text' labelValue='Email Address' onChangeHandler={handleEmailInputChange}/>
-            <FormInput inputId="pwd" inputType='password' labelValue='Password' onChangeHandler={handlePasswordInputChange}/>
-            <button className='btn btn-primary' onClick={onLoginBtnClick}>LOG IN</button>
         </div>
     )
 }

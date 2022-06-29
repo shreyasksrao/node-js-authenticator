@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import './SidebarPanel.css';
-import { ChevronRightIcon } from '@heroicons/react/outline';
+import { MdOutlineKeyboardArrowRight } from 'react-icons/md';
 
 const resolveLinkPath = (childTo, parentTo) => `${parentTo}/${childTo}`;
 
@@ -25,15 +25,16 @@ const SubMenu = props => {
         className="navItem navItemHeaderButton"
         onClick={onExpandChange}
       >
-        <ChevronRightIcon
+        <div style={{width:`${depth*20}px`, minWidth: `${depth*20}px`}}></div> 
+        <MdOutlineKeyboardArrowRight
           className={expanded ? "navItemHeaderChevron chevronExpanded": "navItemHeaderChevron"}
         />
         <Icon className="navIcon" />
         <span className="navLabel">{label}</span>
       </button>
-
+   
       {expanded && (
-        <div className="navChildrenBlock" style={{marginLeft: `20px`}}>
+        <div className="navChildrenBlock" >
           {children.map((item, index) => {
             const key = `${item.label}-${index}`;
             const { label, Icon, children } = item;
@@ -55,9 +56,9 @@ const SubMenu = props => {
                 style={{ paddingLeft: '0px'}}
               >
                 {/* Empty BOX to display space for Chevron */}
-                <div style={{width:'20px'}}></div> 
+                <div style={{width:`${((depth+1)*20)+20}px`, minWidth: `${((depth+1)*20)+20}px`}}></div> 
                 <Icon className="navIcon" />
-                <span className="navLabel">{label}</span>
+                <span className="navLabel">{label}</span>                
               </NavLink>
             );
           })}

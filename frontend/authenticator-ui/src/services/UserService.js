@@ -27,3 +27,7 @@ export const loginHandler = async (email, password, setCookie=false) => {
             return {success: false,...responseData}
     }
 };
+
+export const getAllUsers = async () => {
+    let getUsersUrl = `${API_BASE_URL}`;
+};

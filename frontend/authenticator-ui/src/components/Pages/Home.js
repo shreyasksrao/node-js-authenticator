@@ -1,16 +1,31 @@
-import React, { Fragment, useState } from "react";
-import Navbar from '../common/Navbar';
+import React, { Fragment, useState, useEffect } from "react";
+import NavBar from '../common/Navbar';
 import SidePanel from '../common/SidePanel';
+import { Routes, Route} from 'react-router-dom';
 
 import {
-  HomeIcon,
   UserIcon,
-  CogIcon,
   UserCircleIcon,
   ShieldCheckIcon,
   LockOpenIcon,
   DeviceMobileIcon,
 } from '@heroicons/react/outline';
+
+import {
+  FaUserCog
+} from 'react-icons/fa';
+
+import {
+  MdSettings, 
+  MdHome
+} from 'react-icons/md';
+
+import {
+  AiFillApi
+} from 'react-icons/ai';
+
+import UserActionsPage from "../Users/UserActionsPage";
+import EndpointsActionsPage from "../Endpoints/EndpointsActionsPage";
 
 const Home = () => {
   const actionLinks = [
@@ -22,7 +37,7 @@ const Home = () => {
   const sideMenu = [
     {
       label: 'Home',
-      Icon: HomeIcon,
+      Icon: MdHome,
       to: '/',
     },
     {
@@ -31,12 +46,27 @@ const Home = () => {
       to: '/profile',
     },
     {
+      label: 'User Actions',
+      Icon: FaUserCog,
+      to: '/userActions'
+    },
+    {
+      label: 'Endpoint Actions',
+      Icon: AiFillApi,
+      to: '/endpointActions'
+    },
+    {
       label: 'Settings',
-      Icon: CogIcon,
+      Icon: MdSettings,
       to: '/settings',
       children: [
         {
           label: 'Account',
+          Icon: UserCircleIcon,
+          to: 'account',
+        },
+        {
+          label: 'Account2',
           Icon: UserCircleIcon,
           to: 'account',
         },
@@ -51,7 +81,7 @@ const Home = () => {
               to: 'credentials',
             },
             {
-              label: '2-FA',
+              label: '2-FA-abvcaioqdqkcnakhuqdamnakjhdquhdqlksnaklquihdqmnakiuq',
               Icon: DeviceMobileIcon,
               to: '2fa',
             },
@@ -61,19 +91,60 @@ const Home = () => {
     },
   ];
 
-  const [isSidePanelVisible, setSidePanelVisibility] = useState(true);
-
+  const [isOpen, setOpen] = useState(true);
+  const [isMobile, setMobile] = useState(false);
   const [isLoggedIn, setLoggedIn] = useState(true);
+  const [previousWidth, setPreviousWidth] = useState(-1);
+
+  const updateWidth = () => {
+    const width = window.innerWidth;
+    const widthLimit = 576;
+    const isMobile = width <= widthLimit;
+    const wasMobile = previousWidth <= widthLimit;
+    if (isMobile !== wasMobile) setOpen(!isMobile);
+    setPreviousWidth(width);
+  };
+
+  //componentDidMount
+  useEffect(() => {
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+  }, []);
+
+  //componentWillUnMount
+  useEffect(() => {
+    return () => window.removeEventListener("resize", updateWidth);
+  }, []);
+
+  const toggle = () => {
+    setOpen(!isOpen);
+  };
+
   return (
-    <Fragment>
-        <Navbar title='Authenticator' actions={actionLinks}/>
-        <div className='app-body'>
-          {isSidePanelVisible && <SidePanel sidePanelLinks={sideMenu}/>}
-          <div className='container'>
-          </div>
-        </div>
-    </Fragment>
+      <Fragment>
+          {isOpen && <SidePanel sidePanelLinks={sideMenu} toggle={toggle} isOpen={isOpen}/>}
+          <div className={isOpen ? 'main content is-open': 'main content'}>
+            <div className="navbar-container">
+                <NavBar title='Authenticator' actions={actionLinks} toggle={toggle}/>
+            </div>
+            <div className="main-content">
+              <Routes>
+                <Route path="/" element={<p>Hello From Shreyas</p>}/>
+                <Route path="/userActions" element={<UserActionsPage />}/>
+                <Route path="/endpointActions" element={<EndpointsActionsPage />}/>
+                <Route path="/profile" element={<p>This is Profile Page</p>}/>
+                <Route path="/settings/account" element={<p>This is Accounts Page</p>}/>
+                <Route path="/settings/security/credentials" element={<p>This is Credentials Page</p>}/>
+                <Route path="*" element={
+                  <main style={{ padding: "1rem" }}>
+                    <p>There's nothing here!</p>
+                  </main>
+                }/>
+              </Routes>
+            </div>
+          </div> 
+      </Fragment>
   )
 }
 
-export default Home
+export default Home;
