@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getAuthHeader, isLoggedIn, getAccessTokenInLocalStorage, setAccessTokenInLocalStorage, clearAccessTokenInLocalStorage } from './AuthService';
+import { setAccessTokenInLocalStorage, clearAccessTokenInLocalStorage, setAccessTokenExpiryInLocalStorage, setRefreshTokenInLocalStorage, setRefreshTokenExpiryInLocalStorage } from './AuthService';
 
 const API_BASE_URL = "http://127.0.0.1:5001/api/v1";
 
@@ -19,8 +19,14 @@ export const loginHandler = async (email, password, setCookie=false) => {
         let responseData = response.data;
         if (responseData.statusCode === 200){
             let accessToken = responseData.accessToken;
+            let accessTokenExpiresAt = responseData.accessTokenExpiresAt;
+            let refreshToken = responseData.refreshToken;
+            let refreshTokenExpiresAt = responseData.refreshTokenExpiresAt;
             clearAccessTokenInLocalStorage();
             setAccessTokenInLocalStorage(accessToken);
+            setAccessTokenExpiryInLocalStorage(accessTokenExpiresAt);
+            setRefreshTokenInLocalStorage(refreshToken);
+            setRefreshTokenExpiryInLocalStorage(refreshTokenExpiresAt);
             return {success: true,...responseData}
         }
         else

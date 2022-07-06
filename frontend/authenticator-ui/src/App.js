@@ -14,11 +14,7 @@ function App() {
       <Routes>
         <Route path='/login' element={<UserLogin />} />
         <Route path='/error' element={<Error />} />
-        <Route exact path='/*' element={
-          <RequireAuth redirectTo="/login">
-            <Home />
-          </RequireAuth>} 
-        />
+        <Route exact path='/*' element={<Home />} />
       </Routes>
     </div> 
   );

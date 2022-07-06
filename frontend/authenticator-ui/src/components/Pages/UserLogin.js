@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {useNavigate} from 'react-router-dom';
+import {useNavigate, useLocation} from 'react-router-dom';
 import FormInput from '../common/FormInput';
 
 import {loginHandler} from '../../services/UserService'; 
@@ -8,14 +8,18 @@ export default function UserLogin() {
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
 
+    const location = useLocation();
+
     const navigate = useNavigate();
 
     const onLoginBtnClick = async (event) => {
         let response = await loginHandler(loginEmail, loginPassword);
         if(response.success){
-            console.log('Moving to HOME page');
-            navigate('/');
-            console.log('Moved to HOME page');
+            if (location.state === null)
+                navigate('/');
+            console.log(`Moving to ${location.state.redirectTo} page`);
+            navigate(location.state.redirectTo);
+            console.log(`Moved to ${location.state.redirectTo} page`);
         }      
         else{
             console.log(response);

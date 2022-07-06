@@ -10,7 +10,12 @@ const getAuthHeader = () => {
 
 const isLoggedIn = () => {
     let accessToken = localStorage.getItem('accessToken');
-    if (accessToken === "null")
+    let accessTokenExpiresAt = localStorage.getItem('accessTokenExpiresAt');
+    let current = new Date();
+    let currentEpoch = Math.floor(current.getTime()/ 1000)
+    if (accessToken === null)
+        return false;
+    if (accessTokenExpiresAt < currentEpoch)
         return false;
     return true;
 };
@@ -28,10 +33,25 @@ const setAccessTokenInLocalStorage = (accessToken) => {
     localStorage.setItem('accessToken', JSON.stringify(accessToken));
 };
 
+const setAccessTokenExpiryInLocalStorage = (expiresAt) => {
+    localStorage.setItem('accessTokenExpiresAt', expiresAt);
+};
+
+const setRefreshTokenInLocalStorage = (refreshToken) => {
+    localStorage.setItem('refreshToken', JSON.stringify(refreshToken));
+};
+
+const setRefreshTokenExpiryInLocalStorage = (expiresAt) => {
+    localStorage.setItem('refreshTokenExpiresAt', expiresAt);
+};
+
 module.exports = {
     getAuthHeader,
     isLoggedIn,
     getAccessTokenInLocalStorage,
     setAccessTokenInLocalStorage,
+    setAccessTokenExpiryInLocalStorage,
+    setRefreshTokenInLocalStorage,
+    setRefreshTokenExpiryInLocalStorage,
     clearAccessTokenInLocalStorage
 }

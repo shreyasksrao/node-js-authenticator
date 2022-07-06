@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import NavBar from '../common/Navbar';
 import SidePanel from '../common/SidePanel';
 import { Routes, Route} from 'react-router-dom';
+import RequireAuth from '../common/RequireAuth';
 
 import {
   UserIcon,
@@ -121,17 +122,69 @@ const Home = () => {
   };
 
   return (
+      // <Fragment>
+      //     {isOpen && <SidePanel sidePanelLinks={sideMenu} toggle={toggle} isOpen={isOpen}/>}
+      //     <div className={isOpen ? 'main content is-open': 'main content'}>
+      //       <div className="navbar-container">
+      //           <NavBar title='Authenticator' actions={actionLinks} toggle={toggle}/>
+      //       </div>
+      //       <div className="main-content">
+      //         <Routes>
+      //           <Route path="/" element={
+      //             <RequireAuth redirectTo="/login" redirectState={{redirectTo: "/"}}>
+      //               <p>Hello From Shreyas</p>
+      //             </RequireAuth>
+                  
+      //           }/>
+      //           <Route path="/userActions" element={
+      //             <RequireAuth redirectTo="/login" redirectState={{redirectTo: "/userActions"}}>
+      //               <UserActionsPage />
+      //             </RequireAuth>}
+      //           />
+      //           <Route path="/endpointActions" element={
+      //             <RequireAuth redirectTo="/login" redirectState={{redirectTo: "/endpointActions"}}>
+      //               <EndpointsActionsPage />
+      //             </RequireAuth>}
+      //           />
+      //           <Route path="/profile" element={<p>This is Profile Page</p>}/>
+      //           <Route path="/settings/account" element={<p>This is Accounts Page</p>}/>
+      //           <Route path="/settings/security/credentials" element={<p>This is Credentials Page</p>}/>
+      //           <Route path="*" element={
+      //             <main style={{ padding: "1rem" }}>
+      //               <p>There's nothing here!</p>
+      //             </main>
+      //           }/>
+      //         </Routes>
+      //       </div>
+      //     </div> 
+      // </Fragment>
+
+
       <Fragment>
-          {isOpen && <SidePanel sidePanelLinks={sideMenu} toggle={toggle} isOpen={isOpen}/>}
+        <div className="navbar-container">
+          <NavBar title='Authenticator' actions={actionLinks} toggle={toggle}/>
+        </div>
+        <div className="contentWrapper">
+        {isOpen && <SidePanel sidePanelLinks={sideMenu} toggle={toggle} isOpen={isOpen}/>}
           <div className={isOpen ? 'main content is-open': 'main content'}>
-            <div className="navbar-container">
-                <NavBar title='Authenticator' actions={actionLinks} toggle={toggle}/>
-            </div>
             <div className="main-content">
               <Routes>
-                <Route path="/" element={<p>Hello From Shreyas</p>}/>
-                <Route path="/userActions" element={<UserActionsPage />}/>
-                <Route path="/endpointActions" element={<EndpointsActionsPage />}/>
+                <Route path="/" element={
+                  <RequireAuth redirectTo="/login" redirectState={{redirectTo: "/"}}>
+                    <p>Hello From Shreyas</p>
+                  </RequireAuth>
+                  
+                }/>
+                <Route path="/userActions" element={
+                  <RequireAuth redirectTo="/login" redirectState={{redirectTo: "/userActions"}}>
+                    <UserActionsPage />
+                  </RequireAuth>}
+                />
+                <Route path="/endpointActions" element={
+                  <RequireAuth redirectTo="/login" redirectState={{redirectTo: "/endpointActions"}}>
+                    <EndpointsActionsPage />
+                  </RequireAuth>}
+                />
                 <Route path="/profile" element={<p>This is Profile Page</p>}/>
                 <Route path="/settings/account" element={<p>This is Accounts Page</p>}/>
                 <Route path="/settings/security/credentials" element={<p>This is Credentials Page</p>}/>
@@ -143,6 +196,8 @@ const Home = () => {
               </Routes>
             </div>
           </div> 
+        </div>
+          
       </Fragment>
   )
 }

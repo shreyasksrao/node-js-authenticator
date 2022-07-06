@@ -1,0 +1,71 @@
+.endpoint-details-container {
+    overflow-y: auto;
+    color: pink;
+}
+
+.list-endpoints-wrapper {
+    border-bottom: 1px solid var(--borderColor);
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.endpoint-details-wrapper {
+    border-bottom: 1px solid var(--borderColor);
+    padding: 10px;
+    overflow-y: auto;
+    height: 300px;
+    margin: 10px 15px;
+    border: 1px solid var(--borderColor);
+    border-radius: 5px;
+}
+
+.section-toolbar {
+    height: 40px;
+    margin-left: 5px;
+}
+
+.endpointCard {
+    background-color: cadetblue;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    padding: 25px 10px;
+    margin: 5px;
+    border-radius: 20px;
+    border: 1px solid var(--borderColor);
+    background-color: #26252d;
+    color: white;
+}
+.cardTitle {
+    font-size: 16px;
+    font-weight: bold;
+}
+.idAndMethodContainer {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+}
+.id {
+    flex: 1;
+    text-align: left;
+}
+.method {
+    flex: 1;
+    display: flex;
+    justify-content: left;
+    align-items: center;
+}
+
+.methodContainer {
+    width: 100px;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.card-item {
+    text-align: left;
+    padding-left: 25px;
+}

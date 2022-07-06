@@ -1,10 +1,6 @@
-@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-@import "https://fonts.googleapis.com/css?family=Nunito+Sans:300,400,500,600,700";
-
-
 body {
   /*font-family: 'Poppins', sans-serif;*/
-  font-family: 'Nunito Sans', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   /*background: #fafafa;*/
   background-color: #f5f9fc;
 }
@@ -26,7 +22,10 @@ a:focus {
   --sidePanelBackgroundColor: rgb(38, 38, 38);
   --sidePanelTextColor: rgb(253, 237, 237);
   --sidePanelWidth: 300px;
-  --appTextFont: 'Nunito'
+  --appTextFont: 'Source Sans Pro';
+  --textHeading: 14px;
+  --textNormal: 12px;
+  --textSmall: 10px;
 }
 
 .App {
@@ -62,8 +61,9 @@ a:focus {
 }
 
 .main-content {
-  height: 100%;
   background-color: var(--navBarBackgroundColor);
+  display: flex;
+  flex-direction: column;
 }
 
 .logo-image {
@@ -192,6 +192,7 @@ li a.dropdown-toggle::after {
 
 .App {
   display: flex;
+  flex-direction: column;
   width: 100%;
   align-items: stretch;
 }
@@ -275,7 +276,12 @@ li a.dropdown-toggle::after {
 .content {
   padding: 0px;
   margin-left: 0;
-  height: 100vh;
+  /* height: 100vh; */
+}
+
+.contentWrapper {
+  display: flex;
+  height: calc(100vh - var(--navbarHeight));
 }
 
 @media only screen and (max-width: 575.98px) {
@@ -349,13 +355,7 @@ li a.dropdown-toggle::after {
 /* ---------------------------------------------------
     Endpoint Actions Page Style
 ----------------------------------------------------- */
-.list-endpoints-container {
-  min-height: 400px;
-  overflow-y: auto;
-}
-
 .endpoint-details-container {
-  height: 40vh;
   overflow-y: auto;
   color: pink;
 }
@@ -363,66 +363,18 @@ li a.dropdown-toggle::after {
 .list-endpoints-wrapper {
   border-bottom: 1px solid var(--borderColor);
   padding: 10px;
+  overflow-y: auto;
+  /* height: 480px; */
 }
 
 .endpoint-details-wrapper {
   border-bottom: 1px solid var(--borderColor);
   padding: 10px;
+  overflow-y: auto;
+  height: 300px;
 }
 
-/* ---------------------------------------------------
-    Endpoint Card STYLE
------------------------------------------------------ */
-.endpoint-card {
-  display: grid;
-  margin: 8px;
-  padding: 6px;
-  background-color: #0b1623;
-  border: 1px solid var(--borderColor);
-  border-radius: 8px;
-  grid-template-columns: 0.5fr 1.5fr 4fr 0.25fr;
-}
-
-.endpoint-list-header {
-  display: grid;
-  margin: 8px;
-  padding: 6px;
-  background-color: #0b1623;
-  border: 1px solid var(--borderColor);
-  border-radius: 8px;
-  grid-template-columns: 0.5fr 1.5fr 4fr;
-}
-
-.endpoint-list-header-name {
-  text-align: left;
-}
-
-.endpoint-list-header-endpoint {
-  text-align: left;
-}
-
-.endpoint-method {
-  background-color: #ffbca1;
-  border-radius: 5px;
-  font-weight: 500;
-  margin: 0px 5px;
-}
-
-.endpoint-name {
-  background-color: #0b1623;
-  text-align: left;
-  padding: 0px 5px;
-  margin: 0px 5px;
-  border-left: 1px solid var(--borderColor);
-}
-
-.endpoint-endpoint {
-  background-color: #0b1623;
-  text-align: left;
-  padding-left: 10px;
-  border-left: 1px solid var(--borderColor);
-}
-
-.endpoint-depricated {
-  font-size: 14px;
+.section-toolbar {
+  height: 40px;
+  margin-left: 5px;
 }

@@ -29,7 +29,7 @@ var generateAccessToken = async function(req, token_id, userRoles, userStatus) {
     eat: issued_at + token_expiry_seconds
   };
   const accessToken = await jwt.sign(token_payload, privateKey, {algorithm: 'RS256'});
-  return accessToken;
+  return {accessToken, accessTokenExpiresAt: issued_at + token_expiry_seconds};
 };
 
 var generateRefreshToken = async function(req, token_id) {
@@ -42,7 +42,7 @@ var generateRefreshToken = async function(req, token_id) {
     eat: issued_at + refresh_token_expiry_seconds
   };
   const refreshToken = await jwt.sign(token_payload, privateKey, {algorithm: 'RS256'});
-  return refreshToken;
+  return {refreshToken, refreshTokenExpiresAt: issued_at + refresh_token_expiry_seconds};
 };
 
 var createToken = async function(req) {
@@ -78,8 +78,8 @@ var createToken = async function(req) {
         var login = user_logins[i];
         if(login){
           if (login.device == req.headers["user-agent"]){
-            const accessToken = await generateAccessToken(req, token_id, userRoles, userStatus);
-            const refreshToken = await generateRefreshToken(req, token_id);
+            const { accessToken, accessTokenExpiresAt } = await generateAccessToken(req, token_id, userRoles, userStatus);
+            const { refreshToken, refreshTokenExpiresAt } = await generateRefreshToken(req, token_id);
             const currentTime = new Date(new Date().toUTCString());
             login.logged_in_at = currentTime;
             login.token_id = token_id;
@@ -87,7 +87,9 @@ var createToken = async function(req) {
             return {
               statusCode: 200,
               accessToken: accessToken,
+              accessTokenExpiresAt: accessTokenExpiresAt,
               refreshToken: refreshToken,
+              refreshTokenExpiresAt: refreshTokenExpiresAt,
               authCode: 1,
               message: `Token generated successfully.`
             };
@@ -103,12 +105,14 @@ var createToken = async function(req) {
         ip_address : ip,
         device : req.headers["user-agent"]
       });
-      const accessToken = await generateAccessToken(req, token_id, userRoles, userStatus);
-      const refreshToken = await generateRefreshToken(req, token_id);
+      const { accessToken, accessTokenExpiresAt } = await generateAccessToken(req, token_id, userRoles, userStatus);
+      const { refreshToken, refreshTokenExpiresAt } = await generateRefreshToken(req, token_id);
       return {
         statusCode: 200,
         accessToken: accessToken,
+        accessTokenExpiresAt: accessTokenExpiresAt,
         refreshToken: refreshToken,
+        refreshTokenExpiresAt: refreshTokenExpiresAt,
         authCode: 2,
         message: `Successfully Logged-in from other device !`,
         loggedInAt: Date.now(),
