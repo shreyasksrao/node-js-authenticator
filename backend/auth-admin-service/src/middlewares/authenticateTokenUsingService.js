@@ -46,7 +46,7 @@ async function authenticateTokenUsingService(req, res, next){
             return res.status(response.data.status).json(response.data);
     } catch (error) {
         console.log(`Token Validation error !!`);
-        console.log(`Stack Trace: ${error.stack}`);
+        console.log(`Stack Trace: ${error}`);
         return res.status(500).json({
           status: 500,
           message: `Internal Server Error. \nError: ${error}`

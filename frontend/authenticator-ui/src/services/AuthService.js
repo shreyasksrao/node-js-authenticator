@@ -21,7 +21,7 @@ const isLoggedIn = () => {
 };
 
 const clearAccessTokenInLocalStorage = () => {
-    localStorage.setItem('accessToken', "null");
+    localStorage.setItem('accessToken', null);
 };
 
 const getAccessTokenInLocalStorage = () => {
@@ -35,6 +35,10 @@ const setAccessTokenInLocalStorage = (accessToken) => {
 
 const setAccessTokenExpiryInLocalStorage = (expiresAt) => {
     localStorage.setItem('accessTokenExpiresAt', expiresAt);
+};
+
+const clearAccessTokenExpiryInLocalStorage = () => {
+    localStorage.setItem('accessTokenExpiresAt', null);
 };
 
 const setRefreshTokenInLocalStorage = (refreshToken) => {
@@ -53,5 +57,6 @@ module.exports = {
     setAccessTokenExpiryInLocalStorage,
     setRefreshTokenInLocalStorage,
     setRefreshTokenExpiryInLocalStorage,
-    clearAccessTokenInLocalStorage
+    clearAccessTokenInLocalStorage,
+    clearAccessTokenExpiryInLocalStorage
 }

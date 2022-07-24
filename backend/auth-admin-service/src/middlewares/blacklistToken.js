@@ -25,8 +25,7 @@ async function isBlacklisted(token_id) {
 }
 
 async function blacklistToken(req, res, next) {
-  const authHeader = req.headers.authorization;
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = req.headers['x-auth-token'];
   if (token == null)
     return res.status(401).send({
       statusCode: 401,

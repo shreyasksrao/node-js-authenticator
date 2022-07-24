@@ -1,22 +1,44 @@
+:root{
+    --toolBarHeight: 50px;
+}
+
+.endpoint-nav-bar {
+    height: var(--toolBarHeight);
+    width: 100%;
+    padding-left: 10px;
+    border-bottom: 1px solid var(--borderColor);
+    position: fixed;
+    top: var(--navbarHeight);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.endpoint-content {
+    overflow-y: auto;
+    margin-top: var(--toolBarHeight);
+}
+
 .endpoint-details-container {
     overflow-y: auto;
     color: pink;
+    margin: 10px 5px 0px 5px;
+    height: 240px;
+    border: 1px solid var(--borderColor);
+    border-radius: 10px;
+    padding: 5px;
 }
 
 .list-endpoints-wrapper {
-    border-bottom: 1px solid var(--borderColor);
-    padding: 10px;
-    overflow-y: auto;
+    overflow-y: hidden;
+    height: 410px;
 }
 
 .endpoint-details-wrapper {
     border-bottom: 1px solid var(--borderColor);
     padding: 10px;
-    overflow-y: auto;
+    overflow-y: hidden;
     height: 300px;
-    margin: 10px 15px;
-    border: 1px solid var(--borderColor);
-    border-radius: 5px;
 }
 
 .section-toolbar {
@@ -39,6 +61,7 @@
 .cardTitle {
     font-size: 16px;
     font-weight: bold;
+    padding-right: 8px;
 }
 .idAndMethodContainer {
     display: flex;
@@ -68,4 +91,14 @@
 .card-item {
     text-align: left;
     padding-left: 25px;
+}
+
+#endpoint-method-select-label {
+    color: white !important;
+}
+
+.create-endpoint-container {
+    margin: 15px;
+    border: 1px solid var(--borderColor);
+    border-radius: 5px;
 }

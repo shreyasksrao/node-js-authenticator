@@ -1,5 +1,7 @@
 import axios from 'axios';
-import { setAccessTokenInLocalStorage, clearAccessTokenInLocalStorage, setAccessTokenExpiryInLocalStorage, setRefreshTokenInLocalStorage, setRefreshTokenExpiryInLocalStorage } from './AuthService';
+import { getAccessTokenInLocalStorage, setAccessTokenInLocalStorage, clearAccessTokenInLocalStorage, 
+         clearAccessTokenExpiryInLocalStorage, setAccessTokenExpiryInLocalStorage, setRefreshTokenInLocalStorage, 
+         setRefreshTokenExpiryInLocalStorage } from './AuthService';
 
 const API_BASE_URL = "http://127.0.0.1:5001/api/v1";
 
@@ -32,6 +34,24 @@ export const loginHandler = async (email, password, setCookie=false) => {
         else
             return {success: false,...responseData}
     }
+};
+
+export const logoutUser = async () => {
+    let logoutUrl = `${API_BASE_URL}/logoutUser`;
+    let accessToken = getAccessTokenInLocalStorage();
+    let headers = {
+        'x-auth-token': accessToken,
+        'Accept': 'application/json'
+    };
+
+    let response = await axios.post(logoutUrl, '', {headers: headers});
+    console.log(response);
+    if (response.data.statusCode === 201){
+        clearAccessTokenInLocalStorage();
+        clearAccessTokenExpiryInLocalStorage();
+        return {success: true, ...response.data};
+    }
+    return {success: false, ...response.data};
 };
 
 export const getAllUsers = async () => {

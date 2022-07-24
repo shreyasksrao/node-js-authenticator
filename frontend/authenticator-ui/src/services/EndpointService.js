@@ -21,5 +21,25 @@ export const getAllEndpoints = async () => {
     }
     else
         return {data: 'Error', error: 'Not Logged In', returnCode: -2};
+};
 
+export const createEndpoint = async (data) => {
+    let loginState = isLoggedIn();
+    if(loginState){
+        try {
+            let accessToken = getAccessTokenInLocalStorage();
+            let createEndpointUrl = `${API_BASE_URL}/createEndpoint`;
+            let headers = {
+                'Accept': 'application/json',
+                'x-auth-token': accessToken,
+                'Content-Type': 'application/json'
+            };
+            const res = await axios.post(createEndpointUrl, data, { 'headers': headers });
+            return {data: res.data, returnCode: 0};
+        } catch (error) {
+            return {data: 'Error', error: error.response.data.message, returnCode: -1};
+        }
+    }
+    else
+        return {data: 'Error', error: 'Not Logged In', returnCode: -2};
 };

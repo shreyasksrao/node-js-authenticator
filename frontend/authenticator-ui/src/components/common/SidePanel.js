@@ -7,7 +7,7 @@ export default function SidePanel({ sidePanelLinks, toggle, isOpen }) {
   return (
     <div className={`${isOpen ? 'sidebar side-panel-container is-open': 'sidebar side-panel-container'}`}>
         <div className='logo-container'>
-            <img className='logo-image' src={process.env.PUBLIC_URL+"logo.png"} alt='App Logo'/>
+            <img className='logo-image' src="/logo.PNG" alt='App Logo'/>
         </div>
         <div className='company-title-container'>
             <p className='company-title'>AUTHENTICATOR</p>

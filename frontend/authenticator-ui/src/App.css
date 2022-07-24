@@ -21,17 +21,48 @@ a:focus {
   --navBarTextColor: rgb(238, 229, 229);
   --sidePanelBackgroundColor: rgb(38, 38, 38);
   --sidePanelTextColor: rgb(253, 237, 237);
-  --sidePanelWidth: 300px;
+  --sidePanelWidth: 350px;
   --appTextFont: 'Source Sans Pro';
   --textHeading: 14px;
   --textNormal: 12px;
   --textSmall: 10px;
 }
 
+/* Scroll bar Style */
+/* Works on Firefox */
+* {
+  /* scrollbar-width: thin; */
+  scrollbar-color: #3a4049  #0d1724;
+}
+
+/* Works on Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: #0d1724;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #6c727a;
+  border-radius: 20px;
+  border: 3px solid #0d1724;
+}
+
 .App {
   text-align: center;
   height: 100vh;
   font-family: var(--appTextFont);
+}
+
+.App {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: stretch;
+  justify-content: center;
+  background-color: var(--backgroundColor);
 }
 
 .App-logo {
@@ -64,6 +95,7 @@ a:focus {
   background-color: var(--navBarBackgroundColor);
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
 }
 
 .logo-image {
@@ -120,7 +152,7 @@ a:focus {
 
 .main {
   display: flex;
-  overflow-y: auto;
+  /* overflow-y: auto; */
   flex-direction: column;
   background-color: var(--backgroundColor);
 }
@@ -190,24 +222,17 @@ li a.dropdown-toggle::after {
   top: 10%
 }
 
-.App {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-items: stretch;
-}
-
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
 .sidebar {
   min-width: 250px;
-  max-width: 250px;
   background: #354052;
   color: #adb5bd;
   margin-left: -250px;
   transition: all 0.5s;
   border: 1px solid var(--borderColor);
+  border-top: none;
 }
 
 .sidebar.is-open {

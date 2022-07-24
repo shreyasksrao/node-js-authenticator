@@ -59,7 +59,7 @@ router.post('/validateToken', async (req, res) => {
             // Any error with token verification, throw 403
             if (err){
               console.log(err);
-              return res.status(403).json({
+              return res.status(200).json({
                 "status":403,
                 "message":`JWT verification failed : ${err}`
               });
@@ -68,7 +68,7 @@ router.post('/validateToken', async (req, res) => {
             if(payload){
               let current_utc = Math.floor(new Date().getTime() / 1000);
               if(current_utc > payload.eat){
-                return res.status(403).json({
+                return res.status(200).json({
                   "status":403,
                   "message":`Forbidden, Token expired !!`
                 });
@@ -77,7 +77,7 @@ router.post('/validateToken', async (req, res) => {
     
             const tokenBlacklisted = await redisClient.exists(payload.tid);
             if(tokenBlacklisted){
-              return res.status(403).json({
+              return res.status(200).json({
                 status: 403,
                 message: "Token is Blacklisted. Please login again with your credentials"
               });

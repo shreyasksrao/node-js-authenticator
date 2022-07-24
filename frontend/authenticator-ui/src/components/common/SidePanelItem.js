@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import './SidebarPanel.css';
 import SubMenu from './SubMenu';
+import Tooltip from '@mui/material/Tooltip';
 
 const SidePanelItem = props => {
   const { label, Icon, to, children } = props.item;
@@ -11,16 +12,17 @@ const SidePanelItem = props => {
   }
 
   return (
-    <NavLink
-      exact
-      to={to}
-      className="navItem"
-      activeClassName="activeNavItem"
-    >
-      <div style={{width:'20px', minWidth:'20px'}}></div>
-      <Icon className="navIcon" />
-      <span className="navLabel">{label}</span>
-    </NavLink>
+    <Tooltip title={label} enterDelay={200} leaveDelay={200} arrow>
+      <NavLink
+        exact="true"
+        to={to}
+        className="navItem"
+      >
+        <div className="emptyBox" style={{width:'20px', minWidth:'20px'}}></div>
+        <Icon className="navIcon" />
+        <span className="navLabel">{label}</span>
+      </NavLink>
+    </Tooltip>
   );
 };
 

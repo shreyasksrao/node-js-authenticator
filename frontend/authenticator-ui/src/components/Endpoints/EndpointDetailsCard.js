@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import EndpointMethod from './EndpointMethod';
 import "./EndpointActions.css";
 
-function EndpointDetalsCard({endpointId, endpoints}) {
+function EndpointDetailsCard({endpointId, endpoints}) {
   const [ eid, setId ] = useState('');
   const [ eName, setEName ] = useState('');
   const [ eMethod, setMethod] = useState('');
@@ -57,4 +56,4 @@ function EndpointDetalsCard({endpointId, endpoints}) {
   )
 }
 
-export default EndpointDetalsCard
+export default EndpointDetailsCard

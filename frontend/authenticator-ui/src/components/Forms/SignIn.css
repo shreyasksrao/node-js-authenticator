@@ -1,0 +1,23 @@
+body {
+    background-color: var(--backgroundColor);
+}
+.signin-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    color: white;
+    background-color:  #1a1d20;
+    border: 1px solid var(--borderColor) !important;
+    border-radius: 10px;
+    padding: 30px;
+}
+
+.signin-avatar {
+    width: 65px !important;
+    height: 65px !important;
+}
+
+.copy-right-text {
+    color: rgba(255, 255, 255, 0.72) !important;
+}
