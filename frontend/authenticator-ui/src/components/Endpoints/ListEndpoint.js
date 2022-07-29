@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import {useNavigate} from 'react-router-dom';
-import { getAllEndpoints } from '../../services/EndpointService';
+import React from 'react';
 import DataTable from '../DataTable/DataTable';
 import EndpointMethod from './EndpointMethod';
 import CellTooltip from '../DataTable/CellTooltip';
 import EndpointDetailsCard from './EndpointDetailsCard';
 import Tooltip from '@mui/material/Tooltip';
 
-
-function ListEndpoint() {
-  const navigate = useNavigate();
-  const [allEndpoints, setAllEndpoints] = useState([]);
-  const [tableData, setTableData] = useState([]);
-  const [detailsEndpointIds, setDetailsEndpointIds] = useState([]);
+function ListEndpoint({ 
+    allEndpoints, 
+    detailsEndpointIds, 
+    setDetailsEndpointIds, 
+    setIsAddButtonDisabled, 
+    setIsEditButtonDisabled,
+    setIsDeleteButtonDisabled 
+  }) {
+  // Column Definition
   const columns = [
     { 
       field: 'id', 
@@ -48,12 +49,34 @@ function ListEndpoint() {
     },
   ];
 
-  useEffect(() => {
-    console.log('Fetching Endpoints...');
-    _getAllEndpoints().then((resData) => setAllEndpoints(JSON.parse(resData.endpoints)));
+  React.useEffect(() => {
+    setIsEditButtonDisabled(true);
+    setIsAddButtonDisabled(false);
+    setIsDeleteButtonDisabled(true);
+
+    return setDetailsEndpointIds([]);
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
+    if(detailsEndpointIds.length === 0){
+      setIsEditButtonDisabled(true);
+      setIsAddButtonDisabled(false);
+      setIsDeleteButtonDisabled(true);
+    }
+    else if(detailsEndpointIds.length === 1){
+      setIsEditButtonDisabled(false);
+      setIsAddButtonDisabled(false);
+      setIsDeleteButtonDisabled(false);
+    }
+    else{
+      setIsEditButtonDisabled(true);
+      setIsAddButtonDisabled(false);
+      setIsDeleteButtonDisabled(false);
+    }
+  }, [detailsEndpointIds]);
+
+  const getTableData = () => {
+    console.log('Creating Map of Endpoints...');
     let mappedData = allEndpoints.map(endpoint => {
       return {
         'id': endpoint.id,
@@ -62,36 +85,60 @@ function ListEndpoint() {
         'endpoint': endpoint.endpoint
       }
     });
-    setTableData(mappedData);
-    console.log('Creating Map of Endpoints...');
-  }, [allEndpoints]);
+    return mappedData;
+  };
 
-  const _getAllEndpoints = async () => {
-    let data = await getAllEndpoints();
-    if (data.returnCode === -2)
-        navigate('/signin');
-    else if (data.returnCode === -1)
-        navigate('/error');
-    else
-        return data.data;        
+  const getEndpointDetails = (endpointId) => {
+    let filteredEndpoints = allEndpoints.filter(endpoint => {
+      return endpoint.id === endpointId;
+    });
+    return {
+      id: endpointId,
+      name: filteredEndpoints[0].name,
+      endpoint: filteredEndpoints[0].endpoint,
+      method: filteredEndpoints[0].method,
+      description: filteredEndpoints[0].description,
+    }
   };
 
   return (
     <> 
         <div className='list-endpoints-wrapper'>
             <div className='section-heading'>
-            <h4 style={{color: 'wheat', textAlign: 'left', paddingLeft: '10px', paddingBottom: '5px', fontWeight: 'bold'}}>ENDPOINT LIST</h4>
+              <h4 style={{
+                  color: 'wheat', 
+                  textAlign: 'left', 
+                  paddingLeft: '10px', 
+                  paddingBottom: '5px', 
+                  margin: '5px 0px', 
+                  fontSize: '18px', 
+                  fontWeight: 'bold'
+                }}
+              >
+                ENDPOINT LIST
+              </h4>
             </div>
-            <DataTable height={'350px'} columns={ columns } rows= { tableData } setSelectedRows={setDetailsEndpointIds}/>
+            <DataTable height={'350px'} columns={ columns } rows= { getTableData() } setSelectedRows={setDetailsEndpointIds}/>
         </div>
         <div className="endpoint-details-wrapper">
             <div className='section-heading'>
-            <h4 style={{color: 'wheat', textAlign: 'left', paddingLeft: '10px', paddingBottom: '5px', fontWeight: 'bold'}}>ENDPOINT DETAILS</h4>
+              <h4 style={{
+                  color: 'wheat', 
+                  textAlign: 'left', 
+                  paddingLeft: '10px', 
+                  paddingBottom: '5px', 
+                  margin: '5px 0px', 
+                  fontSize: '18px', 
+                  fontWeight: 'bold'
+                }}
+              >
+                ENDPOINT DETAILS
+              </h4>
             </div>
             <div className='endpoint-details-container'>
                 {
                 detailsEndpointIds.map(tableRow => 
-                    <EndpointDetailsCard key={tableRow.id} endpointId={tableRow.id} endpoints={allEndpoints} />
+                    <EndpointDetailsCard key={tableRow.id} endpointDetails={getEndpointDetails(tableRow.id)} />
                 )
                 }
             </div>

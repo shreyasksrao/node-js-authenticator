@@ -154,5 +154,68 @@ router.get('/getAllEndpoints',
                 }
 });
 
+/**
+ * @swagger
+ * /getEndpoint/{endpointId}:
+ *   get:
+ *     tags:
+ *       - Endpoint
+ *     name: Get Endpoints by passing Endpoint ID
+ *     summary: Get Endpoint by passing ID
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: endpointId
+ *         schema:
+ *           type: string
+ *         description: UUID of the endpoint
+ *         required: true
+ *     responses:
+ *       '200':
+ *         description: Endpoint fetched successfully.
+ *       '400':
+ *         description: Endpoint doesn't exist.
+ *       '401':
+ *         description: Parameter validation failed.
+ */
+
+ router.get('/getEndpoint/:endpointId',
+            addEndpointNameToRequest('get_endpoints_by_id'), 
+            authenticateTokenUsingService, 
+            roleValidationUsingService, 
+            async (req, res) => {
+                try{
+                    const endpoint = await Endpoint.findOne({
+                        where: {id: req.params.endpointId}
+                    });
+                    if (endpoint){
+                        return res.status(200).json({
+                            statusCode: 200,
+                            message: `Endpoint with ID: ${req.params.endpointId} fetched successfully.`,
+                            endpoint: JSON.stringify(endpoint)
+                        });
+                    }
+                    else{
+                        logger.debug(`[ GET ENDPOINT BY ID ] Failed to fetch endpoints. Empty array`);
+                        return res.status(400).json({
+                            statusCode: 400,
+                            message: `Failed to fetch endpoint. Endpoint with ID: ${req.params.endpointId} doesn't exist`,
+                        });
+                    }
+                }
+                catch (err) {
+                    logger.error(err);
+                    return res.status(500).json({
+                        statusCode: 500,
+                        message: 'Internal Server Error !!!',
+                        devMessage: err.message,
+                        stackTrace: err.stack
+                    });
+                }
+});
+
 
 module.exports=router;

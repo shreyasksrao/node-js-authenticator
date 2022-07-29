@@ -30,6 +30,9 @@ const customStyle = {
         borderColor: 'var(--borderColor)',
         borderTop: '3px solid var(--borderColor) !important', 
     },
+    '& .MuiDataGrid-cell:focus-within': {
+        outline: "none !important"
+    },
     '& .MuiDataGrid-row': {
         padding: '0px',
         margin: '0px',

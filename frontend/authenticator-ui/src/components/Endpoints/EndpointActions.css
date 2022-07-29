@@ -2,9 +2,16 @@
     --toolBarHeight: 50px;
 }
 
+.toolbar-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+}
+
 .endpoint-nav-bar {
     height: var(--toolBarHeight);
-    width: 100%;
+    width: calc(100% - var(--sidePanelWidth));
     padding-left: 10px;
     border-bottom: 1px solid var(--borderColor);
     position: fixed;

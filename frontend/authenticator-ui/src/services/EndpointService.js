@@ -23,6 +23,26 @@ export const getAllEndpoints = async () => {
         return {data: 'Error', error: 'Not Logged In', returnCode: -2};
 };
 
+export const getEndpoint = async (id) => {
+    let loginState = isLoggedIn();
+    if(loginState){
+        try {
+            let accessToken = getAccessTokenInLocalStorage();
+            let getEndpointUrl = `${API_BASE_URL}/getEndpoint/${id}`;
+            let headers = {
+                'Accept': 'application/json',
+                'x-auth-token': accessToken
+            };
+            const res = await axios.get(getEndpointUrl, { 'headers': headers });
+            return {data: res.data, returnCode: 0};
+        } catch (error) {
+            return {data: 'Error', error: JSON.stringify(error), returnCode: -1};
+        }
+    }
+    else
+        return {data: 'Error', error: 'Not Logged In', returnCode: -2};
+}
+
 export const createEndpoint = async (data) => {
     let loginState = isLoggedIn();
     if(loginState){

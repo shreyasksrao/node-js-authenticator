@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -54,7 +55,7 @@ const useStyles = makeStyles({
     }
   }
 
-function CreateEndpoint() {
+function CreateEndpoint({ setIsAddButtonDisabled, setIsEditButtonDisabled, setIsDeleteButtonDisabled }) {
     const [notifications, setNotifications] = React.useState([]);
     const [endpointName, setEndpointName] = React.useState('');
     const [endpoint, setEndpoint] = React.useState('');
@@ -62,7 +63,8 @@ function CreateEndpoint() {
     const [method, setMethod] = React.useState('GET');
 
     const [endpointNameHelperText, setEndpointNameHelperText] = React.useState("'Name of the Endpoint'");
-    const [endpointHelpertext, setEndpointHelpertext] = React.useState('REST Endpoint (Ex: "/api/v1/user/login")');
+
+    let navigate = useNavigate();
 
     const handleMethodChange = (event) => {
       setMethod(event.target.value);
@@ -78,6 +80,12 @@ function CreateEndpoint() {
       else if(endpointName.includes(' ')) setEndpointNameHelperText('Endpoint name should not contain white spaces. Use "_" as delimiter');
       else setEndpointNameHelperText('Name of the Endpoint');
     }, [endpointName]);
+
+    React.useEffect(() => {
+      setIsAddButtonDisabled(true);
+      setIsEditButtonDisabled(true);
+      setIsDeleteButtonDisabled(true);
+    }, []);
 
     const handleCreateEndpoint = async () => {
       if(endpointName === '')setNotifications(oldVal => [...oldVal, {severity: 'error', message: 'Endpoint name is required...'}]);
@@ -236,6 +244,7 @@ function CreateEndpoint() {
                 </Button>
                 <Button 
                     variant="contained"
+                    onClick={() => navigate('/endpointActions')}
                     sx={{
                         backgroundColor: '#000',
                         color: 'white',
