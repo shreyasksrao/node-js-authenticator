@@ -3,9 +3,7 @@ const axios = require('axios');
 const nodemailer = require("nodemailer");
 
 const GOOGLE_EMAIL_OAUTH_REDIRECT_URL = 'http://localhost:5001/email/getRefreshToken';
-const GOOGLE_EMAIL_OAUTH_CLIENT_ID = '905149359245-f1cnl1l62sla1nrkscpvhpssgi8s0mb4.apps.googleusercontent.com';
-const GOOGLE_EMAIL_OAUTH_CLIENT_SECRET = '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';
-const GOOGLE_EMAIL_REFRESH_TOKEN = '1//0ggzahx-SzrdtCgYIARAAGBASNwF-L9IrKF41VYStFzkQ9dO2_uHoKCfx1TlZ_Q0gbxOjqDl2gjU0rxXMPe7uXRPh0qPIvWvbIqI';
+
 
 function getTokens( code, clientId, clientSecret, redirectUri ) {
     const url = 'https://oauth2.googleapis.com/token';

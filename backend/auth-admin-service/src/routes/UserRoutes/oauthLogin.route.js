@@ -7,8 +7,7 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
 const axios = require('axios');
 
 const GOOGLE_OAUTH_REDIRECT_URL = 'http://localhost:5001/auth/google';
-const GOOGLE_OAUTH_CLIENT_ID = "212198777237-15sg1j5mh5ktidngqjh2sjrusgd724rm.apps.googleusercontent.com";
-const GOOGLE_OAUTH_CLIENT_SECRET = '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';
+
 
 function getTokens( code, clientId, clientSecret, redirectUri ) {
   const url = 'https://oauth2.googleapis.com/token';

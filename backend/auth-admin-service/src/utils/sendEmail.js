@@ -52,11 +52,3 @@ function getGoogleAuthURL() {
 }
 
 console.log(getGoogleAuthURL())
-// (async () => {
-//     const { id_token, access_token } = await getTokens( 
-//   code, 
-//   '293672208183-7j15sdhcgmkajo8smc45qlktcf3i2d2e.apps.googleusercontent.com', 
-//   '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', 
-//   'http://localhost:5001/auth/google'
-// )
-// })();
