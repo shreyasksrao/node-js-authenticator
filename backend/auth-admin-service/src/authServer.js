@@ -118,6 +118,8 @@ const updateUser = require('./routes/UserRoutes/updateUser.route.js');
 // const user_logins = require('./routes/user_logins.route.js');
 
 const googleLogin = require('./routes/UserRoutes/loginGoogle.route');
+const gogleOauth = require('./routes/UserRoutes/oauthLogin.route');
+const emailerRoutes = require('./routes/UserRoutes/emailer.route');
 
 const createPermission = require('./routes/PermissionRoutes/createPermission.route');
 const getPermission = require('./routes/PermissionRoutes/getPermission.route');
@@ -152,6 +154,8 @@ app.use('/api/v1', updateUser);
 // app.use('/api/v1', user_logins);
 
 app.use('/api/v1', googleLogin);
+app.use(gogleOauth);
+app.use(emailerRoutes);
 
 app.use('/api/v1', createPermission);
 app.use('/api/v1', getPermission);

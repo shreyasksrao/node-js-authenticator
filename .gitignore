@@ -14,6 +14,13 @@ backend/token-validator-service/config/jwt/keys
 backend/token-validator-service/config/ssl
 backend/token-validator-service/logs/
 
+backend/email-service/node_modules
+backend/email-service/package-lock.json
+backend/email-service/config/config.env
+backend/email-service/config/jwt/keys
+backend/email-service/config/ssl
+backend/email-service/logs/
+
 frontend/authenticator-ui/node_modules
 frontend/authenticator-ui/package-lock.json
 
