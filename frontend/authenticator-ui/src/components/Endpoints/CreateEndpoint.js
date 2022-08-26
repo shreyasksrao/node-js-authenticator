@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
+import PropTypes from 'prop-types';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Button from '@mui/material/Button';
@@ -10,38 +11,27 @@ import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import Select from '@mui/material/Select';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import { makeStyles } from "@material-ui/core/styles";
 
 import EndpointNotification from './EndpointNotification';
 import { createEndpoint } from '../../services/EndpointService';
 
-const useStyles = makeStyles({
-    select: {
-      '& .MuiOutlinedInput-notchedOutline': {
-        borderColor: 'var(--borderColor) !important',
-      },
-      '&:hover .MuiOutlinedInput-notchedOutline': {
-        borderColor: 'black !important',
-      },
-    },
-  });
-  
+function CreateEndpoint({ setIsAddButtonDisabled, setIsEditButtonDisabled, setIsDeleteButtonDisabled, theme }) {
   const inputCustomStyles = {
     '& .MuiInputLabel-root': {
-      color: 'white !important'
+      color: theme === 'dark' ? 'white !important': 'black !important'
     },
     '& .MuiOutlinedInput-root': {
       border: '1px var(--borderColor) !important',
-      color: 'rgba(254, 254, 254, 0.87)',
-      "& > fieldset": { borderColor: "var(--borderColor)" },
-      input: { color: 'white' }
+      color: theme === 'dark' ? 'rgba(254, 254, 254, 0.87)': 'black',
+      "& > fieldset": { borderColor: "var(--borderColor) !important" },
+      input: { color: theme === 'dark' ? 'white': 'black' }
     },
     "& .MuiFormHelperText-root": {
       color: '#7f7f7fab !important',
       fontSize: '10px'
     },
     '& .MuiSelect-select': {
-      color: "white !important"
+      color: theme === 'dark' ? "white !important": 'black !important'
     },
     '& .MuiSelect-icon': {
       color: '#7f7f7fab'
@@ -50,12 +40,17 @@ const useStyles = makeStyles({
       backgroundColor: 'blue'
     },
     '& .Mui-disabled': {
-      backgroundColor: '#072921 !important',
-      color: '#565656 !important'
-    }
-  }
+      color: '#565656 !important',
+      WebkitTextFillColor: '#565656 !important'
+    },
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: theme === 'dark' ? 'var(--borderColor) !important' : 'black !important',
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: 'black !important',
+    },
+  };
 
-function CreateEndpoint({ setIsAddButtonDisabled, setIsEditButtonDisabled, setIsDeleteButtonDisabled }) {
     const [notifications, setNotifications] = React.useState([]);
     const [endpointName, setEndpointName] = React.useState('');
     const [endpoint, setEndpoint] = React.useState('');
@@ -108,8 +103,6 @@ function CreateEndpoint({ setIsAddButtonDisabled, setIsEditButtonDisabled, setIs
       }
     };
 
-    const classes = useStyles();
-
   return (
     <div className="create-endpoint-container">
       <Box sx={{margin: '10px 0px 0px 20px'}}>
@@ -133,7 +126,6 @@ function CreateEndpoint({ setIsAddButtonDisabled, setIsEditButtonDisabled, setIs
         <Grid item md={12} lg={6} >
             <Box sx={{ marginLeft: '20px'}}>
                 <TextField
-                    className={classes.textFieldRoot}
                     sx={inputCustomStyles}
                     id="outlined-helperText"
                     label="Endpoint Name"
@@ -192,7 +184,6 @@ function CreateEndpoint({ setIsAddButtonDisabled, setIsEditButtonDisabled, setIs
                 <FormControl required style={{minWidth: 120}}>
                 <InputLabel id="endpoint-method-select-label">Method</InputLabel>
                 <Select
-                    className={classes.select}
                     labelId="endpoint-method-select-label"
                     id="endpoint-method-select"
                     value={method}
@@ -259,4 +250,10 @@ function CreateEndpoint({ setIsAddButtonDisabled, setIsEditButtonDisabled, setIs
   )
 }
 
-export default CreateEndpoint
+CreateEndpoint.propTypes = {
+  theme: PropTypes.string,
+}
+CreateEndpoint.defaultProps = {
+  theme: 'light'
+}
+export default CreateEndpoint;

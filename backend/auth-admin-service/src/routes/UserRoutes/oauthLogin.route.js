@@ -6,6 +6,10 @@ let addEndpointNameToRequest = require('../../middlewares/addEndpointNameToReque
 
 const axios = require('axios');
 
+const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config({ path: path.join(__dirname, '../../config/config.env') });
+
 const GOOGLE_OAUTH_REDIRECT_URL = 'http://localhost:5001/auth/google';
 
 

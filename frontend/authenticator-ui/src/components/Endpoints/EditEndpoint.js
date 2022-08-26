@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { useNavigate } from "react-router-dom";
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -10,52 +11,11 @@ import FormControl from '@mui/material/FormControl';
 import FormHelperText from '@mui/material/FormHelperText';
 import Select from '@mui/material/Select';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import { makeStyles } from "@material-ui/core/styles";
 
 import EndpointNotification from './EndpointNotification';
 import { getEndpoint } from '../../services/EndpointService';
 
-const useStyles = makeStyles({
-  select: {
-    '& .MuiOutlinedInput-notchedOutline': {
-      borderColor: 'var(--borderColor) !important',
-    },
-    '&:hover .MuiOutlinedInput-notchedOutline': {
-      borderColor: 'black !important',
-    },
-  },
-});
-
-const inputCustomStyles = {
-  '& .MuiInputLabel-root': {
-    color: 'white !important'
-  },
-  '& .MuiOutlinedInput-root': {
-    border: '1px var(--borderColor) !important',
-    color: 'rgba(254, 254, 254, 0.87)',
-    "& > fieldset": { borderColor: "var(--borderColor) !important" },
-    input: { color: 'white' }
-  },
-  "& .MuiFormHelperText-root": {
-    color: '#7f7f7fab !important',
-    fontSize: '10px'
-  },
-  '& .MuiSelect-select': {
-    color: "white !important"
-  },
-  '& .MuiSelect-icon': {
-    color: '#7f7f7fab'
-  },
-  '& .MuiPaper-root': {
-    backgroundColor: 'blue'
-  },
-  '& .Mui-disabled': {
-    backgroundColor: '#072921 !important',
-    color: '#565656 !important'
-  }
-}
-
-function EditEndpoint({ endpointId, setIsAddButtonDisabled, setIsEditButtonDisabled, setIsDeleteButtonDisabled }) {
+function EditEndpoint({ endpointId, setIsAddButtonDisabled, setIsEditButtonDisabled, setIsDeleteButtonDisabled, theme }) {
 
   const navigate = useNavigate();
 
@@ -67,8 +27,41 @@ function EditEndpoint({ endpointId, setIsAddButtonDisabled, setIsEditButtonDisab
   const [method, setMethod] = React.useState('');
 
   const [endpointNameHelperText, setEndpointNameHelperText] = React.useState("'Name of the Endpoint'");
-
-  const classes = useStyles();
+  
+  const inputCustomStyles = {
+    '& .MuiInputLabel-root': {
+      color: theme === 'dark' ? 'white !important': 'black !important'
+    },
+    '& .MuiOutlinedInput-root': {
+      border: '1px var(--borderColor) !important',
+      color: theme === 'dark' ? 'rgba(254, 254, 254, 0.87)': 'black',
+      "& > fieldset": { borderColor: "var(--borderColor) !important" },
+      input: { color: theme === 'dark' ? 'white': 'black' }
+    },
+    "& .MuiFormHelperText-root": {
+      color: '#7f7f7fab !important',
+      fontSize: '10px'
+    },
+    '& .MuiSelect-select': {
+      color: theme === 'dark' ? "white !important": 'black !important'
+    },
+    '& .MuiSelect-icon': {
+      color: '#7f7f7fab'
+    },
+    '& .MuiPaper-root': {
+      backgroundColor: 'blue'
+    },
+    '& .Mui-disabled': {
+      color: '#565656 !important',
+      WebkitTextFillColor: '#565656 !important'
+    },
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: theme === 'dark' ? 'var(--borderColor) !important' : 'black !important',
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: 'black !important',
+    },
+  }
 
   React.useEffect(() => {
     const _getEndpointDetails = async (id) => {
@@ -136,7 +129,6 @@ function EditEndpoint({ endpointId, setIsAddButtonDisabled, setIsEditButtonDisab
       <Grid item md={12} lg={6} >
             <Box sx={{ marginLeft: '20px'}}>
                 <TextField
-               
                     sx={inputCustomStyles}
                     id="outlined-helperText"
                     label="Endpoint ID"
@@ -147,7 +139,7 @@ function EditEndpoint({ endpointId, setIsAddButtonDisabled, setIsEditButtonDisab
                     required
                     InputLabelProps={{
                         style: {
-                        color: '#b4bdc4'
+                        color: theme === 'dark' ? '#b4bdc4': 'black'
                         } }}
                 />
             </Box>
@@ -155,7 +147,6 @@ function EditEndpoint({ endpointId, setIsAddButtonDisabled, setIsEditButtonDisab
         <Grid item md={12} lg={6} >
             <Box sx={{ marginLeft: '20px', marginRight: '20px'}}>
                 <TextField
-                    className={classes.textFieldRoot}
                     sx={inputCustomStyles}
                     id="outlined-helperText"
                     label="Endpoint Name"
@@ -168,7 +159,7 @@ function EditEndpoint({ endpointId, setIsAddButtonDisabled, setIsEditButtonDisab
                     required
                     InputLabelProps={{
                         style: {
-                        color: '#b4bdc4'
+                        color: theme === 'dark' ? '#b4bdc4': 'black'
                         } }}
                 />
             </Box>
@@ -186,7 +177,7 @@ function EditEndpoint({ endpointId, setIsAddButtonDisabled, setIsEditButtonDisab
                     required
                     InputLabelProps={{
                         style: {
-                        color: '#b4bdc4'
+                        color: theme === 'dark' ? '#b4bdc4': 'black'
                         } }}
                 />
             </Box>
@@ -206,7 +197,7 @@ function EditEndpoint({ endpointId, setIsAddButtonDisabled, setIsEditButtonDisab
                     sx={inputCustomStyles}
                     InputLabelProps={{
                         style: {
-                        color: '#b4bdc4'
+                        color: theme === 'dark' ? '#b4bdc4': 'black'
                       }
                     }}
                 />
@@ -216,9 +207,12 @@ function EditEndpoint({ endpointId, setIsAddButtonDisabled, setIsEditButtonDisab
         <Grid item md={12} lg={6}>
             <Box sx={{width: '180px', maxWidth: '100%', marginLeft: '20px'}}>
                 <FormControl required style={{minWidth: 120}}>
-                <InputLabel id="endpoint-method-select-label">Method</InputLabel>
+                <InputLabel id="endpoint-method-select-label"
+                  sx={{color: theme === 'dark' ? '#b4bdc4 !important': 'black !important'}}
+                >
+                  Method
+                </InputLabel>
                 <Select
-                    className={classes.select}
                     labelId="endpoint-method-select-label"
                     id="endpoint-method-select"
                     value={method}
@@ -228,7 +222,7 @@ function EditEndpoint({ endpointId, setIsAddButtonDisabled, setIsEditButtonDisab
                     sx={inputCustomStyles}
                     InputLabelProps={{
                     style: {
-                        color: '#b4bdc4'
+                        color: theme === 'dark' ? '#b4bdc4 !important': 'black !important'
                     } 
                     }}
                 >
@@ -286,3 +280,10 @@ function EditEndpoint({ endpointId, setIsAddButtonDisabled, setIsEditButtonDisab
 }
 
 export default EditEndpoint
+
+EditEndpoint.propTypes = {
+  theme: PropTypes.string,
+}
+EditEndpoint.defaultProps = {
+  theme: 'light'
+}

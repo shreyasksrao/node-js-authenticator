@@ -82,20 +82,6 @@ router.get(`/email/getRefreshToken`, async (req, res) => {
     })
   });
 
-
-//   {
-//     accepted: [ 'shreyassuryanarayan@gmail.com' ],
-//     rejected: [],
-//     envelopeTime: 839,
-//     messageTime: 1172,
-//     messageSize: 349,
-//     response: '250 2.0.0 OK  1659463663 a15-20020a170902710f00b0016d2540c098sm12034320pll.231 - gsmtp',
-//     envelope: {
-//       from: 'shreyassuryanarayan2000@gmail.com',
-//       to: [ 'shreyassuryanarayan@gmail.com' ]
-//     },
-//     messageId: '<6fef4cf1-b177-7fae-380c-7a0963545e6e@gmail.com>'
-//   }
 router.get('/email/sendEmail', async (req, res) => {
     let access_token = await getAccessTokenFromRefreshToken(
                                 GOOGLE_EMAIL_OAUTH_CLIENT_ID, 

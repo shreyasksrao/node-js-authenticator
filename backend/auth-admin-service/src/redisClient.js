@@ -35,4 +35,8 @@ redisClient.connect()
 
 redisClient.ping();
 
+redisClient.on('error', err => {
+  console.error(err);
+})
+
 module.exports = redisClient;

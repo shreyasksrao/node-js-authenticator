@@ -28,7 +28,6 @@
     align-items: center;
     width: var(--sidePanelWidth);
     height: 100vh;
-    background-color: #0a1929;
     overflow-y: auto;
     overflow-x: hidden;
     flex: 0 0 var(--sidePanelWidth);
@@ -76,15 +75,17 @@
     display: flex;
     align-items: center;
   }
-  
-  .navItem:hover {
-    background-color: #1e3a8a;
-  }
-  
-  .activeNavItem {
-    color: #dbeafe;
-    background-color: #328a1e;
-  }
+
+.navItem-dark:hover{
+  background-color: cornflowerblue;
+}  
+.navItem-light:hover{
+  background-color: grey;
+}
+.activeNavItem {
+  color: #dbeafe;
+  background-color: #328a1e;
+}
   
 .active {
   background-color: #1424399e;
@@ -95,66 +96,52 @@
   margin-left: -5px;
 }
 
-  .navIcon {
-    color: rgb(201, 209, 217);
-    width: 17px;
-    min-width: 17px;
-    height: auto;
-    margin: 4px;
-    margin-left: 0px;
-  }
-  
-  .navLabel {
-    color: rgb(201, 209, 217);
-    font-size: 14px;
-    margin: 4px;
-    word-break: break-all;
-    text-align: left;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-  }
-  
-  .navItemHeaderButton {
-    width: 100%;
-    outline: none;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-  }
-  
-  .navItemHeaderChevron {
-    color: #808791;
-    width: 20px;
-    height: 20px;
-    /* margin-left: auto; */
-    transition: all 0.25s;
-  }
-  
-  .chevronExpanded {
-    transform: rotate(90deg);
-  }
-  
-  .navChildrenBlock {
-    background-color: #0a1929;
-    /* width: max-content; */
-  }
+.navIcon {
+  /* color: rgb(201, 209, 217); */
+  width: 17px;
+  min-width: 17px;
+  height: auto;
+  margin: 4px;
+  margin-left: 0px;
+}
 
-  .sub-menu-navitem {
-    padding: 0px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-  }
+.navLabel {
+  font-size: 14px;
+  margin: 4px;
+  word-break: break-all;
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
 
-  .sub-menu-navitem:hover {
-    background-color: #1e3a8a;
-  }
+.navItemHeaderButton {
+  width: 100%;
+  outline: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
 
-  .sub-nav-children-block {
-      
-  }
-  
+.navItemHeaderChevron {
+  color: #808791;
+  width: 20px;
+  height: 20px;
+  /* margin-left: auto; */
+  transition: all 0.25s;
+}
+
+.chevronExpanded {
+  transform: rotate(90deg);
+}
+
+.sub-menu-navitem {
+  padding: 0px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+}
+
 .company-title-container {
   text-align: center;
   width: 100%;

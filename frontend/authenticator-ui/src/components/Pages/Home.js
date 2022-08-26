@@ -91,6 +91,8 @@ const Home = () => {
   const [isOpen, setOpen] = useState(true);
   const [previousWidth, setPreviousWidth] = useState(-1);
 
+  const [colorTheme, serColorTheme] = useState('light');
+
   const updateWidth = () => {
     const width = window.innerWidth;
     const widthLimit = 360;
@@ -124,8 +126,16 @@ const Home = () => {
         <div className="contentWrapper">
             {isOpen && <SidePanel sidePanelLinks={sideMenu} toggle={toggle} isOpen={isOpen}/>}
 
-            <div className={isOpen ? 'main content is-open': 'main content'}>
-              <div className="main-content">
+            <div className={isOpen ? 'main content is-open': 'main content'}
+              style={{
+                backgroundColor: colorTheme === 'dark' ? 'var(--backgroundColor)': 'white',
+               }}
+            >
+              <div className="main-content"
+              style={{
+                backgroundColor: colorTheme === 'dark' ? 'var(--backgroundColor)': 'white',
+               }}
+              >
                 <Routes>
                   <Route path="/" element={
                     <RequireAuth redirectTo="/login" redirectState={{redirectTo: "/"}}>
@@ -141,8 +151,9 @@ const Home = () => {
 
                   <Route path="/endpointActions/*" element={
                     <RequireAuth redirectTo="/login" redirectState={{redirectTo: "/endpointActions"}}>
-                      <EndpointsActionsPage />
-                    </RequireAuth>}
+                      <EndpointsActionsPage isSidebarOpen={isOpen} />
+                    </RequireAuth>
+                    }
                   />
       
                   <Route path="/profile" element={<p>This is Profile Page</p>}/>

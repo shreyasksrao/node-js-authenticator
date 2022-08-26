@@ -3,9 +3,14 @@ import SidePanelItem from './SidePanelItem';
 import PropTypes from 'prop-types';
 import './SidebarPanel.css';
 
-export default function SidePanel({ sidePanelLinks, toggle, isOpen }) {
+export default function SidePanel({ sidePanelLinks, toggle, isOpen, theme }) {
   return (
-    <div className={`${isOpen ? 'sidebar side-panel-container is-open': 'sidebar side-panel-container'}`}>
+    <div className={`${isOpen ? 'sidebar side-panel-container is-open': 'sidebar side-panel-container'}`}
+         style={{
+            backgroundColor: theme === 'dark' ? 'var(--backgroundColor)': 'white',
+            color: theme === 'dark'? 'rgb(201, 209, 217) !important': '#202020 !important'
+         }}
+    >
         <div className='logo-container'>
             <img className='logo-image' src="/logo.PNG" alt='App Logo'/>
         </div>
@@ -23,4 +28,9 @@ export default function SidePanel({ sidePanelLinks, toggle, isOpen }) {
 
 SidePanel.propTypes = {
     sidePanelLinks: PropTypes.array,
+    theme: PropTypes.string,
 };
+
+SidePanel.defaultProps = {
+    theme: 'light'
+}

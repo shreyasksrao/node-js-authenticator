@@ -116,28 +116,6 @@ const NavBar = ({ toggle }) => {
       </Menu>
     </React.Fragment>
   );
-
-
-    // return (
-    //   <Navbar
-    //     className="navbar shadow-sm p-3 mb-5"
-    //     expand
-    //   >
-    //     <div>
-    //       <Button className="sidebar-colapse-btn" variant="outline-info" onClick={toggle}>
-    //         <FontAwesomeIcon icon={faAlignLeft} />
-    //       </Button>
-    //     </div>
-    //     <div>
-    //       <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-    //       <Navbar.Collapse id="responsive-navbar-nav">
-    //         <Nav className="ml-auto" navbar>
-    //           { actionLinks.map( action => <Link key={action.title} className='navbar-link' to={action.href} style={{color: 'white'}}>{action.title}</Link>)}
-    //         </Nav>
-    //       </Navbar.Collapse>
-    //     </div>
-    //   </Navbar>
-    // );
 }
 
 NavBar.prototype = {

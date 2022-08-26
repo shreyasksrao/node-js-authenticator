@@ -10,7 +10,7 @@ import CreateEndpoint from './CreateEndpoint';
 import EditEndpoint from './EditEndpoint';
 
 
-function EndpointsActionsPage() {
+function EndpointsActionsPage({ isSidebarOpen }) {
   const navigate = useNavigate();
   const [allEndpoints, setAllEndpoints] = React.useState([]);
   const [selectedEndpointIds, setSelectedEndpointIds] = React.useState([]);
@@ -35,7 +35,11 @@ function EndpointsActionsPage() {
 
   return (
     <> 
-      <div className='endpoint-nav-bar'>
+      <div className='endpoint-nav-bar'
+        style={{
+          width: isSidebarOpen ? 'calc(100% - var(--sidePanelWidth))': '100%'
+        }}
+      >
         <EndpointActionsToolBar 
           isAddButtonDisabled={isAddButtonDisabled} 
           isEditButtonDisabled={isEditButtonDisabled} 

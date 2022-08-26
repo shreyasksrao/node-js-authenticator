@@ -152,7 +152,6 @@ a:focus {
 
 .main {
   display: flex;
-  /* overflow-y: auto; */
   flex-direction: column;
   background-color: var(--backgroundColor);
 }
@@ -228,7 +227,6 @@ li a.dropdown-toggle::after {
 .sidebar {
   min-width: 250px;
   background: #354052;
-  color: #adb5bd;
   margin-left: -250px;
   transition: all 0.5s;
   border: 1px solid var(--borderColor);
